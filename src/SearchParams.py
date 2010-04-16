@@ -72,7 +72,7 @@ class SearchParams:
         self.start_from = start_from    
 
 
-   # TODO: change this thing
+# TODO: change this thing
     def __str__(self):
         msg = "Keywords: " + str(self.keywords)
         return msg
