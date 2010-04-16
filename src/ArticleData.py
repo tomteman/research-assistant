@@ -1,4 +1,4 @@
-import parser
+from bibtexParser import parser
 from getHTML import getHTML
 
 class Article:
