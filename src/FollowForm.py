@@ -33,7 +33,7 @@ class FollowFormDone(webapp.RequestHandler):
             vars[form] = self.request.get(form)
            
         keywords = vars["keywords"] if vars['ch_keywords'] =="on" else ""
-        all_words = vars["all_words"] if vars['ch_all_words'] == "on" else "" 
+        #all_words = vars["all_words"] if vars['ch_all_words'] == "on" else "" 
         exact_phrase = vars["exact_phrase"] if vars["ch_exact_phrase"] == "on" else "" 
         one_of_the_words = vars["one_of_the_words"] if vars["ch_one_of_the_words"] == "on" else ""
         within_the_words = vars["within_the_words"] if vars["within_the_words"] == "on" else ""
@@ -44,7 +44,7 @@ class FollowFormDone(webapp.RequestHandler):
         
         
                
-        s_params = SearchParams.SearchParams(keywords = keywords, all_words = all_words,
+        s_params = SearchParams.SearchParams(keywords = keywords,
                                             exact_phrase = exact_phrase, one_of_the_words=one_of_the_words,
                                             within_the_words=within_the_words, author=author, journal=journal)
                                             #cites = sites_param)
@@ -58,7 +58,7 @@ class FollowFormDone(webapp.RequestHandler):
         
         
         db_follow = follow.convert2DBFollow()
-        db_follow.put()
+        #db_follow.put()
       
         # TODO: change this thing. It is not supposed to be here
         #follow.update_follow()
@@ -152,7 +152,7 @@ class FollowForm (webapp.RequestHandler):
   
         #with all off the words 
         strColumn1 = self.generateCheckBox(name="ch_all_words", text="with all of the words:")
-        strColumn2 = self.generateTextBox( inner_text = s_params.all_words, name = "all_words" )
+        strColumn2 = self.generateTextBox( inner_text = s_params.keywords, name = "all_words" )
         strBody += self.generateTableLine(strColumn1, strColumn2)
           
         

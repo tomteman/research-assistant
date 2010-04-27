@@ -7,7 +7,6 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from google.appengine.ext.webapp import template
-from bibtexParser import parser
                             #local imports
 import GeneralFuncs
 #import FollowForm
@@ -30,7 +29,7 @@ class MainPage(webapp.RequestHandler):
           <head><title>Research Assistant</title></head>
           <body>
           """)
-                                #set up the html stuff
+#set up the html stuff
         self.response.out.write("""
         <form action="/search" method="post">
                 <div><textarea name="SearchTerm" rows="1" cols="60"></textarea></div>
@@ -51,31 +50,27 @@ class SearchResultsPage(webapp.RequestHandler):
         """)
                 
         keyword = self.request.get('SearchTerm')
-        search = SearchParams(keyword, "", "", "", "", "", 2, "", "", 2009, "", "1.", "on", "", "1", "", "")
+        search = SearchParams(keyword)
         searchURL = search.constructURL()
-
-        if (not INTERNET):
-            article1 = ArticleData.Article()
-            article2 = ArticleData.Article()
-             
-            results = {"key1": article1, "key2" : article2} 
-        else:
-            #results = GeneralFuncs.url2ArticleDict("http://scholar.google.co.il/scholar?q=stolowicz&hl=en&btnG=Search&as_sdt=2001&as_sdtp=on")
-            results = GeneralFuncs.url2ArticleDict(searchURL)
+        #self.response.out.write(searchURL)
+        #results = GeneralFuncs.url2ArticleDict(searchURL)
+        results = getResultsFromURL(searchURL)
+       
 #        
         for k,v in results.items():
             
            #generate articles html
 
-            title = str(v.get_article_title())
-            year = str(v.get_year())
+            #title = str(v.get_article_title())
+            title = "Article number: " + str(k)
+            year = "2009" # str(v.get_year())
             current_url = "<form action=\"/addFollow/" + title + "/" + year + "\" method=\"get\">"
             
             self.response.out.write(current_url)
             self.response.out.write("""<div name=""")
             self.response.out.write(k)
             self.response.out.write(""">""")
-            
+            # TODO : this link is not correct
             self.response.out.write("""<a href=\"http://scholar.google.com""" + v.get_citations_url() +"\">")
             self.response.out.write("""<b>Title:</b>""" + title + "</a></div>""")
                         

@@ -1,48 +1,31 @@
-#
-# keywords: q=
-# number of results: num=10,
-# exact phrase: as_epq="",
-# at least one of the words: as_oq="",
-# within the words: as_eq="",
-# where the words occur:  as_occt = any/title,
-# author: as_sauthors="",
-# publication: as_publication="",
-# since year: as_ylo="",
-# till year: as_yhi="",
-# as_sdt=
-#    Search articles in all subject areas: as_sdt= "1."
-#          including patents: as_sdtp="on",
-#    Search only articles in the following subject areas: as_sdt= "1" + 
-#          subjects: as_subj= bio /med /bus /phy /chm /soc /eng (or &)
-#    Search all legal opinions and journals.  as_sdt=  "2"
-#    Search only US federal court opinions. as_sdt= "3"                        
-#    Search only court opinions from the following states:   as_sdt = "4", + states = as_stds = "1" / "51"
-# including citation as_vis=0 / at least summaries as_vis=1
-# btnG=Search+Scholar",
-# hl="en"
-#
-#
-# citations: "cites":
-#
-# start
+
 
 class SearchParams:
+    """
+    search parameters:
+        pass any specified parameter in form: parametr_name = "value"
+        example:
+        user specified keywords = "matrix": param = SearchParams(keywords = "matrix" )
+        user specified exact_phrase = "matrix multiplication" and number of results = 20: 
+                param = SearchParams(exact_phrase = "matrix multiplication", num_of_results = 20)
+              
+    """
     def __init__(self,
                  keywords = "",               #search keywords
-                 all_words = "",       #all of the the words 
                  exact_phrase = "",           #search for exact keywords 
                  one_of_the_words = "",       #search for at least one word
                  within_the_words = "",       #search within the words
                  occurence = "any",           #where the words occur: any/title 
                  num_of_results = 10,         #number of results per page
                  author = "",                 #author              
-                 journal = "",                #publication
-                 year_start = "",             #articles since
-                 year_finish = "",            #articles till   
+                 journal = "",                #articles published in journal
+                 year_start = "",             #articles published since
+                 year_finish = "",            #articles published till   
                  search_domain = "1.",        #Search in all subject areas: as_sdt= "1."
                                               #Search articles in the subject areas: as_sdt= "1" + subjects
                  include_patents = "on",      
-                 subjects ="",                #string bio /med /bus /phy /chm /soc /eng (or  " bio med bus")
+                 subjects = "",               #works only if search_domain = "1"
+                                              #string bio /med /bus /phy /chm /soc /eng (or  " bio med bus")
                  no_citation = "1",           #1=at least summaries 0=include citations      
             
                  start_from = 0,              #start from # result
@@ -50,7 +33,6 @@ class SearchParams:
                  ):
         
         self.keywords = keywords
-        self.all_words = all_words
         self.exact_phrase = exact_phrase   
         self.one_of_the_words = one_of_the_words 
         self.within_the_words = within_the_words
@@ -81,7 +63,7 @@ class SearchParams:
             
         url = "http://scholar.google.com/scholar?"
             
-        urlParametrs = {"q":self.keywords, "as_q":self.all_words, "num":self.num_of_results,
+        urlParametrs = {"as_q":self.keywords, "num":self.num_of_results,
                         "as_epq":self.exact_phrase, "as_oq":self.one_of_the_words, "as_eq":self.within_the_words,
                         "as_occt":self.occurence,"as_sauthors":self.author, "as_publication":self.journal,
                         "as_ylo":self.year_start,"as_yhi":self.year_finish,"as_sdt": self.search_domain,
@@ -96,9 +78,11 @@ class SearchParams:
         #add cites=# if the search is within articles citing #
         if self.cites != None:
             urlParametrs.update({"cites":self.cites})           
+        
                         
+             
         url += "&".join(["%s=%s" % (k, v) for k, v in urlParametrs.items()])
           
         return url
-     
+        
     

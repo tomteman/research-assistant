@@ -55,7 +55,7 @@ class HTMLparser:
     # BibTexDataFlag = FALSE -> get results without BibTex Data
     # Default - TRUE (with BibTex Data)
     
-    def parseHTML(self, BibTexDataFlag=1):           
+    def parseHTML(self, BibTexDataFlag):           
         # remove everything prior to the results
         tmp = self.html.find(">Results")
         sandboxHTML = self.html[tmp:]
@@ -186,7 +186,7 @@ def parseBibTexItems(bibtexID):
 # BibTexDataFlag = FALSE -> get results without BibTex Data
 # Default - TRUE (with BibTex Data)    
     
-def getResultsFromURL(url, BibTexDataFlag=1):
+def getResultsFromURL(url, BibTexDataFlag=False):
     # first we fetch the HTML from Google Scholar
     newHTML = getHTML(url)
     newHTML.getHTMLfromURL()
