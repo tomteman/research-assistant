@@ -129,7 +129,9 @@ def getGoogleScholarLinks(sandboxHTML, position, newArticle):
         if ("/scholar?cites" == sandboxHTML[position:position+len("/scholar?cites")]):
             tmp = sandboxHTML.find("\"",position+1)
             articleCITATIONS = sandboxHTML[position:tmp]
-            newArticle.set_citations_url(articleCITATIONS)
+            CitationsID = getCitationsIDfromURL(articleCITATIONS)
+            newArticle.set_citations_ID(CitationsID)
+            newArticle.set_citations_url(createCitationsURL(CitationsID))
             position = tmp
             sandboxHTML = sandboxHTML[position:]
             lastPosition += position
@@ -139,7 +141,9 @@ def getGoogleScholarLinks(sandboxHTML, position, newArticle):
         elif ("/scholar?q=related" == sandboxHTML[position:position+len("/scholar?q=related")]):
             tmp = sandboxHTML.find("\"",position+1)
             articleRELATED = sandboxHTML[position:tmp]
-            newArticle.set_related_articles_url(articleRELATED)
+            RelatedArticlesID = getCitationsIDfromURL(articleRELATED)
+            newArticle.set_related_articls_ID(RelatedArticlesID)
+            newArticle.set_related_articles_url(createRelatedArticlesURL(RelatedArticlesID))
             position = tmp
             sandboxHTML = sandboxHTML[position:]
             lastPosition += position
@@ -149,6 +153,8 @@ def getGoogleScholarLinks(sandboxHTML, position, newArticle):
             URLend = sandboxHTML.find("\"",position+1)
             URLstart = sandboxHTML.rfind("\"", 0, URLend)
             articleCACHE = sandboxHTML[URLstart+1:URLend]
+            CacheID = getCacheIDfromURL(articleCACHE)
+            newArticle.set_cache_ID(CacheID)
             newArticle.set_cache_url(articleCACHE)
             position = URLend
             sandboxHTML = sandboxHTML[position:]
@@ -160,7 +166,9 @@ def getGoogleScholarLinks(sandboxHTML, position, newArticle):
         elif ("/scholar?cluster" == sandboxHTML[position:position+len("/scholar?cluster")]):
             tmp = sandboxHTML.find("\"",position+1)
             articleVERSIONS = sandboxHTML[position:tmp]
-            newArticle.set_all_versions_url(articleVERSIONS)
+            AllVersionsID = getAllVersionsIDfromURL(articleVERSIONS)
+            newArticle.set_all_versions_ID(AllVersionsID)
+            newArticle.set_all_versions_url(createAllVersionsURL(AllVersionsID))
             position = tmp
             sandboxHTML = sandboxHTML[position:]
             lastPosition += position
@@ -171,9 +179,7 @@ def getGoogleScholarLinks(sandboxHTML, position, newArticle):
             tmp = sandboxHTML.find("\"",position+1)
             articleBIBTEX = sandboxHTML[position:tmp]    
             bibtexID = getBibTexIDfromURL(articleBIBTEX)
-            # save the BibTex ID to the new article entry
             newArticle.set_key(bibtexID)
-            # save the BibTex URL to the new article entry
             newArticle.set_bib_tex_url(createBibTexURL(bibtexID))
             
             position = tmp 
@@ -198,14 +204,16 @@ def isEndOfPage(sandboxHTML, position):
 # checks if there are no more links for this article
 def isEndOfArticleLinks(sandboxHTML, position):
     # check if indication for end of results for current article appears before indication for next article/citation:
-    
+    googleLinks = sandboxHTML.find("class=gs_fl", position)
     if (
-    # check if the beginning of HTML data appears before another article title+link (regular scenario)
-        ((((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=yC", position))
-          and (sandboxHTML.find("class=yC", position) != -1))
-    # or if the beginning of HTML data appears before a [CITATION] without a link        
-        or (((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=gs_ctu", position))
-        and (sandboxHTML.find("class=gs_ctu", position) != -1)))
+        
+        ((sandboxHTML.rfind("class=yC", 0, googleLinks) == -1) and (sandboxHTML.rfind("class=gs_ctu", 0, googleLinks) == -1)) 
+#    # check if the beginning of HTML data appears before another article title+link (regular scenario)
+#        ((((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=yC", position))
+#          and (sandboxHTML.find("class=yC", position) != -1))
+#    # or if the beginning of HTML data appears before a [CITATION] without a link        
+#        or (((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=gs_ctu", position))
+#        and (sandboxHTML.find("class=gs_ctu", position) != -1)))
     
     # in case this is one article before the last one, and the last one is a citation:
     # there will be no more "class=yC"
@@ -255,7 +263,7 @@ def isLastArticle(sandboxHTML, position):
 
 def findNextLinkOrCitation(sandboxHTML, position):
     withLink = sandboxHTML.find("class=yC", position)
-    withoutLink = sandboxHTML.find("[CITATION]", position)
+    withoutLink = sandboxHTML.find("gs_ctu", position)
     
     if ((withLink == -1) and (withoutLink == -1)):
         print "ERROR - supposed to find another article (isEndOfPage == False), but can't"
@@ -296,7 +304,7 @@ def parseURLandTitleSurroundingTag(sandboxHTML, position, isCitation):
     if (not isCitation):
         # parse title
         titleStart = (sandboxHTML.find(">",position) + 1)
-        titleEnd = sandboxHTML.find("<", titleStart)
+        titleEnd = sandboxHTML.find("</a>", titleStart)
         results.set_article_title(sandboxHTML[titleStart:titleEnd])
         #parse URL
         
@@ -320,7 +328,7 @@ def parseURLandTitleSurroundingTag(sandboxHTML, position, isCitation):
         if (hasLink == -1):
             titleStart = sandboxHTML.find("</span>", position)
             titleEnd = sandboxHTML.find("</h3>", titleStart)
-            results.set_article_title(sandboxHTML[titleStart+len("</span> "):titleEnd-1])
+            results.set_article_title(sandboxHTML[titleStart+len("</span> "):titleEnd])
             results.set_article_url("")
             
             results.set_has_link(False) 
@@ -332,9 +340,38 @@ def getBibTexIDfromURL(url):
     finish = url.find(":", start+1)
     return url[start+1:finish]
 
+def getCitationsIDfromURL(url):
+    start = url.find("cites=")
+    finish = url.find("&", start)
+    return url[start+len("cites="):finish]
+
+def getRelatedArticlesIDfromURL(url):
+    start = url.find("related:")
+    finish = url.find(":", start+len("related:")+1)
+    return url[start+len("related:")+1:finish]
+
+def getAllVersionsIDfromURL(url):
+    start = url.find("cluster=")
+    finish = url.find("&", start)
+    return url[start+len("cluster="):finish]
+
+def getCacheIDfromURL(url):
+    start = url.find("cache:")
+    finish = url.find(":", start+len("cache:")+1)
+    return url[start+len("cache:")+1:finish]
+
+
 def createBibTexURL(bibtexID):
     return "http://scholar.google.com/scholar.bib?q=info:" + str(bibtexID) + ":scholar.google.com/&output=citation&hl=en&as_sdt=2000&ct=citation&cd=0"
-    
+
+def createCitationsURL(CitationsID):
+    return "http://scholar.google.com/scholar?cites=" + str(CitationsID) + "&hl=en&num=10&as_sdt=2000"
+
+def createRelatedArticlesURL(RelatedArticlesID):
+    return "http://scholar.google.com/scholar?q=related:" + str(RelatedArticlesID) + ":scholar.google.com/&hl=en&num=10&as_sdt=2000"
+
+def createAllVersionsURL(AllVersionsID):
+    return "http://scholar.google.com/scholar?cluster=" + str(AllVersionsID) + "&hl=en&num=10&as_sdt=2000"    
 
 def parseBibTexItems(bibtexID):
     # get the BibTex HTML

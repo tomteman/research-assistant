@@ -4,15 +4,20 @@ from getHTML import getHTML
 class ArticleData:
     def __init__(self):
         self.key = ""
-        self.HTML_urlList = [] # list of ArticleURLandTitle objects
         self.BibTexURL = ""
+        self.HTML_urlList = [] # list of ArticleURLandTitle objects
+        self.HTML_author_year_pub = ""
+        self.HTML_abstract = ""   
         self.BibTex_dict = {}
         self.citationsURL = ""
+        self.citationsID = ""
         self.related_articlesURL = ""
+        self.related_articlesID = ""
         self.all_versionsURL = ""
+        self.all_versionsID = ""
         self.cacheURL = ""
-        self.HTML_author_year_pub = ""
-        self.HTML_abstract = ""
+        self.cacheID = ""
+
         
 
     def get_key(self):
@@ -41,6 +46,9 @@ class ArticleData:
     def get_all_versions_url(self):
         return self.all_versionsURL
     
+    def get_cache_url(self):
+        return self.cacheURL
+    
     
     def get_HTML_author_year_pub(self):
         return self.HTML_author_year_pub
@@ -49,6 +57,9 @@ class ArticleData:
     def get_HTML_abstract(self):
         return self.HTML_abstract
     
+    # this function returns the first title in HTML_urlList
+    def get_article_name(self):
+        return self.HTML_urlList[0].get_article_title()
     
     def set_key(self, value):
         self.key = value
@@ -68,19 +79,32 @@ class ArticleData:
 
     def set_citations_url(self, value):
         self.citationsURL = value
+        
+    def set_citations_ID(self, value):
+        self.citationsID = value
 
 
     def set_related_articles_url(self, value):
         self.related_articlesURL = value
+        
+    def set_related_articls_ID(self, value):
+        self.related_articlesID = value
 
 
     def set_all_versions_url(self, value):
         self.all_versionsURL = value
         
+    def set_all_versions_ID(self, value):
+        self.all_versionsID = value
+        
+        
     def set_cache_url(self, value):
         self.cacheURL = value
     
+    def set_cache_ID(self, value):
+        self.cacheID = value
     
+        
     def set_HTML_author_year_pub(self, value):
         self.HTML_author_year_pub = value
     
@@ -120,114 +144,114 @@ class ArticleData:
     # volume: The volume of a journal or multi-volume book
     # year: The year of publication (or, if unpublished, the year of creation)
  
-    def get_article_title(self):
+    def get_BIBTEX_article_title(self):
         return self.get_field_name("title")
  
  
-    def get_address(self):
+    def get_BIBTEX_address(self):
         return self.get_field_name("address")
 
 
-    def get_annote(self):
+    def get_BIBTEX_annote(self):
         return self.get_field_name("annote")
 
 
-    def get_author(self):
+    def get_BIBTEX_author(self):
         return self.get_field_name("author")
 
 
-    def get_booktitle(self):
+    def get_BIBTEX_booktitle(self):
         return self.get_field_name("booktitle")
 
 
-    def get_chapter(self):
+    def get_BIBTEX_chapter(self):
         return self.get_field_name("chapter")
 
 
-    def get_crossref(self):
+    def get_BIBTEX_crossref(self):
         return self.get_field_name("crossref")
 
 
-    def get_edition(self):
+    def get_BIBTEX_edition(self):
         return self.get_field_name("edition")
 
 
-    def get_editor(self):
+    def get_BIBTEX_editor(self):
         return self.get_field_name("editor")
 
 
-    def get_eprint(self):
+    def get_BIBTEX_eprint(self):
         return self.get_field_name("eprint")
 
 
-    def get_howpublished(self):
+    def get_BIBTEX_howpublished(self):
         return self.get_field_name("howpublished")
 
 
-    def get_institution(self):
+    def get_BIBTEX_institution(self):
         return self.get_field_name("institution")
 
 
-    def get_journal(self):
+    def get_BIBTEX_journal(self):
         return self.get_field_name("journal")
 
 
-    def get_bibtex_key(self):
+    def get_BIBTEX_bibtex_key(self):
         return self.BibTex_fields.keys()[0]
 
 
-    def get_month(self):
+    def get_BIBTEX_month(self):
         return self.get_field_name("month")
 
 
-    def get_note(self):
+    def get_BIBTEX_note(self):
         return self.get_field_name("note")
 
 
-    def get_number(self):
+    def get_BIBTEX_number(self):
         return self.get_field_name("number")
 
 
-    def get_organization(self):
+    def get_BIBTEX_organization(self):
         return self.get_field_name("organization")
 
 
-    def get_pages(self):
+    def get_BIBTEX_pages(self):
         return self.get_field_name("pages")
 
 
-    def get_publisher(self):
+    def get_BIBTEX_publisher(self):
         return self.get_field_name("publisher")
 
 
-    def get_school(self):
+    def get_BIBTEX_school(self):
         return self.get_field_name("school")
 
 
-    def get_series(self):
+    def get_BIBTEX_series(self):
         return self.get_field_name("series")
 
 
-    def get_type(self):
+    def get_BIBTEX_type(self):
         return self.get_field_name("type")
 
 
-    def get_url(self):
+    def get_BIBTEX_url(self):
         return self.get_field_name("url")
 
 
-    def get_volume(self):
+    def get_BIBTEX_volume(self):
         return self.get_field_name("volume")
 
 
-    def get_year(self):
+    def get_BIBTEX_year(self):
         return self.get_field_name("year")
     
   
   
- # ----------------- END OF handling BibTex Dictionary Data ----------------------
+# ----------------- END OF handling BibTex Dictionary Data ----------------------
 
- #TODO: change this function to do it nicely and 
+#TODO: change this function to do it nicely and 
     def __str__(self):
         msg =  "key: " + self.get_key() + "\n"
         for articleTitleAndURL in self.get_HTML_urlList():
@@ -238,28 +262,18 @@ class ArticleData:
                 msg = msg + "[CITATION]" + "\n"
         msg = msg +  "Green text: " + self.get_HTML_author_year_pub() + "\n"
         msg = msg +  "Abstract: " + self.get_HTML_abstract() + "\n"
-        msg = msg + "-------------------------------------------------\n"
+        msg = msg +  "-------------------------------------------------------\n"
         msg = msg +  "BibTex URL: " + self.get_bib_tex_url() + "\n"
         msg = msg +  "Citations URL: " + self.get_citations_url() + "\n"
         msg = msg +  "Related Articles URL: " + self.get_related_articles_url() + "\n"
         msg = msg +  "All Versions URL: " + self.get_all_versions_url() + "\n"
-        msg = msg + "==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==\n"
+        msg = msg +  "Cache URL:" + self.get_cache_url() + "\n"
+        msg = msg +  "==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==\n"
         return msg
 
     def addURLto_HTML_urlList(self, url):
         self.HTML_urlList.append(url)
         
-    def printArticle(self):
-        print "key: " + self.key
-        print "BibTex URL: " + self.BibTexURL
-        print "____BibTex Data:____"
-        self.BibTex_data.print_bibtex_items()
-        for url in self.HTML_urlList:
-            print "Article URL: " + url.get_article_url()
-        
-        print "Citations URL: " + self.citationsURL
-        print "Related Articles URL: " + self.related_articlesURL
-        print "All Versions URL: " + self.all_versionsURL
     
     def get_field_name(self, fieldname):
         # if the dictionary is empty - get the values from the BibTexURL (HTML request)
