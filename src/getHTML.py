@@ -32,7 +32,7 @@ class getHTML:
 
     def getHTMLfromURL(self):
         google_id = hashlib.md5(str(random.random())).hexdigest()[:16]
-        HEADERS = {'User-Agent' : 'Mozilla/5.0', 'Cookie' : 'GSP=ID=%s:CF=4' % google_id }
+        HEADERS = {'User-Agent' : 'Firefox/3.6.3', 'Cookie' : 'GSP=ID=%s:CF=4' % google_id }
         request = urllib2.Request(self.url, headers=HEADERS)
         response = urllib2.urlopen(request)
         html = response.read()

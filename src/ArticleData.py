@@ -1,15 +1,19 @@
 from bibtexParser import parser
 from getHTML import getHTML
 
-class Article:
+class ArticleData:
     def __init__(self):
         self.key = ""
+        self.HTML_urlList = [] # list of ArticleURLandTitle objects
         self.BibTexURL = ""
         self.BibTex_dict = {}
-        self.urlList = []
         self.citationsURL = ""
         self.related_articlesURL = ""
         self.all_versionsURL = ""
+        self.cacheURL = ""
+        self.HTML_author_year_pub = ""
+        self.HTML_abstract = ""
+        
 
     def get_key(self):
         return self.key
@@ -22,8 +26,8 @@ class Article:
         return self.BibTex_dict
  
     
-    def get_url_list(self):
-        return self.urlList
+    def get_HTML_urlList(self):
+        return self.HTML_urlList
 
 
     def get_citations_url(self):
@@ -36,8 +40,16 @@ class Article:
     
     def get_all_versions_url(self):
         return self.all_versionsURL
-
-
+    
+    
+    def get_HTML_author_year_pub(self):
+        return self.HTML_author_year_pub
+    
+    
+    def get_HTML_abstract(self):
+        return self.HTML_abstract
+    
+    
     def set_key(self, value):
         self.key = value
         
@@ -50,8 +62,8 @@ class Article:
         self.BibTex_dict = value
 
 
-    def set_url_list(self, value):
-        self.urlList = value
+    def set_HTML_urlList(self, value):
+        self.HTML_urlList = value
 
 
     def set_citations_url(self, value):
@@ -64,8 +76,22 @@ class Article:
 
     def set_all_versions_url(self, value):
         self.all_versionsURL = value
+        
+    def set_cache_url(self, value):
+        self.cacheURL = value
+    
+    
+    def set_HTML_author_year_pub(self, value):
+        self.HTML_author_year_pub = value
+    
+    
+    def set_HTML_abstract(self, value):
+        self.HTML_abstract = value
+        
+    def add_item_to_HTML_urlList(self, value):
+        self.HTML_urlList.append(value)
 
- # ----------------- handling BibTex Dictionary Data ----------------------
+# ----------------- handling BibTex Dictionary Data ----------------------
  
     # bibtex_key: A hidden field used for specifying or overriding the alphabetical order of entries (when the "author" and "editor" fields are missing). Note that this is very different from the key (mentioned just after this list) that is used to cite or cross-reference the entry.
     # address: Publisher's address (usually just the city, but can be the full address for lesser-known publishers)
@@ -201,49 +227,43 @@ class Article:
   
  # ----------------- END OF handling BibTex Dictionary Data ----------------------
 
-# TODO: change this function to do it nicely and 
+ #TODO: change this function to do it nicely and 
     def __str__(self):
-        msg =  "key: " + self.key + "\n"
-        msg = msg +  "Article title: " + self.get_article_title() + "\n"
-        msg = msg +  "Year: " + self.get_year() + "\n"
-        msg = msg +  "Author\s: " 
-        authors = self.get_author()
-        if type(authors).__name__ == 'list':
-            for author in authors:
-                msg = msg + author + " ;"
-        else:
-            msg = msg + authors
-        
-        msg = msg + "\n"        
-        msg = msg +  "URL: "
-        URLs = self.get_url_list()
-        for URL in URLs:
-            msg = msg + URL + "\n" 
-        msg = msg +  "BibTex URL: " + self.BibTexURL + "\n"
-        msg = msg +  "Citations URL: " + self.citationsURL + "\n"
-        msg = msg +  "Related Articles URL: " + self.related_articlesURL + "\n"
-        msg = msg +  "All Versions URL: " + self.all_versionsURL + "\n"
+        msg =  "key: " + self.get_key() + "\n"
+        for articleTitleAndURL in self.get_HTML_urlList():
+            msg = msg +  "Article title: " + articleTitleAndURL.get_article_title() + "\n"
+            if articleTitleAndURL.get_has_link():
+                msg = msg + "Article URL: " + articleTitleAndURL.get_article_url() + "\n"
+            else:
+                msg = msg + "[CITATION]" + "\n"
+        msg = msg +  "Green text: " + self.get_HTML_author_year_pub() + "\n"
+        msg = msg +  "BibTex URL: " + self.get_bib_tex_url() + "\n"
+        msg = msg +  "Citations URL: " + self.get_citations_url() + "\n"
+        msg = msg +  "Related Articles URL: " + self.get_related_articles_url() + "\n"
+        msg = msg +  "All Versions URL: " + self.get_all_versions_url() + "\n"
         return msg
 
-    def addURLto_urlList(self, url):
-        self.urlList.append(url)
+    def addURLto_HTML_urlList(self, url):
+        self.HTML_urlList.append(url)
         
     def printArticle(self):
         print "key: " + self.key
         print "BibTex URL: " + self.BibTexURL
         print "____BibTex Data:____"
         self.BibTex_data.print_bibtex_items()
-        for url in self.urlList:
-            print "Article URL: " + url
+        for url in self.HTML_urlList:
+            print "Article URL: " + url.get_article_url()
         
         print "Citations URL: " + self.citationsURL
         print "Related Articles URL: " + self.related_articlesURL
         print "All Versions URL: " + self.all_versionsURL
     
     def get_field_name(self, fieldname):
+        # if the dictionary is empty - get the values from the BibTexURL (HTML request)
         if (len(self.BibTex_dict)) == 0:
             self.BibTex_dict = parseBibTexItems(self.key)
         values = self.BibTex_dict.values()[0]
+        #return the value of the requested fieldname
         return values.get(fieldname)
         
 def parseBibTexItems(bibtexID):
