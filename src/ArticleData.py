@@ -237,10 +237,13 @@ class ArticleData:
             else:
                 msg = msg + "[CITATION]" + "\n"
         msg = msg +  "Green text: " + self.get_HTML_author_year_pub() + "\n"
+        msg = msg +  "Abstract: " + self.get_HTML_abstract() + "\n"
+        msg = msg + "-------------------------------------------------\n"
         msg = msg +  "BibTex URL: " + self.get_bib_tex_url() + "\n"
         msg = msg +  "Citations URL: " + self.get_citations_url() + "\n"
         msg = msg +  "Related Articles URL: " + self.get_related_articles_url() + "\n"
         msg = msg +  "All Versions URL: " + self.get_all_versions_url() + "\n"
+        msg = msg + "==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==\n"
         return msg
 
     def addURLto_HTML_urlList(self, url):

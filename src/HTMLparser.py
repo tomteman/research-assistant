@@ -201,11 +201,11 @@ def isEndOfArticleLinks(sandboxHTML, position):
     
     if (
     # check if the beginning of HTML data appears before another article title+link (regular scenario)
-        (((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=yC", position))
-          and (sandboxHTML.find("class=yC", position) != -1)
+        ((((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=yC", position))
+          and (sandboxHTML.find("class=yC", position) != -1))
     # or if the beginning of HTML data appears before a [CITATION] without a link        
         or (((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=gs_ctu", position))
-        and sandboxHTML.find("class=gs_ctu", position) != -1))
+        and (sandboxHTML.find("class=gs_ctu", position) != -1)))
     
     # in case this is one article before the last one, and the last one is a citation:
     # there will be no more "class=yC"
@@ -215,10 +215,10 @@ def isEndOfArticleLinks(sandboxHTML, position):
     # in case this is the last article
     or ((isLastArticle(sandboxHTML, position)) and
         # and it has a link (also make sure it's not a citation)
-        (((sandboxHTML.find("class=gs_a", position) < sandboxHTML.find("class=yC", position))
+        ((((sandboxHTML.find("class=gs_a", position) < sandboxHTML.find("class=yC", position))
           and sandboxHTML.find("class=yC", position) != -1)
         # or it's the last citation
-        or ((sandboxHTML.find("class=yC", position) == -1) and (sandboxHTML.find("[CITATION]", position) == -1))))
+        or ((sandboxHTML.find("class=yC", position) == -1) and (sandboxHTML.find("[CITATION]", position) == -1)))))
     ):      
         return True
     else:
@@ -229,7 +229,7 @@ def isOneArticleBeforeLast(sandboxHTML, position):
     occurence2 = sandboxHTML.find("/scholar.bib", occurence1+len("/scholar.bib"))
     occurence3 = sandboxHTML.find("/scholar.bib", occurence2+len("/scholar.bib"))
     
-    # at least 2 more bibtex links
+    # only 2 more bibtex links
     if ((occurence1 > 0) and (occurence2 > 0) and (occurence3 == -1)):
         return True
     else:
