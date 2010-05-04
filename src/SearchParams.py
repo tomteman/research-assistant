@@ -1,4 +1,4 @@
-
+import urllib
 
 class SearchParams:
     """
@@ -32,14 +32,14 @@ class SearchParams:
                  cites = None                 #search within articles citing "#"                 
                  ):
         
-        self.keywords = keywords
-        self.exact_phrase = exact_phrase   
-        self.one_of_the_words = one_of_the_words 
-        self.within_the_words = within_the_words
+        self.keywords = urllib.quote_plus(keywords)
+        self.exact_phrase = urllib.quote_plus(exact_phrase)   
+        self.one_of_the_words = urllib.quote_plus(one_of_the_words) 
+        self.within_the_words = urllib.quote_plus(within_the_words)
         self.occurence = occurence
         self.num_of_results = num_of_results              
-        self.author = author                              
-        self.journal = journal
+        self.author = urllib.quote_plus(author)                              
+        self.journal = urllib.quote_plus(journal)
         self.year_start = year_start            
         self.year_finish = year_finish                       
         self.search_domain = search_domain                                                        
@@ -84,5 +84,4 @@ class SearchParams:
         url += "&".join(["%s=%s" % (k, v) for k, v in urlParametrs.items()])
           
         return url
-        
     
