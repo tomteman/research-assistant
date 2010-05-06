@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+{% comment %} This is the basic template for our website {% endcomment  %}
+<html>
+	<head>
+		<title>
+{% comment %} A replaceable block for putting different titles on different pages {% endcomment  %}
+			
+			{% block title %}
+				Research Assistant
+			{% endblock %}
+		</title>
+
+ 		<style type="text/css">
+            @import "/static/style.css";
+        </style>
+	</head>
+
+
+	<body>
+	<hr />	
+		<div id="wrapper">
+			<div id="logo">
+				<h1>Research Assistant</h1>
+				<p><em>__ooo___</em></p>
+			</div>
+		<hr />
+		<!-- end #logo -->
+		<div id="header">
+			<div id="search">
+				<form method="post" action={{formAction}}>
+					<fieldset>
+					<input type="text" name="SearchTerm" id="search-text" size="15" />
+					<input type="submit" id="search-submit" value="Search" />
+					</fieldset>
+
+				</form>
+			</div>
+			<!-- end #search -->
+		
+			<div id="menu">
+				<ul>
+				<li><a href="/home" class="first">Home</a></li>
+				<li><a href="#">Photos</a></li>
+				<li><a href="/About">About</a></li>
+				<li><a href="#">Links</a></li>
+				<li><a href="#">Contact</a></li>
+				</ul>
+			</div>
+			<!-- end #menu -->
+		
+		</div>
+		<!-- end #header -->
+		<!-- end #header-wrapper -->
+
+		<div id="page">
+		<div id="page-bgtop">
+			<div id="content">
+{% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
+				{% block contents %}
+						
+				
+				
+				{% endblock %}
+			</div>
+			<!-- end #content -->
+			
+		<div style="clear: both;">&nbsp;</div>
+			
+		</div>
+		<!-- end #bgtop -->
+		</div>
+		<!-- end #page -->
+		
+		<div id="footer">
+			<p>Powered by <b>Idiots</b>.<br>for support call Ohad or Misha</p>
+			
+		</div>
+		<!-- end #footer -->
+
+			
+</body>
+</html>
+
+
+
+		
+		

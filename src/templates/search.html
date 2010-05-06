@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% comment %} This is the template for displaying search results {% endcomment  %}
+
+{% block title %}
+	search			
+{% endblock %}
+
+
+{% block contents %} 
+
+{% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
+	
+	{% for result in results %}
+		<div id={{result.get_key}} class="Article">
+		{% for HTML_url in result.HTML_urlList %}
+			{% if HTML_url.get_has_link %}
+				<a href= {{HTML_url.get_article_url}}> {{HTML_url.get_article_title}} </a>
+					
+			{% else %}
+				 {{HTML_url.get_article_title}}
+			{% endif %}
+		{% endfor %}
+		<br/>		
+		<span class = "AuthorYearPub">	
+			{{result.get_HTML_author_year_pub}}
+		</span>
+		<span class = "Abstract">
+			{{result.get_HTML_abstract}}	
+		</span>
+		<a href= {{result.get_citations_url}}>Cited By</a> - 
+		<a href= {{result.get_related_articles_url}}> Related Articles</a> - 
+		<a href= {{result.get_all_versions_url}}> All Versions</a> - 
+		<a href= {{result.get_bib_tex_url}}>Import into BibTex</a>	
+			<form method="post" action={{formAction}}>
+				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
+				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
+				
+{% comment %} extra hidden fields for autocompletion in "addFollow"
+				<input type="hidden" name="Article" value ="{{result.}}"/>
+				<input type="hidden" name="Article" value ="{{result.}}"/>
+				<input type="hidden" name="Article" value ="{{result.}}"/>
+				<input type="hidden" name="Article" value ="{{result.}}"/>
+{% endcomment  %}
+				<input type="submit" value="addFollow" />
+ 
+			</form>
+		</div>
+	{% endfor %}
+	<a href="/Search">Back</a>
+	<a href="/Search">Next</a>
+{% endblock %}
+
+
+
+       

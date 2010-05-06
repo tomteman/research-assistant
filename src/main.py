@@ -1,102 +1,98 @@
-import cgi
+#import cgi
+#from google.appengine.ext.webapp import template
+#from google.appengine.ext import db
+#import GeneralFuncs
+#from getHTML import *
+#import string
+#import ArticleData
+#from ArticleData import Article
+#from string import Template
+
 import os
 
-from google.appengine.ext.webapp import template
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-                            #local imports
-import GeneralFuncs
-#import FollowForm
-from FollowForm import  *
-from getHTML import *
-from SearchParams import *
-from HTMLparser import *
-import string
 
-import ArticleData
-from ArticleData import Article
+#local imports
+
+from FollowForm import AddFollow
+from FollowFormDone import FollowFormDone 
+from SearchParams import *
+from HTMLparser import getResultsFromURL
+
+from django.template import Context
+from django.conf import settings 
+from django.template.loader import get_template
+
+# Django settings configuration : currently for setting the templates directory
+settings._target = None
+ROOT_PATH = os.path.dirname(__file__)
+settings.configure(DEBUG=True, TEMPLATE_DEBUG=True,TEMPLATE_DIRS=[ROOT_PATH+'/templates'])
 
 INTERNET = True
 
 class MainPage(webapp.RequestHandler):
-    def get(self):   
-        
-        self.response.out.write("""
-          <html>
-          <head><title>Research Assistant</title></head>
-          <body>
-          """)
-#set up the html stuff
-        self.response.out.write("""
-        <form action="/search" method="post">
-                <div><textarea name="SearchTerm" rows="1" cols="60"></textarea></div>
-                <div><input type="submit" value="Search"></div>
-                </form>
-            </body></html>
-        """)
+#create the main page for the application.
+#TODOs: 
+#       2. add sign in button.
+    
+    def get(self):
+#       load the basic template 
+        t = get_template('index.html')
+#       add custom content
+#TODO: Define default values/ required fields. 
+        c = Context()
+        c['login'] = users.create_login_url(self.request.uri)
+        c['formAction'] = '/Search'
+#       show it to the world!!!
+        self.response.out.write(t.render(c))
 
 
     
-class SearchResultsPage(webapp.RequestHandler):
+class Search(webapp.RequestHandler):
+#Create the search results page
+#TODO: 1.add next and previous buttons + page numbers in between
+#      2.make sure user is signed in on 'addFollow' button
     def post(self):
-        
-        self.response.out.write(""" 
-            <html>
-            <head><title>Search Results</title></head>
-            <body>
-        """)
-                
+                     
         keyword = self.request.get('SearchTerm')
         search = SearchParams(keyword)
-        searchURL = search.constructURL()
-        #self.response.out.write(searchURL)
-        #results = GeneralFuncs.url2ArticleDict(searchURL)
-        results = getResultsFromURL(searchURL)
-       
+#        if self.request.get.has_key('back'):
+#            search.start_from -= 10
+#        if self.request.get.has_key('next'):
+#            search.start_from += 10 
 #        
-        for k,v in results.items():
-            
-           #generate articles html
+        searchURL = search.constructURL()
+        
+        parserStruct = getResultsFromURL(searchURL) 
+        results = parserStruct.get_results()
+        t = get_template('search.html')
+        c = Context()
+        c['results'] = results
+        c['formAction'] = '/AddFollow'
+        c['keyword'] = keyword
+        self.response.out.write(t.render(c))
 
-            #title = str(v.get_article_title())
-            title = "Article number: " + str(k)
-            year = "2009" # str(v.get_year())
-            current_url = "<form action=\"/addFollow/" + title + "/" + year + "\" method=\"get\">"
-            
-            self.response.out.write(current_url)
-            self.response.out.write("""<div name=""")
-            self.response.out.write(k)
-            self.response.out.write(""">""")
-            # TODO : this link is not correct
-            self.response.out.write("""<a href=\"http://scholar.google.com""" + v.get_citations_url() +"\">")
-            self.response.out.write("""<b>Title:</b>""" + title + "</a></div>""")
-                        
-            self.response.out.write("""<a href=\"http://scholar.google.com""" + v.get_citations_url() + "\"> Cite <br></a>")
-            self.response.out.write("""<b>Year Published: </b>""" + year + "</a>""")
-            
-            self.response.out.write("""<div><br\><input style="background-color:lightgreen" type="submit" value="Add Follow on this Article"></div></form>""")
-    
-                               # footer html Stuff
-        self.response.out.write("""
-            </body>
-            </html>
-            """)
 
-#class FollowFormDone():
-    
+class About(webapp.RequestHandler):
+#Create the about us page    
+    def get(self):
+        t = get_template('About.html')
+        c = Context()
+        self.response.out.write(t.render(c))
     
     
 
 #----------------------------    Classes end Here   ------------------------
 
-application = webapp.WSGIApplication([('/', MainPage), 
-                                      ('/search', SearchResultsPage)
-                                      ,(r'/addFollow/(.*)/(.*)', FollowForm)
-                                      ,('/FollowFormDone', FollowFormDone)],
-                                     debug=True)
+application = webapp.WSGIApplication([('/', MainPage)
+                                      ,('/Search', Search)
+                                      ,('/AddFollow', AddFollow)
+                                      ,('/FollowFormDone', FollowFormDone)
+                                      ,('/About',About)],
+                                      debug=True)
 
 def main():
     run_wsgi_app(application)

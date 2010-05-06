@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+	{% block contents %}
+
+
+	<div id="form">
+	
+		<h1><a>Add New Follow</a></h1>
+		<form id="newFollow" class="appnitro"  action={{formAction}} method="post">
+					
+		<dl >
+			
+	<!---follow name --->		
+		<dt >
+			<label class="description"> Name new follow </label>
+	
+				<input name="follow_name"  type="text" maxlength="255" value="{{followName}}" /> 
+			
+		</dt>
+			
+	<!---end follow name --->	
+	
+	
+	<!-- notify on --->
+		<dt id="followDefinitions" >	
+		<label class="description" for="followDefinitions">Notify me on new article </label>
+		<dl>
+		<span>
+			<table>		
+				<tr>
+					<td >
+						<input id="element_4_1" name="ch_citing"  checked="checked" type="checkbox" value="on" />
+						<label class="choice" for="element_4_1" >Citing </label>
+						</td>
+						<td>
+					
+						<select class="element select medium"  name="article"> 
+							<option value="1"  selected="selected"> {{articleName}} </option>
+							<!----TODO TAGGED ARTICLE ----->
+
+						</select>					
+					</td>
+				</tr>
+				
+				<tr>
+					<td>			
+						<input id="element_4_2" name="ch_keywords" class="element checkbox" type="checkbox" value="1" />
+						<label class="choice" for="element_4_2">with keywords</label>
+					</td>
+					<td class="textbox">
+						<input id="element_3" name="keywords" type="text" maxlength="255" value="{{keywords}}">
+					</td>
+				</tr>
+
+				<tr>
+					<td>			
+						<input id="element_4_2" name="ch_author" class="element checkbox" type="checkbox" value="1" />
+						<label class="choice" for="element_4_2">Articles written by</label>
+					</td>
+					<td class="textbox">
+						<input id="element_3" name="author" type="text" maxlength="255" value="{{articleAuthors}}">
+					</td>
+				</tr>
+				<tr>
+					<td>	
+						<input id="element_4_3" name="ch_journal" class="element checkbox" type="checkbox" value="1" />
+						<label class="choice" for="element_4_3">Articles published in</label>
+					</td>
+					<td class="textbox">
+						<input id="element_3" name="journal" type="text" maxlength="255" value="{{articleJournal}}">
+					</td>
+			
+			</table>
+		</span> 	
+		</dl>	
+	</dt>	
+	<!--end notify on --->
+			
+	<!-- frequency --->
+		<dt id="frequency" >
+			<table>		
+				<tr>
+					<label class="description" for="element_2">How often </label>
+					<select class="element select medium" id="element_2" name="update_frequency"> 
+						<option value="1" >Daily</option>
+						<option value="2" selected="selected">Weekly</option>
+						<option value="3" >Mounthly</option>
+
+					</select>
+				</tr>
+			</table>
+		</dt>
+		
+	<!-- end of frequency --->
+					
+	<!-- submit button --->					
+			<dt class="buttons">
+			    <input type="hidden" name="form_id" value="233471" />    
+				<input id="saveForm" class="button_text" type="submit" name="submit" value="Submit" />
+			</dt>
+	<!-- submit button --->			
+	</dl>
+		
+</form>	
+
+
+
+{% endblock %}

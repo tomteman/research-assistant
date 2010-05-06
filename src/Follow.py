@@ -37,7 +37,7 @@ class DBFollow(db.Model):
     url = db.TextProperty()
     
 class Follow:
-    def __init__(self, username, follow_name, search_params, 
+    def __init__(self, username = "", follow_name = "", search_params = "", user_id = "", user = "", user_nickname = "", 
                  update_frequency = "Weekly", max_results_in_update = 10,
                  num_of_updates = 0, num_of_successful_updates = 0,
                  first_created = None, 
@@ -112,7 +112,7 @@ class Follow:
         if (len(old_dict) != 0):
             #new_dict = {}
             new_dict = old_dict.copy()
-            article1 = Article()
+            article1 = ArticleData()
             article1.set_key("new added article")
             new_dict[article1.get_key()] = article1
 
