@@ -2,7 +2,6 @@ from ArticleData import ArticleData
 from getHTML import getHTML
 from bibtexParser import parser
 from ArticleURLandTitle import ArticleURLandTitle
-#import parser
 
 
 
@@ -13,6 +12,10 @@ class HTMLparser:
         self.url = url
         self.html = html
         self.results = {}
+        self.numOfResults = 0
+        self.didYouMeanFlag = False
+        self.didYouMeanHTML = ""
+        self.didYouMeanURL = ""
 
     def get_url(self):
         return self.url
@@ -25,7 +28,18 @@ class HTMLparser:
     def get_results(self):
         return self.results
 
-
+    def get_numOfResults(self):
+        return self.numOfResults
+    
+    def isDidYouMeanFlag(self):
+        return self.didYouMeanFlag
+    
+    def get_didYouMeanHTML(self):
+        return self.didYouMeanHTML
+    
+    def get_didYouMeanURL(self):
+        return self.didYouMeanURL
+    
     def set_url(self, value):
         self.url = value
 
@@ -64,11 +78,26 @@ class HTMLparser:
         sandboxHTML = self.html[position:]
         position = 0
         
+        resultsPosition = sandboxHTML.find("of", position)
+        numOfResultsStart = sandboxHTML.find("<b>", resultsPosition) + 3
+        numOfResultsEnd = sandboxHTML.find("</b>", numOfResultsStart)
+        self.numOfResults = sandboxHTML[numOfResultsStart:numOfResultsEnd]
+        
+        # handle "Did you mean:" scenario
+        didYouMeanPosition = sandboxHTML.find("Did you mean", position)
+        if (didYouMeanPosition > 0):
+            self.didYouMeanFlag = True
+            didYouMeanURLstart = sandboxHTML.find("<a href", didYouMeanPosition)+len("<a href=")+1
+            didYouMeanURLend = sandboxHTML.find("\">", didYouMeanURLstart)
+            self.didYouMeanURL = "http://scholar.google.co.il" + sandboxHTML[didYouMeanURLstart:didYouMeanURLend]
+            
+            didYouMeanHTMLstart = didYouMeanURLend + 2
+            didYouMeanHTMLend = sandboxHTML.find("</a>", didYouMeanHTMLstart)
+            self.didYouMeanHTML = sandboxHTML[didYouMeanHTMLstart:didYouMeanHTMLend]
+        
+        
+        sandboxHTML = sandboxHTML[numOfResultsEnd:]
         articleCounter = 0
-        
-        # TODO: look for DID YOU MEAN?
-        
-        # didYouMean = sandboxHTML.find("Did you mean:")
         
         
         # start parsing the results
@@ -208,25 +237,19 @@ def isEndOfArticleLinks(sandboxHTML, position):
     if (
         
         ((sandboxHTML.rfind("class=yC", 0, googleLinks) == -1) and (sandboxHTML.rfind("class=gs_ctu", 0, googleLinks) == -1)) 
-#    # check if the beginning of HTML data appears before another article title+link (regular scenario)
-#        ((((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=yC", position))
-#          and (sandboxHTML.find("class=yC", position) != -1))
-#    # or if the beginning of HTML data appears before a [CITATION] without a link        
-#        or (((sandboxHTML.find("class=gs_a", position)) < sandboxHTML.find("class=gs_ctu", position))
-#        and (sandboxHTML.find("class=gs_ctu", position) != -1)))
     
     # in case this is one article before the last one, and the last one is a citation:
-    # there will be no more "class=yC"
-    or (isOneArticleBeforeLast(sandboxHTML, position) and (sandboxHTML.find("class=yC", position) == -1))
+    # i.e. there will be no more "class=yC"
+        or (isOneArticleBeforeLast(sandboxHTML, position) and (sandboxHTML.find("class=yC", position) == -1))
 
     
     # in case this is the last article
-    or ((isLastArticle(sandboxHTML, position)) and
+        or ((isLastArticle(sandboxHTML, position)) and
         # and it has a link (also make sure it's not a citation)
-        ((((sandboxHTML.find("class=gs_a", position) < sandboxHTML.find("class=yC", position))
-          and sandboxHTML.find("class=yC", position) != -1)
-        # or it's the last citation
-        or ((sandboxHTML.find("class=yC", position) == -1) and (sandboxHTML.find("[CITATION]", position) == -1)))))
+            ((((sandboxHTML.find("class=gs_a", position) < sandboxHTML.find("class=yC", position))
+               and sandboxHTML.find("class=yC", position) != -1)
+            # or it's the last citation
+            or ((sandboxHTML.find("class=yC", position) == -1) and (sandboxHTML.find("[CITATION]", position) == -1)))))
     ):      
         return True
     else:
@@ -393,12 +416,41 @@ def getResultsFromURL(url):
     newHTML.getHTMLfromURL()
     
     # parse the results
-    newHTMLParser = HTMLparser(url,newHTML.get_html())
-    newHTMLParser.parseHTML()
-    return newHTMLParser.get_results()
+    newHTMLdata = HTMLparser(url,newHTML.get_html())
+    newHTMLdata.parseHTML()
+    
+    return newHTMLdata
     
     
-             
+
+# this function receives a searchParams object and returns ALL results for the query
+# used for creating / updating follows
+def getAllResultsFromURL(searchParams):
+    isFinished = False
+    
+    searchURL = searchParams.constructURL()
+    
+    HTMLdata = getResultsFromURL(searchURL)
+    
+    if HTMLdata.get_numOfResults() <= 100:
+        return HTMLdata.get_results()
+    else:
+        i = 1
+        allResults = HTMLdata.get_results()
+        while (not isFinished):
+            searchParams.updateStartFrom(i*100)
+            searchURL = searchParams.constructURL()
+            HTMLdata = getResultsFromURL(searchURL)
+            currentResults = HTMLdata.get_results()
+            allResults.extend(currentResults)
+            if len(currentResults)<100:
+                isFinished = True
+            i+=1
+        
+        return allResults
+
+            
+                    
     
         
         
