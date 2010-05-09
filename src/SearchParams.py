@@ -13,8 +13,8 @@ class SearchParams:
     def __init__(self,
                  keywords = "",               #search keywords
                  exact_phrase = "",           #search for exact keywords 
-                 one_of_the_words = "",       #search for at least one word
-                 within_the_words = "",       #search within the words
+                 without_the_words = "",       #search within the words
+                 one_of_the_words = "",       #at least one of the words
                  occurence = "any",           #where the words occur: any/title 
                  num_of_results = 10,         #number of results per page
                  author = "",                 #author              
@@ -34,8 +34,8 @@ class SearchParams:
         
         self.keywords = urllib.quote_plus(keywords)
         self.exact_phrase = urllib.quote_plus(exact_phrase)   
-        self.one_of_the_words = urllib.quote_plus(one_of_the_words) 
-        self.within_the_words = urllib.quote_plus(within_the_words)
+        self.without_the_words = urllib.quote_plus(without_the_words)
+        self.one_of_the_words = urllib.quote_plus(one_of_the_words)
         self.occurence = occurence
         self.num_of_results = num_of_results              
         self.author = urllib.quote_plus(author)                              
@@ -64,7 +64,7 @@ class SearchParams:
         url = "http://scholar.google.com/scholar?"
             
         urlParametrs = {"as_q":self.keywords, "num":self.num_of_results,
-                        "as_epq":self.exact_phrase, "as_oq":self.one_of_the_words, "as_eq":self.within_the_words,
+                        "as_epq":self.exact_phrase, "as_oq":self.one_of_the_words, "as_eq":self.without_the_words,
                         "as_occt":self.occurence,"as_sauthors":self.author, "as_publication":self.journal,
                         "as_ylo":self.year_start,"as_yhi":self.year_finish,"as_sdt": self.search_domain,
                         "as_sdtp":self.include_patents, "as_subj":self.subjects, "as_vis":self.no_citation,

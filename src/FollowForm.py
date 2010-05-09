@@ -13,25 +13,24 @@ from ArticleData import ArticleData, parseBibTexItems
        
 class AddFollow(webapp.RequestHandler):
     def post(self):
-        t = get_template('addFollow.html')
-        c = Context()
-        c['Title'] = 'Research-assistant about project'
-      
-        c['formAction'] = "/FollowFormDone"
-
+       
         bibTexKey = self.request.get('bibTexKey')
         bibTex = parseBibTexItems(bibTexKey)
         bibTexData = bibTex.values()[0]
+        
         if bibTexData.has_key('author'):
-            if isinstance(bibTexData['author'], types.ListType ):
-                author = bibTexData['author'][0]
-#TODO:    Handle multiple authors
+                authors = bibTexData['author']
+
         else:
             author = ""
+      
         if bibTexData.has_key('title'):
             title = bibTexData['title'][1:len(bibTexData['title'])-1]
+            if len(title) > 80:
+                title = " ".join(title.split()[0:10]) + "..."
         else: 
             title = ""
+        
         if bibTexData.has_key('journal'):
             journal = bibTexData['journal']
         else: 
@@ -39,14 +38,23 @@ class AddFollow(webapp.RequestHandler):
         
         keywords = self.request.get('SearchTerm')
         
+        t = get_template('addFollow.html')
+        c = Context()
+        c['Title'] = 'Research-assistant about project'
+        c['formDoneAction'] = '/FollowFormDone'
         c['followName'] = "Name Your Follow"
         c['articleName'] = title
-        c['articleAuthors'] = author
+        c['articleAuthors'] = authors
+        c['many_authors'] = isinstance(bibTexData['author'], types.ListType )
+        c['authors'] = authors
         c['articleJournal'] = journal
         c['keywords'] = keywords
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
         
-        
-        #    c['results'] = keyword
         self.response.out.write(t.render(c))   
         
         

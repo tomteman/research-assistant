@@ -2,12 +2,7 @@
 
 
 {% block script %}
-<SCRIPT LANGUAGE="JavaScript" TYPE="TEXT/JAVASCRIPT">
-	function citingMode() {
-		document.ch_journal.disabled=false;
-	}
- 
-</SCRIPT>
+
 
 
 	
@@ -15,15 +10,11 @@
 
 
 	{% block contents %}
-
-
 	<div id="form">
 	
 		<h1><a>Add New Follow</a></h1>
 		<form id="newFollow" class="addFollow"  action={{formDoneAction}} method="post">
-	
-	
-	
+		
 	<!-- notify on --->
 		<div class="description" for="followDefinitions">Notify me on new article </div>
 		<dl>
@@ -31,7 +22,7 @@
 			<table>		
 				<tr>
 					<td >
-						<input  name="ch_citing" type="checkbox" value="on" onchange:"citingMode()" />
+						<input  name="ch_citing" type="checkbox" value="on" />
 						<label class="choice">Citing </label>
 					</td>
 					<td>
@@ -84,7 +75,7 @@
 				</tr>
 				<tr>
 					<td>	
-						<input name="ch_journal" class="element checkbox" type="checkbox" disabled="true" value="1" />
+						<input name="ch_journal" class="element checkbox" type="checkbox" value="1" />
 						<label class="choice" for="element_4_3">Articles published in</label>
 					</td>
 					<td class="textbox">

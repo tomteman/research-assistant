@@ -44,10 +44,14 @@ class MainPage(webapp.RequestHandler):
 #       add custom content
 #TODO: Define default values/ required fields. 
         c = Context()
-        c['login'] = users.create_login_url(self.request.uri)
-        c['formAction'] = '/Search'
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
 #       show it to the world!!!
         self.response.out.write(t.render(c))
+        
 
 
     
@@ -70,6 +74,11 @@ class Search(webapp.RequestHandler):
         results = parserStruct.get_results()
         t = get_template('search.html')
         c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
         c['results'] = results
         c['formAction'] = '/AddFollow'
         c['keyword'] = keyword
@@ -81,7 +90,42 @@ class About(webapp.RequestHandler):
     def get(self):
         t = get_template('About.html')
         c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
+
         self.response.out.write(t.render(c))
+
+class Profile(webapp.RequestHandler):
+#Create the about us page    
+    def get(self):
+        t = get_template('profile.html')
+        c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
+
+        self.response.out.write(t.render(c))
+
+
+class AdvancedSearch(webapp.RequestHandler):
+#Create the about us page    
+    def get(self):
+        t = get_template('advancedSearch.html')
+        c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
+
+        self.response.out.write(t.render(c))        
+        
+        
     
     
 
@@ -91,7 +135,9 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/Search', Search)
                                       ,('/AddFollow', AddFollow)
                                       ,('/FollowFormDone', FollowFormDone)
-                                      ,('/About',About)],
+                                      ,('/About', About)
+                                      ,('/Profile', Profile)
+                                      ,('/AdvancedSearch', AdvancedSearch)],
                                       debug=True)
 
 def main():

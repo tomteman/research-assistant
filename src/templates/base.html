@@ -3,47 +3,64 @@
 <html>
 	<head>
 		<title>
-{% comment %} A replaceable block for putting different titles on different pages {% endcomment  %}
+		{% comment %} A replaceable block for putting different titles on different pages {% endcomment %}
 			
 			{% block title %}
 				Research Assistant
 			{% endblock %}
+		
 		</title>
 
  		<style type="text/css">
             @import "/static/style.css";
         </style>
+        
+        {% block script %}
+        
+        {% endblock %}
 	</head>
 
 
 	<body>
 	<hr />	
 		<div id="wrapper">
+			<div id="wrapper-right">
+				
+				{% if users.get_current_user %}  	
+					loged in as <b> {{users.get_current_user.nickname}} </b> </br>
+					<a href="{{logout}}"> log out</a>
+				{% else %}
+					<a href="{{login}}">sign in</a> -  
+				{% endif %}			
+			</div>	
+			
 			<div id="logo">
-				<h1>Research Assistant</h1>
+				<a href="/"><h1>Research Assistant</h1></a> 
 				<p><em>__ooo___</em></p>
-			</div>
-		<hr />
+			
+		</div>
+				
+			
+	<hr />
 		<!-- end #logo -->
 		<div id="header">
-			<div id="search">
-				<form method="post" action={{formAction}}>
-					<fieldset>
-					<input type="text" name="SearchTerm" id="search-text" size="15" />
-					<input type="submit" id="search-submit" value="Search" />
-					</fieldset>
-
-				</form>
-			</div>
-			<!-- end #search -->
-		
+			{% block search_form %}
+										
+				<div id="search">
+					<form method="post" action="/Search">
+						<fieldset>
+							<input type="text" name="SearchTerm" id="search-text" size="15" />
+							<input type="submit" id="search-submit" value="Search" />
+						</fieldset>
+					</form>
+				</div>
+				<!-- end #search -->
+			{% endblock %}
 			<div id="menu">
 				<ul>
-				<li><a href="/home" class="first">Home</a></li>
-				<li><a href="#">Photos</a></li>
-				<li><a href="/About">About</a></li>
-				<li><a href="#">Links</a></li>
-				<li><a href="#">Contact</a></li>
+				<li><a href="/" >Home</a></li>
+				<li><a href="/Profile">Profile</a></li>
+				<li><a href="/About" class="first">About</a></li>
 				</ul>
 			</div>
 			<!-- end #menu -->

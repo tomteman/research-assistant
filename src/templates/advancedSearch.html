@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+	Research Assistant
+{% endblock %}
+
+
+{% block search_form %}
+
+{% endblock %}
+
+
+{% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
+
+{% block contents %}
+
+	<div id="form">
+	
+		<h3><a>Advanced Search</a></h3>
+		<form id="AdvancedSearch" class="AdvancedSearch"  action="/Search" method="post">
+					
+		<dl >
+			<table>	
+				<tr>
+					<td>
+						<label class="description">	Search Term</label>
+					</td>
+					<td class="textbox">
+						<input name="SearchTerm" type="text" maxlength="255" value="">
+					</td>
+				</tr>	
+				<tr>
+					<td>
+						<label class="description">	with all of the words</label>
+					</td>
+					<td class="textbox">
+						<input name="all_of_the_words" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<label class="description">	with all of the words</label>
+					</td>
+					<td class="textbox">
+						<input name="all_of_the_words" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<label class="description"> with the exact phrase</label>
+					</td>
+					<td class="textbox">
+						<input name="exact_phrase" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<label class="description">	with at least one of the words</label>
+					</td>
+					<td class="textbox">
+						<input name="one_of_the_words" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+			<tr>
+			<td></br></br></td>
+			</tr>
+			
+				<tr>
+					<td>
+						<label class="description">	Return articles written by</label>
+					</td>
+					<td class="textbox">
+						<input name="author" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<label class="description">	Return articles published in</label>
+					</td>
+					<td class="textbox">
+						<input name="journal" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<label class="description">	Return articles published between</label>
+					</td>
+					<td class="textbox">
+						<input name="year_start" type="text" size=7 value="">
+						-
+						<input name="year_finish" type="text" size=7 value="">
+					</td>
+				</tr>
+				
+			</table>	
+				
+		</dl>	
+		<input type="submit" id="search-submit" value="search" /
+		</form>
+		</div>
+	
+	
+		</br>
+		</br>
+		</br>
+		</br>
+			
+				
+	
+{% endblock %}

@@ -1,19 +1,39 @@
 {% extends "base.html" %}
 
 
-
 {% block title %}
 	Research Assistant
 {% endblock %}
 
+
+{% block search_form %}
+
+{% endblock %}
 
 
 
 {% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
 
 {% block contents %}
-<a href="{{login}}">sign in</a> 
-{% comment %}	<iframe src="{{login}}" width="330" height="210"> </iframe> {% endcomment %}
+
+		</br>
+		</br>
+		<div id="search_index">
+			<form method="post" action="/Search">
+				<fieldset>
+					<input type="text" name="SearchTerm" id="search_index_text" size="15" />
+					<input type="submit" id="search_index_submit" value="Search" />
+					</br>
+					<a href="/AdvancedSearch" >Advanced Search</a>
+				</fieldset>
+			</form>	
+		</div>		
 	
+		</br>
+		</br>
+		</br>
+		</br>
+			
+				
 	
 {% endblock %}

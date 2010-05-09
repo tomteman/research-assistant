@@ -37,27 +37,35 @@ class DBFollow(db.Model):
     url = db.TextProperty()
     
 class Follow:
-    def __init__(self, username = "", follow_name = "", search_params = "", user_id = "", user = "", user_nickname = "", 
-                 update_frequency = "Weekly", max_results_in_update = 10,
-                 num_of_updates = 0, num_of_successful_updates = 0,
-                 first_created = None, 
-                 last_updated = None, 
+    def __init__(self, 
+                 user = None, 
+                 user_nickname = None,
+                 user_id = None,
+                 follow_name = None, 
+                 search_params = None, 
+                 update_frequency = "weekly", 
+                 num_of_update_requests = 0, 
+                 num_of_meaningful_updates = 0,
+                 time_first_created = None, # This field is filled in DBFollow when upoaded
+                 time_last_updated = None,  # This field is filled in DBFollow when upoaded
+                 time_last_modified_by_user = None,
+
                  pastResultsKeysList = [], 
                  url = None):
         
-        self.username = username
+        self.user = user
+        self.user_nickname = user_nickname
+        self.user_id = user_id
         self.follow_name = follow_name
         self.search_params = search_params
-        self.last_updated = last_updated #DateTimeProperty
-        #self.pastResultsDict = pastResultsDict
         self.pastResultsKeysList = pastResultsKeysList
-#        self.url = SearchParams.constractUrl(self.search_params)
         self.url = url
         self.update_frequency = update_frequency
-        self.max_results_in_update = max_results_in_update
-        self.num_of_updates = num_of_updates
-        self.num_of_successful_updates = num_of_successful_updates
-        self.first_created = first_created
+        self.num_of_update_requests = num_of_update_requests
+        self.num_of_meaningful_updates = num_of_meaningful_updates
+        self.time_first_created = time_first_created
+        self.time_last_updated = time_last_updated
+        self.time_last_modified_by_user = time_last_modified_by_user
         
 # Getters and Setters
 # TODO - add all necessary
