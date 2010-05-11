@@ -26,10 +26,13 @@ class SearchParams:
                  include_patents = "on",      
                  subjects = "",               #works only if search_domain = "1"
                                               #string bio /med /bus /phy /chm /soc /eng (or  " bio med bus")
-                 no_citation = "1",           #1=at least summaries 0=include citations      
+                 no_citation = "0",           #1=at least summaries 0=include citations      
             
                  start_from = 0,              #start from # result
-                 cites = None                 #search within articles citing "#"                 
+                 cites = None,                #search within articles citing "#"
+                 relatedArticles = None,  #create a relatedArticles link for parsing
+                 allVersions = None,       #create allVersions link for parsing
+                 bibTex = None            # create bibTex link for getHTML                   
                  ):
         
         self.keywords = urllib.quote_plus(keywords)
@@ -48,7 +51,9 @@ class SearchParams:
         self.no_citation = no_citation 
         self.start_from = start_from   
         self.cites = cites 
-        
+        self.relatedArticles = relatedArticles
+        self.allVersions = allVersions
+        self.bibTex = bibTex
                       
     def updateStartFrom(self, start_from):
         self.start_from = start_from    
@@ -62,7 +67,8 @@ class SearchParams:
     def constructURL(self):
             
         url = "http://scholar.google.com/scholar?"
-            
+        
+                        
         urlParametrs = {"as_q":self.keywords, "num":self.num_of_results,
                         "as_epq":self.exact_phrase, "as_oq":self.one_of_the_words, "as_eq":self.without_the_words,
                         "as_occt":self.occurence,"as_sauthors":self.author, "as_publication":self.journal,
@@ -77,11 +83,25 @@ class SearchParams:
  
         #add cites=# if the search is within articles citing #
         if self.cites != None:
-            urlParametrs.update({"cites":self.cites})           
+            urlParametrs.update({"cites":self.cites})
         
+        if self.relatedArticles != None:
+            tempStr = "related:" + str(self.relatedArticles) + ":scholar.google.com/"
+            urlParametrs.update({"as_q": tempStr})
+                   
+        if self.bibTex != None:
+            tempStr = "info:" + str(self.bibTex) + ":scholar.google.com//&output=citation"
+            urlParametrs.update({"as_q": tempStr})
+        
+        if self.allVersions != None:
+            urlParametrs.update({"cluster": self.allVersions})
+                   
                         
              
         url += "&".join(["%s=%s" % (k, v) for k, v in urlParametrs.items()])
+        
+        # anonymize link
+        #url = "http://anonymouse.org/cgi-bin/anon-www.cgi/" + url
           
         return url
     

@@ -2,6 +2,7 @@ from ArticleData import ArticleData
 from getHTML import getHTML
 from bibtexParser import parser
 from ArticleURLandTitle import ArticleURLandTitle
+from time import sleep
 
 
 
@@ -438,6 +439,7 @@ def getAllResultsFromURL(searchParams):
         i = 1
         allResults = HTMLdata.get_results()
         while (not isFinished):
+            sleep(10)
             searchParams.updateStartFrom(i*100)
             searchURL = searchParams.constructURL()
             HTMLdata = getResultsFromURL(searchURL)
