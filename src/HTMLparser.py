@@ -157,9 +157,11 @@ class HTMLparser:
             sandboxHTML = sandboxHTML[position:]
             position = 0
             
-            newArticle.articleTitle = newArticle.HTML_urlList[0].get_article_title()
+            articleTitle = newArticle.HTML_urlList[0].articleTitle
+            newArticle.articleTitle = articleTitle 
             
-            newArticle.articleURL = newArticle.HTML_urlList[0].get_article_url()
+            articleURL = newArticle.HTML_urlList[0].articleURL
+            newArticle.articleURL = articleURL
             
             results.append(newArticle)
             
@@ -467,6 +469,7 @@ def getResultsFromURLwithProxy(url):
 def getAllResultsFromURL(searchParams):
     isFinished = False
     
+    searchParams.updateNumOfResults(100)
     searchURL = searchParams.constructURL()
     
     HTMLdata = getResultsFromURL(searchURL)
@@ -497,6 +500,8 @@ def getAllResultsFromURL(searchParams):
 # used for creating / updating follows
 def getAllResultsFromURLwithProxy(searchParams):
     isFinished = False
+    
+    searchParams.updateNumOfResults(100)
     
     searchURL = searchParams.constructURL()
     

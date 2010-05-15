@@ -59,7 +59,9 @@ class SearchParams:
                       
     def updateStartFrom(self, start_from):
         self.start_from = start_from    
-
+        
+    def updateNumOfResults(self, num):
+        self.num_of_results = num
 
 # TODO: change this thing
     def __str__(self):
