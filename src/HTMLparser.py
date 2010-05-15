@@ -13,6 +13,8 @@ class HTMLparser:
         self.url = url
         self.html = html
         self.results = {}
+        self.noResultsFlag = False
+        self.refinedSearchNoResultsFlag = False  # flag indicating if refined search (search within citation) yielded no results
         self.numOfResults = 0
         self.didYouMeanFlag = False
         self.didYouMeanHTML = ""
@@ -28,6 +30,12 @@ class HTMLparser:
 
     def get_results(self):
         return self.results
+    
+    def isNoResultsFlag(self):
+        return self.noResultsFlag
+    
+    def isRefinedSearchNoResultsFlag(self):
+        return self.refinedSearchNoResultsFlag
 
     def get_numOfResults(self):
         return self.numOfResults
@@ -76,16 +84,22 @@ class HTMLparser:
         results = []
         # remove everything prior to the results
         position = self.html.find(">Results")
-        sandboxHTML = self.html[position:]
-        position = 0
+        # check if there are no results at all
+        if (position < 0):
+            self.noResultsFlag = True
+            sandboxHTML = self.html[0:]
+        else:
+            sandboxHTML = self.html[position:]
+            position = 0
         
-        resultsPosition = sandboxHTML.find("of", position)
-        numOfResultsStart = sandboxHTML.find("<b>", resultsPosition) + 3
-        numOfResultsEnd = sandboxHTML.find("</b>", numOfResultsStart)
-        self.numOfResults = sandboxHTML[numOfResultsStart:numOfResultsEnd]
+            resultsPosition = sandboxHTML.find("of", position)
+            numOfResultsStart = sandboxHTML.find("<b>", resultsPosition) + 3
+            numOfResultsEnd = sandboxHTML.find("</b>", numOfResultsStart)
+            self.numOfResults = sandboxHTML[numOfResultsStart:numOfResultsEnd]
+
         
         # handle "Did you mean:" scenario
-        didYouMeanPosition = sandboxHTML.find("Did you mean", position)
+        didYouMeanPosition = sandboxHTML.find("Did you mean", 0)
         if (didYouMeanPosition > 0):
             self.didYouMeanFlag = True
             didYouMeanURLstart = sandboxHTML.find("<a href", didYouMeanPosition)+len("<a href=")+1
@@ -97,10 +111,20 @@ class HTMLparser:
             self.didYouMeanHTML = sandboxHTML[didYouMeanHTMLstart:didYouMeanHTMLend]
         
         
-        sandboxHTML = sandboxHTML[numOfResultsEnd:]
+        if (self.noResultsFlag == False):
+            sandboxHTML = sandboxHTML[numOfResultsEnd:]
+
+        
+        if (self.noResultsFlag == True):
+            # check if this was a refined search (search within citations)
+            position = self.html.find("Sorry, we didn't find any articles that cite", 0)
+            if (position>0):
+                self.refinedSearchNoResultsFlag = True
+            self.results = results
+            return 0
+        
+        
         articleCounter = 0
-        
-        
         # start parsing the results
         
         # end of results indicated by "next" link
@@ -132,6 +156,10 @@ class HTMLparser:
             position = getGoogleScholarLinks(sandboxHTML, position, newArticle)
             sandboxHTML = sandboxHTML[position:]
             position = 0
+            
+            newArticle.articleTitle = newArticle.HTML_urlList[0].get_article_title()
+            
+            newArticle.articleURL = newArticle.HTML_urlList[0].get_article_url()
             
             results.append(newArticle)
             
@@ -421,7 +449,17 @@ def getResultsFromURL(url):
     newHTMLdata.parseHTML()
     
     return newHTMLdata
+
+def getResultsFromURLwithProxy(url):
+    # first we fetch the HTML from Google Scholar
+    newHTML = getHTML(url)
+    newHTML.getHTMLfromURLwithProxy("74.115.1.13", 80)
     
+    # parse the results
+    newHTMLdata = HTMLparser(url,newHTML.get_html())
+    newHTMLdata.parseHTML()
+    
+    return newHTMLdata    
     
 
 # this function receives a searchParams object and returns ALL results for the query
@@ -454,7 +492,36 @@ def getAllResultsFromURL(searchParams):
             
                     
     
+
+# this function receives a searchParams object and returns ALL results for the query
+# used for creating / updating follows
+def getAllResultsFromURLwithProxy(searchParams):
+    isFinished = False
+    
+    searchURL = searchParams.constructURL()
+    
+    HTMLdata = getResultsFromURLwithProxy(searchURL)
+    
+    if HTMLdata.get_numOfResults() <= 100:
+        return HTMLdata.get_results()
+    else:
+        i = 1
+        allResults = HTMLdata.get_results()
+        while (not isFinished):
+            searchParams.updateStartFrom(i*100)
+            searchURL = searchParams.constructURL()
+            HTMLdata = getResultsFromURLwithProxy(searchURL)
+            currentResults = HTMLdata.get_results()
+            allResults.extend(currentResults)
+            if len(currentResults)<100:
+                isFinished = True
+            i+=1
         
+        return allResults
+
+            
+                    
+            
         
         
         

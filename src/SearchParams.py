@@ -32,7 +32,8 @@ class SearchParams:
                  cites = None,                #search within articles citing "#"
                  relatedArticles = None,  #create a relatedArticles link for parsing
                  allVersions = None,       #create allVersions link for parsing
-                 bibTex = None            # create bibTex link for getHTML                   
+                 bibTex = None,            # create bibTex link for getHTML
+                 citesArticleName = ""                   
                  ):
         
         self.keywords = urllib.quote_plus(keywords)
@@ -54,6 +55,7 @@ class SearchParams:
         self.relatedArticles = relatedArticles
         self.allVersions = allVersions
         self.bibTex = bibTex
+        self.citesArticleName = citesArticleName
                       
     def updateStartFrom(self, start_from):
         self.start_from = start_from    
@@ -90,7 +92,7 @@ class SearchParams:
             urlParametrs.update({"as_q": tempStr})
                    
         if self.bibTex != None:
-            tempStr = "info:" + str(self.bibTex) + ":scholar.google.com//&output=citation"
+            tempStr = "info:" + str(self.bibTex) + ":scholar.google.com/&output=citation"
             urlParametrs.update({"as_q": tempStr})
         
         if self.allVersions != None:

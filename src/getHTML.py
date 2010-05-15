@@ -38,4 +38,25 @@ class getHTML:
         html = response.read()
         html.decode('ascii', 'ignore')
         self.html = html
+        
+    def getHTMLfromURLwithProxy(self, host, port):
+        google_id = hashlib.md5(str(random.random())).hexdigest()[:16]
+        HEADERS = {'User-Agent' : 'Firefox/3.6.3', 'Cookie' : 'GSP=ID=%s:CF=4' % google_id }
+        proxy_info = {
+            'host' : host,
+            'port' : port
+            }
+        proxy_support = urllib2.ProxyHandler({"http" : \
+                                              "http://%(host)s:%(port)d" % proxy_info})
+        opener = urllib2.build_opener(proxy_support)
 
+        # install it
+        urllib2.install_opener(opener)
+
+        # use it
+        request = urllib2.Request(self.url, headers=HEADERS)
+        response = urllib2.urlopen(request)
+        html = response.read()
+        html.decode('ascii', 'ignore')
+        self.html = html
+        
