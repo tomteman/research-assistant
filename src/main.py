@@ -117,13 +117,15 @@ class Search(webapp.RequestHandler):
             searchParams = SearchParams()
             searchParams.relatedArticles = self.request.get('Id')
             searchURL = searchParams.constructURL()
-            c['infoLine'] = """Articles Related To:<b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"<br><br><br>"
+            c['infoLine'] = """Articles Related To : <b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
+            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
         
         elif self.request.get('Type')=='AllVersions':
             searchParams = SearchParams()
             searchParams.allVersions = self.request.get('Id')
             searchURL = searchParams.constructURL()
-        
+            c['infoLine'] = """All Versions Of : <b><a href="/Search?Id="""+ self.request.get('Id') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
+            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
         elif self.request.get('Type')=='Import2BibTex':
             searchParams = SearchParams()
             searchParams.bibTex = self.request.get('Id')
@@ -141,7 +143,8 @@ class Search(webapp.RequestHandler):
             searchParams.updateStartFrom(searchParams.start_from-10)
             searchURL = searchParams.constructURL()
             c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
-        
+        else:
+            searchURL = searchParams.constructURL() 
         parserStruct = getResultsFromURLwithProxy(searchURL) 
         results = parserStruct.get_results()
         c['results'] = results

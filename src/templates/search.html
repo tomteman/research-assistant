@@ -70,9 +70,11 @@
 		<span class = "Abstract">
 			{{result.get_HTML_abstract}}	
 		</span>
-		<a href="/Search?Id={{result.citationsID}}&Title={{result.get_article_title_quoted}}&AllVer={{result.all_versionsID}}&Type=CitedBy">Cited By</a> - 
-		<a href= "/Search?Id={{result.related_articlesID}}&Type=RelatedArticles"> Related Articles</a> - 
-		<a href= "/Search?Id={{result.all_versionsID}}&Type=AllVersions"> All Versions</a> - 
+		<a href="/Search?Id={{result.citationsID}}&Title={{result.get_article_title_quoted}}&AllVer={{result.all_versionsID}}&Type=CitedBy">Cited By {{result.get_citations_NUM}}</a> - 
+		<a href= "/Search?Id={{result.related_articlesID}}&Title={{result.get_article_title_quoted}}&Type=RelatedArticles"> Related Articles</a> - 
+		{% if result.all_versionsID %}
+			<a href= "/Search?Id={{result.all_versionsID}}&Title={{result.get_article_title_quoted}}&Type=AllVersions"> All Versions</a> - 
+		{% endif %}
 		<a href= "/Search?Id={{result.key}}&Type=Import2BibTex">Import into BibTex</a></form>	
 			<form method="post" action={{formAction}}>
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
