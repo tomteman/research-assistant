@@ -4,6 +4,7 @@ from bibtexParser import parser
 from ArticleURLandTitle import ArticleURLandTitle
 from time import sleep
 from urllib import quote_plus
+import re
 
 
 
@@ -20,6 +21,7 @@ class HTMLparser:
         self.didYouMeanFlag = False
         self.didYouMeanHTML = ""
         self.didYouMeanURL = ""
+        self.didYouMeanKeywords = ""
 
     def get_url(self):
         return self.url
@@ -49,6 +51,9 @@ class HTMLparser:
     
     def get_didYouMeanURL(self):
         return self.didYouMeanURL
+    
+    def get_didYouMeanKeywords(self):
+        return self.didYouMeanKeywords
     
     def set_url(self, value):
         self.url = value
@@ -110,6 +115,8 @@ class HTMLparser:
             didYouMeanHTMLstart = didYouMeanURLend + 2
             didYouMeanHTMLend = sandboxHTML.find("</a>", didYouMeanHTMLstart)
             self.didYouMeanHTML = sandboxHTML[didYouMeanHTMLstart:didYouMeanHTMLend]
+            
+            self.didYouMeanKeywords = remove_html_tags(self.didYouMeanHTML)
         
         
         if (self.noResultsFlag == False):
@@ -191,12 +198,15 @@ def getGoogleScholarLinks(sandboxHTML, position, newArticle):
         
         # get articleCitation URL
         if ("/scholar?cites" == sandboxHTML[position:position+len("/scholar?cites")]):
-            tmp = sandboxHTML.find("\"",position+1)
-            articleCITATIONS = sandboxHTML[position:tmp]
+            endOfLink = sandboxHTML.find("\"",position+1)
+            articleCITATIONS = sandboxHTML[position:endOfLink]
             CitationsID = getCitationsIDfromURL(articleCITATIONS)
             newArticle.set_citations_ID(CitationsID)
             newArticle.set_citations_url(createCitationsURL(CitationsID))
-            position = tmp
+            endOfNum = sandboxHTML.find("<", endOfLink)
+            numOfCitations = sandboxHTML[endOfLink+2+len("Cited by "):endOfNum]
+            newArticle.set_citations_NUM(numOfCitations)
+            position = endOfLink
             sandboxHTML = sandboxHTML[position:]
             lastPosition += position
             position = sandboxHTML.find("/scholar", 0)
@@ -282,7 +292,7 @@ def isEndOfArticleLinks(sandboxHTML, position):
         or ((isLastArticle(sandboxHTML, position)) and
         # and it has a link (also make sure it's not a citation)
             ((((sandboxHTML.find("class=gs_a", position) < sandboxHTML.find("class=yC", position))
-               and sandboxHTML.find("class=yC", position) != -1)
+               and (sandboxHTML.find("class=yC", position) != -1) and ((sandboxHTML.find("/scholar.bib") - sandboxHTML.find("class=yC")>300))) #handle ULI scenario
             # or it's the last citation
             or ((sandboxHTML.find("class=yC", position) == -1) and (sandboxHTML.find("[CITATION]", position) == -1)))))
     ):      
@@ -391,7 +401,11 @@ def parseURLandTitleSurroundingTag(sandboxHTML, position, isCitation):
             
             results.set_has_link(False) 
     
-    return results     
+    return results  
+
+def remove_html_tags(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)   
             
 def getBibTexIDfromURL(url):
     start = url.find(":")

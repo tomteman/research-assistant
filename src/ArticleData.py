@@ -11,6 +11,7 @@ class ArticleData:
         self.BibTex_dict = {}
         self.citationsURL = ""
         self.citationsID = ""
+        self.citationsNUM = ""
         self.related_articlesURL = ""
         self.related_articlesID = ""
         self.all_versionsURL = ""
@@ -40,6 +41,12 @@ class ArticleData:
 
     def get_citations_url(self):
         return self.citationsURL
+    
+    def get_citations_ID(self):
+        return self.citationsID
+    
+    def get_citations_NUM(self):
+        return self.citationsNUM
 
 
     def get_related_articles_url(self):
@@ -96,6 +103,9 @@ class ArticleData:
         
     def set_citations_ID(self, value):
         self.citationsID = value
+        
+    def set_citations_NUM(self, value):
+        self.citationsNUM = value
 
 
     def set_related_articles_url(self, value):
@@ -279,6 +289,7 @@ class ArticleData:
         msg = msg +  "-------------------------------------------------------\n"
         msg = msg +  "BibTex URL: " + self.get_bib_tex_url() + "\n"
         msg = msg +  "Citations URL: " + self.get_citations_url() + "\n"
+        msg = msg +  "Cited by " + self.get_citations_NUM() +" articles\n"
         msg = msg +  "Related Articles URL: " + self.get_related_articles_url() + "\n"
         msg = msg +  "All Versions URL: " + self.get_all_versions_url() + "\n"
         msg = msg +  "Cache URL:" + self.get_cache_url() + "\n"
