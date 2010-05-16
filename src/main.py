@@ -63,9 +63,27 @@ class Search(webapp.RequestHandler):
     def post(self):
         global searchParams
         global numOfResults
-        searchParams = SearchParams()
-        keyword = self.request.get('SearchTerm')
-        searchParams.keywords = keyword
+        
+       
+        if (self.request.arguments().count('SearchTerm')):
+            keywords = self.request.get('SearchTerm')
+            searchParams = SearchParams(keywords = keywords)
+        else:
+            ###Advanced search###
+            
+            keywords = self.request.get('all_of_the_words')
+            exact_phrase = self.request.get('exact_phrase')
+            one_of_the_words = self.request.get('one_of_the_words')
+            without_the_words = self.request.get('without_the_words')
+            occurence = self.request.get('occurence')
+            author = self.request.get('author')
+            journal = self.request.get('journal')
+            year_start = self.request.get('year_start')
+            year_finish = self.request.get('year_finish')
+            searchParams = SearchParams(keywords = keywords, exact_phrase = exact_phrase, without_the_words=without_the_words,
+                                   one_of_the_words = one_of_the_words, occurence=occurence, author=author, journal=journal,
+                                   year_start=year_start, year_finish=year_finish  )
+        
         searchURL = searchParams.constructURL()
         parserStruct = getResultsFromURLwithProxy(searchURL)
         numOfResults = parserStruct.get_numOfResults() 
@@ -79,7 +97,7 @@ class Search(webapp.RequestHandler):
         c['users'] = users
         c['results'] = results
         c['formAction'] = '/AddFollow'
-        c['keyword'] = keyword
+        c['keyword'] = keywords
         c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of " + str(numOfResults)
         self.response.out.write(t.render(c))
 #get function for handling links on the search page(citedby, related articles, etc.)    
@@ -91,6 +109,7 @@ class Search(webapp.RequestHandler):
             searchParams = SearchParams()
             searchParams.cites = self.request.get('Id')
             searchURL = searchParams.constructURL()
+            c['CitedBy']='CitedBy'
             c['infoLine'] = """Articles Citing:<b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
             c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
                     
@@ -130,6 +149,22 @@ class Search(webapp.RequestHandler):
         c['formAction'] = '/AddFollow'
         c['keyword'] = searchParams.keywords
         self.response.out.write(t.render(c))
+        
+        
+class DisplayTag(webapp.RequestHandler):
+#Create the about us page    
+    def get(self):
+        t = get_template('displayTag.html')
+        c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
+
+        self.response.out.write(t.render(c)) 
+        
+        
 
 class About(webapp.RequestHandler):
 #Create the about us page    
@@ -181,6 +216,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/Search',Search )
                                       ,('/AddFollow', AddFollow)
                                       ,('/FollowFormDone', FollowFormDone)
+                                      ,('/DisplayTag', DisplayTag)
                                       ,('/About', About)
                                       ,('/Profile', Profile)
                                       ,('/AdvancedSearch', AdvancedSearch)],
