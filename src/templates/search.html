@@ -9,13 +9,17 @@
 
 {% block contents %} 
 
+{{infoLine}}
+{{numOfResults}}
+{{RefinedSearch}}
+
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
 	
 	{% for result in results %}
 		<div id={{result.get_key}} class="Article">
 		{% for HTML_url in result.HTML_urlList %}
 			{% if HTML_url.get_has_link %}
-				<a href= {{HTML_url.get_article_url}}> {{HTML_url.get_article_title}} </a>
+				<a href= {{HTML_url.get_article_url}}> {{HTML_url.get_article_title}} </a>&nbsp;
 					
 			{% else %}
 				 {{HTML_url.get_article_title}}
@@ -28,10 +32,10 @@
 		<span class = "Abstract">
 			{{result.get_HTML_abstract}}	
 		</span>
-		<a href= {{result.get_citations_url}}>Cited By</a> - 
-		<a href= {{result.get_related_articles_url}}> Related Articles</a> - 
-		<a href= {{result.get_all_versions_url}}> All Versions</a> - 
-		<a href= {{result.get_bib_tex_url}}>Import into BibTex</a>	
+		<a href="/Search?Id={{result.citationsID}}&Title={{result.get_article_title_quoted}}&AllVer={{result.all_versionsID}}&Type=CitedBy">Cited By</a> - 
+		<a href= "/Search?Id={{result.related_articlesID}}&Type=RelatedArticles"> Related Articles</a> - 
+		<a href= "/Search?Id={{result.all_versionsID}}&Type=AllVersions"> All Versions</a> - 
+		<a href= "/Search?Id={{result.key}}&Type=Import2BibTex">Import into BibTex</a></form>	
 			<form method="post" action={{formAction}}>
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
@@ -47,8 +51,8 @@
 			</form>
 		</div>
 	{% endfor %}
-	<a href="/Search">Back</a>
-	<a href="/Search">Next</a>
+	<a href="/Search?Type=Back">Back</a>
+	<a href="/Search?Type=Next">Next</a>
 {% endblock %}
 
 
