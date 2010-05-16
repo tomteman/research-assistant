@@ -3,6 +3,7 @@ from getHTML import getHTML
 from bibtexParser import parser
 from ArticleURLandTitle import ArticleURLandTitle
 from time import sleep
+from urllib import quote_plus
 
 
 
@@ -158,7 +159,10 @@ class HTMLparser:
             position = 0
             
             articleTitle = newArticle.HTML_urlList[0].articleTitle
-            newArticle.articleTitle = articleTitle 
+            newArticle.articleTitle = articleTitle
+            
+            articleTitleQuoted = quote_plus(articleTitle,"")
+            newArticle.articleTitleQuoted = articleTitleQuoted 
             
             articleURL = newArticle.HTML_urlList[0].articleURL
             newArticle.articleURL = articleURL

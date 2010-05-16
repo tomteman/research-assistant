@@ -18,6 +18,7 @@ class ArticleData:
         self.cacheURL = ""
         self.cacheID = ""
         self.articleTitle = ""
+        self.articleTitleQuoted = ""
         self.articleURL = ""
 
         
@@ -63,10 +64,15 @@ class ArticleData:
     def get_article_title(self):
         return self.articleTitle
     
+    def get_article_title_quoted(self):
+        return self.articleTitleQuoted
+    
     # if the first article in HTML_urlList had a link - return it, 
     # If not - return False
     def get_article_url(self):
         return self.articleURL
+    
+    
     
     
     def set_key(self, value):
