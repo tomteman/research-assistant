@@ -271,7 +271,7 @@ def isEndOfArticleLinks(sandboxHTML, position):
     
     # in case this is one article before the last one, and the last one is a citation:
     # i.e. there will be no more "class=yC"
-        or (isOneArticleBeforeLast(sandboxHTML, position) and (sandboxHTML.find("class=yC", position) == -1))
+        #or (isOneArticleBeforeLast(sandboxHTML, position) and (sandboxHTML.find("class=yC", position) == -1))
 
     
     # in case this is the last article
