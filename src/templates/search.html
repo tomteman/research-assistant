@@ -3,15 +3,53 @@
 {% comment %} This is the template for displaying search results {% endcomment  %}
 
 {% block title %}
-	search			
+	Reaserch Assistant - search			
 {% endblock %}
 
 
 {% block contents %} 
 
-{{infoLine}}
-{{numOfResults}}
-{{RefinedSearch}}
+
+
+	{% if  CitedBy %}   
+
+	<div id='infoLine'> {{numOfResults}} : {{infoLine}} </div>	
+	<form id="refine"  action="/Search" method="post">
+	<h3> Refine your search:</h3>			
+		<table >
+			<tr>
+				<td>  </td>	
+				<td>
+					<label class="description">	with keywords</label>
+				</td>
+				<td class="textbox">
+					<input name="keywords" type="text" maxlength="255" value="">
+				</td>
+		
+			</tr>
+ 			<tr>
+				<td></td>
+				<td>
+					<label class="description">	 written by</label>
+				</td>
+				<td class="textbox">
+					<input name="author" type="text" maxlength="255" value="">
+					<input type="submit" id="search-submit" value="refine" />
+				</td>
+			</tr>
+		</table>	
+	</form>
+
+	{% else %}
+		<div id='infoLine'> {{numOfResults}} </div>
+			
+	{% endif %}
+	
+
+	
+	{{RefinedSearch}}
+
+
 
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
 	

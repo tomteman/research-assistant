@@ -16,11 +16,16 @@
         </style>
         
         {% block script %}
-        
+       
+       	<script type="text/javascript" src="/static/scripts.js"></script>
+       	<script type="text/javascript" src="./static/json.js"></script>
+       	
+       	
+	
+       
         {% endblock %}
 	</head>
-
-
+	
 	<body>
 	<hr />	
 		<div id="wrapper">
@@ -30,22 +35,19 @@
 					loged in as <b> {{users.get_current_user.nickname}} </b> </br>
 					<a href="{{logout}}"> log out</a>
 				{% else %}
-					<a href="{{login}}">sign in</a> -  
+					<a href="{{login}}">log in</a>
 				{% endif %}			
 			</div>	
 			
 			<div id="logo">
 				<a href="/"><h1>Research Assistant</h1></a> 
 				<p><em>__ooo___</em></p>
-			
-		</div>
-				
-			
+			</div>	
 	<hr />
 		<!-- end #logo -->
 		<div id="header">
-			{% block search_form %}
-										
+			
+			{% block search_form %}							
 				<div id="search">
 					<form method="post" action="/Search">
 						<fieldset>
@@ -54,8 +56,10 @@
 						</fieldset>
 					</form>
 				</div>
-				<!-- end #search -->
 			{% endblock %}
+			<!-- end #search -->
+			
+			
 			<div id="menu">
 				<ul>
 				<li><a href="/" >Home</a></li>
@@ -71,25 +75,37 @@
 
 		<div id="page">
 		<div id="page-bgtop">
+				
+			
+		
 			<div id="content">
-{% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
 				{% block contents %}
-						
 				
-				
+					
 				{% endblock %}
-			</div>
+			</div>		
 			<!-- end #content -->
 			
+			<div id="sidebar">
+			
+				<a href="/DisplayTag" class="btn">Tag</a> 
+				<a href="/DisplayTag" class="btn">Tag</a>
+ 				<a href="/DisplayTag" class="btn">Tag</a>
+ 				<a href="/DisplayTag" class="btn">Tag</a>
+ 				 
+ 			</div>
+
+		
 		<div style="clear: both;">&nbsp;</div>
 			
 		</div>
+		
 		<!-- end #bgtop -->
 		</div>
 		<!-- end #page -->
 		
 		<div id="footer">
-			<p>Powered by <b>Idiots</b>.<br>for support call Ohad or Misha</p>
+			<p> Footer</p>
 			
 		</div>
 		<!-- end #footer -->

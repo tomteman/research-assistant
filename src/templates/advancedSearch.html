@@ -2,7 +2,7 @@
 
 
 {% block title %}
-	Research Assistant
+	Research Assistant - advanced search
 {% endblock %}
 
 
@@ -11,34 +11,16 @@
 {% endblock %}
 
 
+
 {% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
 
 {% block contents %}
 
-	<div id="form">
+	<form id="AdvancedSearch" class="AdvancedSearch"  action="/Search" method="post">
 	
-		<h3><a>Advanced Search</a></h3>
-		<form id="AdvancedSearch" class="AdvancedSearch"  action="/Search" method="post">
-					
-		<dl >
+		<h3><a>Advanced Search</a></h3>				
+
 			<table>	
-				<tr>
-					<td>
-						<label class="description">	Search Term</label>
-					</td>
-					<td class="textbox">
-						<input name="SearchTerm" type="text" maxlength="255" value="">
-					</td>
-				</tr>	
-				<tr>
-					<td>
-						<label class="description">	with all of the words</label>
-					</td>
-					<td class="textbox">
-						<input name="all_of_the_words" type="text" maxlength="255" value="">
-					</td>
-				</tr>
-				
 				<tr>
 					<td>
 						<label class="description">	with all of the words</label>
@@ -65,6 +47,29 @@
 						<input name="one_of_the_words" type="text" maxlength="255" value="">
 					</td>
 				</tr>
+				
+				
+				<tr>
+					<td>
+						<label class="description">	without the words</label>
+					</td>
+					<td class="textbox">
+						<input name="without_the_words" type="text" maxlength="255" value="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td>
+						<label class="description" for="element_2">where my words occur </label>
+						 
+					</td>	
+					<td>
+						<select class="element select medium" id="element_2" name="occurence">
+						<option value="any" selected="selected">anywhere in the article</option>
+						<option value="title" >in the title of the article</option>
+						</select>
+					</td>	
+				</tr>		
 				
 			<tr>
 			<td></br></br></td>
@@ -100,18 +105,10 @@
 				</tr>
 				
 			</table>	
-				
-		</dl>	
-		<input type="submit" id="search-submit" value="search" /
-		</form>
-		</div>
+					
+		<input type="submit" id="search-submit" value="search" />
 	
-	
-		</br>
-		</br>
-		</br>
-		</br>
+	</form>
 			
 				
-	
 {% endblock %}

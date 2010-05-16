@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 
 
-{% block script %}
 
 
-
-	
+{% block title %}
+	Reaserch Assistant - new follow			
 {% endblock %}
 
 
-	{% block contents %}
-	<div id="form">
+
+{% block contents %}
 	
-		<h1><a>Add New Follow</a></h1>
-		<form id="newFollow" class="addFollow"  action={{formDoneAction}} method="post">
+
+	<h1><a>Add New Follow</a></h1>
+	<form id="newFollow" class="addFollow"  action={{formDoneAction}} method="post">
 		
 	<!-- notify on --->
 		<div class="description" for="followDefinitions">Notify me on new article </div>
 		<dl>
-			<span>
 			<table>		
 				<tr>
 					<td >
@@ -65,13 +64,8 @@
 							
 						{% else %}
 							<input name="journal" type="text" maxlength="255" value="{{authors}}">
-						{% endif %}
-								
-																								 
-						
+						{% endif %}				
 					</td>
-					
-					
 				</tr>
 				<tr>
 					<td>	
@@ -81,14 +75,12 @@
 					<td class="textbox">
 						<input name="journal" type="text" maxlength="255" value="{{articleJournal}}">
 					</td>
+				</tr>	
+			</table> 	
+		</dt>	
+		<!--end notify on --->
 			
-			</table>
-		</span> 	
-		</dl>	
-	</dt>	
-	<!--end notify on --->
-			
-	<!-- frequency --->
+		<!-- frequency --->
 		<dt id="frequency" >
 			<table>		
 				<tr>
@@ -96,20 +88,19 @@
 					<select class="element select medium" id="element_2" name="update_frequency"> 
 						<option value="Daily" >Daily</option>
 						<option value="Weekly" selected="selected">Weekly</option>
-						<option value="Mounthly" >Mounthly</option>
+						<option value="Mounthly">Mounthly</option>
 
 					</select>
 				</tr>
 			</table>
 		</dt>
 		
-	<!-- end of frequency --->
+		<!-- end of frequency --->
 					
-	<!-- submit button --->					
-			<dt class="buttons">
-			    <input type="hidden" name="form_id" value="233471" />    
-				<input id="saveForm" class="button_text" type="submit" name="submit" value="Submit" />
-			</dt>
+		<!-- submit button --->					
+		<dt class="buttons">
+		    <input type="hidden" name="form_id" value="233471" />    
+			<input id="saveForm" class="button_text" type="submit" name="submit" value="Submit" />			</dt>
 	<!-- submit button --->			
 	</dl>
 		
