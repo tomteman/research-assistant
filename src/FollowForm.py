@@ -37,7 +37,7 @@ class AddFollow(webapp.RequestHandler):
             journal = ""
         
         keywords = self.request.get('SearchTerm')
-        
+        numCitations = self.request.get('NumCites')
         t = get_template('addFollow.html')
         c = Context()
         c['Title'] = 'Research-assistant about project'
@@ -49,6 +49,7 @@ class AddFollow(webapp.RequestHandler):
         c['authors'] = authors
         c['articleJournal'] = journal
         c['keywords'] = keywords
+        c['citing_num'] = numCitations
         if (users.get_current_user()):
             c['logout'] = users.create_logout_url(self.request.uri)
         else:
