@@ -79,14 +79,7 @@
 			<form method="post" action={{formAction}}>
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
-				<input type="hidden" name="NumCites" value ="{{result.get_citations_NUM}}"/>
-				
-{% comment %} extra hidden fields for autocompletion in "addFollow"
-				<input type="hidden" name="Article" value ="{{result.}}"/>
-				<input type="hidden" name="Article" value ="{{result.}}"/>
-				<input type="hidden" name="Article" value ="{{result.}}"/>
-				<input type="hidden" name="Article" value ="{{result.}}"/>
-{% endcomment  %}
+				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
 				<input type="submit" value="addFollow" />
  
 			</form>

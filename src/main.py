@@ -9,6 +9,7 @@
 #from string import Template
 
 import os
+import re
 
 
 from google.appengine.api import users
@@ -32,6 +33,10 @@ from getHTML import getHTML
 settings._target = None
 ROOT_PATH = os.path.dirname(__file__)
 settings.configure(DEBUG=True, TEMPLATE_DEBUG=True,TEMPLATE_DIRS=[ROOT_PATH+'/templates'])
+
+def removeComma(str):
+    p = re.compile(r',')
+    return p.sub('',str)
 
 class MainPage(webapp.RequestHandler):
 #create the main page for the application.
@@ -63,8 +68,6 @@ class Search(webapp.RequestHandler):
     def post(self):
         global searchParams
         global numOfResults
-        
-       
         if (self.request.arguments().count('SearchTerm')):
             keywords = self.request.get('SearchTerm')
             searchParams = SearchParams(keywords = keywords)
@@ -99,33 +102,33 @@ class Search(webapp.RequestHandler):
         c['formAction'] = '/AddFollow'
         c['keyword'] = keywords
         c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of " + str(numOfResults)
-        self.response.out.write(t.render(c))
+        self.response.out.write(t.render(c))        
 #get function for handling links on the search page(citedby, related articles, etc.)    
     def get(self):
         global searchParams
+        global numOfResults
         t = get_template('search.html')
         c = Context()
+        
         if self.request.get('Type')=='CitedBy':
             searchParams = SearchParams()
-            searchParams.cites = self.request.get('Id')
+            searchParams.citationsID = self.request.get('Id')
             searchURL = searchParams.constructURL()
             c['CitedBy']='CitedBy'
             c['infoLine'] = """Articles Citing:<b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
                     
         elif self.request.get('Type')=='RelatedArticles':
             searchParams = SearchParams()
             searchParams.relatedArticles = self.request.get('Id')
             searchURL = searchParams.constructURL()
             c['infoLine'] = """Articles Related To : <b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
         
         elif self.request.get('Type')=='AllVersions':
             searchParams = SearchParams()
             searchParams.allVersions = self.request.get('Id')
             searchURL = searchParams.constructURL()
             c['infoLine'] = """All Versions Of : <b><a href="/Search?Id="""+ self.request.get('Id') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
+        
         elif self.request.get('Type')=='Import2BibTex':
             searchParams = SearchParams()
             searchParams.bibTex = self.request.get('Id')
@@ -134,21 +137,31 @@ class Search(webapp.RequestHandler):
             bibTexHTML.getHTMLfromURL()
             self.response.out.write(bibTexHTML.get_html())
             return
+        
         elif self.request.get('Type')=='Next':
             searchParams.updateStartFrom(searchParams.start_from+10)
             searchURL = searchParams.constructURL()
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
             
         elif self.request.get('Type')=='Back':
             searchParams.updateStartFrom(searchParams.start_from-10)
             searchURL = searchParams.constructURL()
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
+            
+        
         else:
-            searchURL = searchParams.constructURL() 
+            searchURL = searchParams.constructURL()
+             
         parserStruct = getResultsFromURLwithProxy(searchURL) 
         results = parserStruct.get_results()
-        c['results'] = results
-        c['numOfResults']+= str(parserStruct.get_numOfResults())
+        numResults = parserStruct.get_numOfResults()
+        numResultsDec =int(removeComma(parserStruct.get_numOfResults()))
+        
+        if ((numResultsDec-searchParams.start_from)<searchParams.num_of_results):
+            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(numResults) + " of "
+        else:
+            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
+        c['users'] = users
+        c['results'] = results      
+        c['numOfResults']+= str(numResults)
         c['formAction'] = '/AddFollow'
         c['keyword'] = searchParams.keywords
         self.response.out.write(t.render(c))
