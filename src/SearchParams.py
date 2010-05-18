@@ -29,7 +29,7 @@ class SearchParams:
                  no_citation = "0",           #1=at least summaries 0=include citations      
             
                  start_from = 0,              #start from # result
-                 cites = None,                #search within articles citing "#"
+                 citationsID = None,                #search within articles citing "#"
                  relatedArticles = None,  #create a relatedArticles link for parsing
                  allVersions = None,       #create allVersions link for parsing
                  bibTex = None,            # create bibTex link for getHTML
@@ -51,7 +51,7 @@ class SearchParams:
         self.subjects = subjects                
         self.no_citation = no_citation 
         self.start_from = start_from   
-        self.cites = cites 
+        self.citationsID = citationsID 
         self.relatedArticles = relatedArticles
         self.allVersions = allVersions
         self.bibTex = bibTex
@@ -86,8 +86,8 @@ class SearchParams:
                 urlParametrs[k] = v.replace(" ", "+") 
  
         #add cites=# if the search is within articles citing #
-        if self.cites != None:
-            urlParametrs.update({"cites":self.cites})
+        if self.citationsID != None:
+            urlParametrs.update({"cites":self.citationsID})
         
         if self.relatedArticles != None:
             tempStr = "related:" + str(self.relatedArticles) + ":scholar.google.com/"
