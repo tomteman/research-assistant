@@ -116,7 +116,7 @@ class HTMLparser:
             didYouMeanHTMLend = sandboxHTML.find("</a>", didYouMeanHTMLstart)
             self.didYouMeanHTML = sandboxHTML[didYouMeanHTMLstart:didYouMeanHTMLend]
             
-            self.didYouMeanKeywords = remove_html_tags(self.didYouMeanHTML)
+            self.didYouMeanKeywords = quote_plus(remove_html_tags(self.didYouMeanHTML),"")
         
         
         if (self.noResultsFlag == False):
@@ -402,11 +402,10 @@ def parseURLandTitleSurroundingTag(sandboxHTML, position, isCitation):
             results.set_has_link(False) 
     
     return results  
-
+  
 def remove_html_tags(data):
-    p = re.compile(r'<.*?>')
-    return p.sub('', data)   
-            
+   p = re.compile(r'<.*?>')
+   return p.sub('', data)            
 def getBibTexIDfromURL(url):
     start = url.find(":")
     finish = url.find(":", start+1)
