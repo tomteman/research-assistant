@@ -16,7 +16,6 @@ class DBFollow(db.Model):
     num_of_meaningful_updates = db.IntegerProperty()
     time_first_created = db.DateTimeProperty(auto_now_add=True)
     time_last_updated = db.DateTimeProperty()
-    time_last_modified_by_user = db.DateTimeProperty()
     pastResultsKeysList = db.StringListProperty()
     url = db.TextProperty()
     #num_of_articles_added_last_update = db.IntegerProperty()
@@ -36,8 +35,6 @@ class DBFollow(db.Model):
         new_follow.num_of_meaningful_updates = self.num_of_meaningful_updates #db.IntegerProperty()
         new_follow.time_first_created = self.time_first_created
         new_follow.time_last_updated = self.time_last_updated
-        new_follow.time_last_modified_by_user = self.time_last_modified_by_user
-        #new_follow.num_of_articles_added_last_update = self.num_of_articles_added_last_update
         new_follow.total_num_of_articles = self.total_num_of_articles
         new_follow.pastResultsKeysList = self.pastResultsKeysList
         new_follow.url = self.url
@@ -74,7 +71,7 @@ class DBFollow(db.Model):
         # Update the user on changes, and update the DB
         if (num_new_articles != 0):
             # TODO: add here try and catch on the email sending, and only afterwards update follow and add to DB
-            email_message = self.create_email_message(diff_list, new_resultsList)
+            email_message = self.create_email_message(diff_list, new_resultsList, diff_list)
             
             # Add the new articles to the saved dictionary
             for key in diff_list:
@@ -95,33 +92,56 @@ class DBFollow(db.Model):
     
        #Other Methods:
    # TODO: When tom writes the part that returns details from a key, you can make this function better.
-    def create_email_message(self, diff_list, new_resultsList):
-        message = "Hello Dear Lea Stolowicz\n" #self.user.nickname() + "!\n"
-        #message = ""
-        message = message + "This is a new update on your follow named: LALALA" #+ self.follow_name + "\n"
-        message = message + "There are " + str(len(diff_list)) + " new articles: \n\n"
+    def create_email_message(self, diff_list, all_resultsList, diff_keys_list):
+        html_msg = "<html><body>"
+        plain_msg = ""
+        plain_msg = "Hello Dear Lea Stolowicz,\n" #self.user.nickname() + "!\n"
+        html_msg = html_msg + "<b>Hello Dear " + self.user.nickname() + "</b><br>"
+        #plain_msg = ""
+        plain_msg = plain_msg + "There is a new update on your follow named: \n" + self.follow_name + "\n"
+        html_msg = html_msg + "There are " + str(len(diff_list)) + " new articles on your follow&trade; named: <br><b>" + self.follow_name + "</b><br><br><br>"
+        plain_msg = plain_msg + "There are " + str(len(diff_list)) + " new articles: \n\n"
         
-        # create list of new articels: 
-        new_articles_list = []
-        for article in new_resultsList:
-            if (new_resultsList.count(article.get_key()) != 0):
-                new_articles_list.append(article)
+        # create dictionary of new articles to report
+        tmp_dict = {}
+        for article in all_resultsList:
+            tmp_dict[article.get_key()] = article
+        
+        count = 0
+        for key in diff_keys_list:
+            if (count < 50):
+                count +=1
+                article = tmp_dict[key]
+                plain_msg = plain_msg + "\n" + unicode(article.get_article_title(), "utf-8") + "\n\n"
+                if (len(article.get_article_url()) > 0):
+                    plain_msg = plain_msg + article.get_article_url() + "\n\n"
+                plain_msg = plain_msg + "\t\t****************************************\n\n"
                 
-        for article in new_articles_list:
-            for article_URLandTitle in article.get_HTML_urlList():
-                message = message + "Article Title: " + article_URLandTitle.get_article_title() + "\n\n"
-                if article_URLandTitle.get_has_link():
-                    message = message + article_URLandTitle.get_article_url()
-            message = message + "\t\t****************************************\n\n"
+                if (len(article.get_article_url()) > 0):
+                    html_msg = html_msg + "<a href =\"" + article.get_article_url() +""""<font color="6633cc">""" + unicode(article.get_article_title(), "utf-8") + "</font></a><br>"
+                else: 
+                    html_msg = html_msg + """<b><font color="#6633cc">""" + unicode(article.get_article_title(), "utf-8") + "</b></font><br>"
+                html_msg = html_msg + """<font color="#00cc66">""" + unicode(article.get_HTML_author_year_pub(), "utf-8") + "</font>"
+                #html_msg = html_msg + unicode(article.get_HTML_abstract(),errors='replace') + "<br>"
+                html_msg = html_msg + unicode(article.get_HTML_abstract(),"utf-8") + "<br>"
+                
+                html_msg = html_msg + """<hr size="3" width="85%" align="left" color="009999"></hr><br>"""
         
-        message = message + "To remove this follow please press HERE\n\n"
-        message = message + "This update brought to you by RESEARCH ASSISTANT\n"
+        plain_msg = plain_msg + "To remove this follow please press HERE\n\n"
+        plain_msg = plain_msg + "This update brought to you by RESEARCH ASSISTANT\n"
         
-        mail.send_mail(sender="Research Assistant Team <lea.stolo@gmail.com>",
-                      to="lea.stolo@gmail.com", #self.user.email(),
+        html_msg = html_msg + "To remove this follow please press HERE<br><br>"
+        html_msg = html_msg + "&copy; This update brought to you by <a href=http://research-assistant.appspot.com/> RESEARCH ASSISTANT</a><br>"
+        
+        
+        
+        html_msg = html_msg + "</body></html>"
+        mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
+                      to=self.user.email(),
                       subject="You Have a new Scholar Update!",
-                      body=message)
-        #print message
-        return message
+                      body=plain_msg, 
+                      html=html_msg)
+        #print plain_msg
+        return plain_msg
 
         

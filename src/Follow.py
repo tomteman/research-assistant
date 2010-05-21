@@ -33,10 +33,8 @@ class Follow:
                                          # If he approves, this is filled with True.
                  num_of_update_requests = 0, 
                  num_of_meaningful_updates = 0,
-                 #num_of_articles_added_last_update = 0,
                  time_first_created = None, # This field is filled in DBFollow when upoaded
                  time_last_updated = None,  # This field is filled in DBFollow when upoaded
-                 time_last_modified_by_user = None,
                  total_num_of_articles = 0,       
                  pastResultsKeysList = None, 
                  url = None):
@@ -55,7 +53,6 @@ class Follow:
         self.time_last_updated = time_last_updated
         #self.num_of_articles_added_last_update = num_of_articles_added_last_update,
         self.total_num_of_articles = total_num_of_articles,
-        self.time_last_modified_by_user = time_last_modified_by_user
     
     def create_follow_name_from_search_params(self):
         if self.search_params == None:
@@ -106,7 +103,6 @@ class Follow:
         # convert to DBFollow and insert time fields 
         db_follow = self.convert2DBFollow()
         db_follow.time_last_updated = datetime.datetime.now()
-        db_follow.time_last_modified_by_user = datetime.datetime.now()
 
         #try: 
         db_follow.put()
@@ -123,18 +119,14 @@ class Follow:
         db_follow.user = self.user
         db_follow.user_nickname = self.user_nickname
         db_follow.follow_name = self.follow_name
-        #db_follow.search_params_str = db.Text(marshal.dumps(self.search_params))  # db.TextProperty()
         
         db_follow.search_params_str = pickle.dumps(self.search_params)
         db_follow.update_frequency = self.update_frequency #db.StringProperty(choices=set(["daily","weekly","monthly"]))
         db_follow.num_of_update_requests = self.num_of_update_requests #db.IntegerProperty()
         db_follow.num_of_meaningful_updates = self.num_of_meaningful_updates #db.IntegerProperty()
         db_follow.time_last_updated = self.time_last_updated
-        db_follow.time_last_modified_by_user = self.time_last_modified_by_user
         db_follow.pastResultsKeysList = self.pastResultsKeysList # StringListProperty()
-        #db_follow.num_of_articles_added_last_update = self.num_of_articles_added_last_update
         db_follow.total_num_of_articles = self.total_num_of_articles
         db_follow.url = self.url #db.TextProperty()
-        #db_follow.time_first_created - is filled automatically
         
         return db_follow

@@ -1,0 +1,4 @@
+cron:
+- description: update one follow from DB
+  url: /followcron
+  schedule: every 30 minutes

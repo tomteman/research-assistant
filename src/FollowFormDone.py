@@ -61,14 +61,18 @@ class FollowFormDone(webapp.RequestHandler):
         follow.create_follow_name_from_search_params()
         follow.first_upload()
         
-#        #dbfollow = db.get("ahJyZXNlYXJjaC1hc3Npc3RhbnRyDwsSCERCRm9sbG93GI8CDA")
-#        query = db.GqlQuery("SELECT * FROM DBFollow WHERE follow_name = 'keyword: instantand Documents citing: Instant messaging in teen life'")
+#        query = db.GqlQuery("SELECT * FROM DBFollow WHERE follow_name = 'keywords: cool'")
+#        dbfollow = query.fetch(1)[0]
+#        dbfollow.update_DBfollow()
+#
+#        query = db.GqlQuery("SELECT * FROM DBFollow WHERE follow_name = 'keywords: advance'")
 #        dbfollow = query.fetch(1)[0]
 #        dbfollow.update_DBfollow()
 #        
-#        query = db.GqlQuery("SELECT * FROM DBFollow WHERE follow_name = 'keyword: interesting + Documents citing: Syskill \& Webert: Identifying interesting web sites'")
+#        query = db.GqlQuery("SELECT * FROM DBFollow WHERE follow_name = 'keywords: dna'")
 #        dbfollow = query.fetch(1)[0]
 #        dbfollow.update_DBfollow()
+
         
                         
 
