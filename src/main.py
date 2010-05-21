@@ -29,6 +29,9 @@ from django.template.loader import get_template
 from django import forms
 from getHTML import getHTML
 
+
+from django.utils import simplejson
+
 # Django settings configuration : currently for setting the templates directory
 settings._target = None
 ROOT_PATH = os.path.dirname(__file__)
@@ -45,7 +48,7 @@ class MainPage(webapp.RequestHandler):
     
     def get(self):
 #       load the basic template 
-        t = get_template('index.html')
+        t = get_template('base.html')
 #       add custom content
 #TODO: Define default values/ required fields. 
         c = Context()
@@ -54,11 +57,30 @@ class MainPage(webapp.RequestHandler):
         else:
             c['login'] = users.create_login_url(self.request.uri)
         c['users'] = users
+        c['currPage'] = "/Index"
 #       show it to the world!!!
         self.response.out.write(t.render(c))
+        
+        
 #global variable for search parameters        
 searchParams = SearchParams()
 numOfResults = 0
+
+
+class Index(webapp.RequestHandler):
+    def get(self):
+        t = get_template('index.html')
+        c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
+#       show it to the world!!!
+        self.response.out.write(t.render(c))
+
+
+
 
 class Search(webapp.RequestHandler):
 #Create the search results page
@@ -192,8 +214,9 @@ class About(webapp.RequestHandler):
         else:
             c['login'] = users.create_login_url(self.request.uri)
         c['users'] = users
-
         self.response.out.write(t.render(c))
+
+
 
 class Profile(webapp.RequestHandler):
 #Create the about us page    
@@ -223,17 +246,72 @@ class AdvancedSearch(webapp.RequestHandler):
         self.response.out.write(t.render(c))        
         
         
+
+class RPCHandler(webapp.RequestHandler):
+    """ Allows the functions defined in the RPCMethods class to be RPCed."""
+    def __init__(self):
+        webapp.RequestHandler.__init__(self)
+        self.methods = RPCMethods()
+
+    def get(self):
+        func = None
+
+        action = self.request.get('action')
+        if action:
+            if action[0] == '_':
+                self.error(403) # access denied
+                return
+            else:
+                func = getattr(self.methods, action, None)
+        if not func:
+            self.error(404) # file not found
+            return
+
+        args = ()
+        while True:
+            key = 'arg%d' % len(args)
+            val = self.request.get(key)
+            if val:
+                args += (simplejson.loads(val),)
+            else:
+                break
+        result = func(*args)
+        self.response.out.write(simplejson.dumps(result))
+
+
+class RPCMethods:
+    """ Defines the methods that can be RPCed.
+    NOTE: Do not allow remote callers access to private/protected "_*" methods.
+    """
+
+    def AddTag(self, *args):
+        return 2
+    
+        
+    def tag(self, *args):
+        ints = [int(arg) for arg in args]
+        return 1
+            
+        
+    def tag_try(self,  *args):
+        #ints = [(arg) for arg in args]
+        return 2     
+
+        
+        
     
     
 
 #----------------------------    Classes end Here   ------------------------
 
 application = webapp.WSGIApplication([('/', MainPage)
+                                      ,('/Index', Index)
                                       ,('/Search',Search )
                                       ,('/AddFollow', AddFollow)
                                       ,('/FollowFormDone', FollowFormDone)
                                       ,('/DisplayTag', DisplayTag)
                                       ,('/About', About)
+                                      ,('/rpc', RPCHandler)
                                       ,('/Profile', Profile)
                                       ,('/AdvancedSearch', AdvancedSearch)],
                                       debug=True)
