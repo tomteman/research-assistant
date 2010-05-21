@@ -62,6 +62,9 @@ class SearchParams:
         
     def updateNumOfResults(self, num):
         self.num_of_results = num
+    
+    def updateYearStart(self, year):
+        self.year_start = year
 
 # TODO: change this thing
     def __str__(self):

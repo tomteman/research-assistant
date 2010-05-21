@@ -488,6 +488,7 @@ def getAllResultsFromURL(searchParams):
     isFinished = False
     
     searchParams.updateNumOfResults(100)
+    searchParams.updateYearStart(2009)
     searchURL = searchParams.constructURL()
     
     HTMLdata = getResultsFromURL(searchURL)
@@ -520,6 +521,7 @@ def getAllResultsFromURLwithProxy(searchParams):
     isFinished = False
     
     searchParams.updateNumOfResults(100)
+    searchParams.updateYearStart(2009)
     
     searchURL = searchParams.constructURL()
     
