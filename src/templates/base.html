@@ -16,10 +16,21 @@
         </style>
         
         {% block script %}
-       
        	<script type="text/javascript" src="/static/scripts.js"></script>
        	<script type="text/javascript" src="./static/json.js"></script>
-       	
+       
+        <script language="JavaScript">
+		<!--
+			function calcHeight(){
+				//find the height of the internal page
+					var the_height=document.getElementById('the_iframe').contentWindow.
+					document.body.scrollHeight;
+
+				//change the height of the iframe
+					document.getElementById('the_iframe').height=the_height;
+			}
+		//-->
+		</script>	
        	
 	
        
@@ -62,9 +73,9 @@
 			
 			<div id="menu">
 				<ul>
-				<li><a href="/" >Home</a></li>
-				<li><a href="/Profile">Profile</a></li>
-				<li><a href="/About" class="first">About</a></li>
+				<li><a href="/Index" target="frame" >Home</a></li>
+				<li><a href="/Profile" target="frame">Profile</a></li>
+				<li><a href="/About" class="first" target="frame">About</a></li>
 				</ul>
 			</div>
 			<!-- end #menu -->
@@ -80,6 +91,15 @@
 		
 			<div id="content">
 				{% block contents %}
+				
+				<iframe width="90%" id="the_iframe" name="frame"
+						onLoad="calcHeight();"
+						src="{{currPage}}"
+						scrolling="NO"
+						frameborder="0"
+						height="1">
+					An iframe capable browser is required to view this web site.
+				</iframe>
 				
 					
 				{% endblock %}

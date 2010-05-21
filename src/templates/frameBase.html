@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+{% comment %} This is the basic template for our website {% endcomment  %}
+<html>
+	<head>
+		<title>
+		{% comment %} A replaceable block for putting different titles on different pages {% endcomment %}
+			
+			{% block title %}
+				Research Assistant
+			{% endblock %}
+		
+		</title>
+
+ 		<style type="text/css">
+            @import "/static/frameStyle.css";
+            
+        </style>
+        
+        {% block script %}
+       
+	       	<script type="text/javascript" src="/static/scripts.js"> </script>
+    	   	<script type="text/javascript" src="/static/json.js"> </script>
+    	   	   	
+    	
+    	{% comment %}
+    	   	<script src="http://www.google.com/jsapi?key=ABQIAAAA1LBGrnugLRXA-qr8RhABohRS_yCtuj0JMQy1Z7-dzLMf20ETQxQeJpjm9n4_5NO8JW-RXgINOnB_aw" type="text/javascript">
+    	   	</script>
+   			
+   			 <script language="Javascript" type="text/javascript">
+
+			 	google.load("jquery", "1.4.2");
+  				google.load("jqueryui", "1.8.1");
+			
+    		 </script>
+    		 {% endcomment %}
+	
+       
+        {% endblock %}
+	</head>
+	
+	<body>
+	
+	{% block contents %}
+	
+	
+	
+	
+	{% endblock %}
+	
+	</body>
+	</html>
+	
+	

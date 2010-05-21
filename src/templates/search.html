@@ -1,13 +1,15 @@
-{% extends "base.html" %}
+{% extends "frameBase.html" %}
 
 {% comment %} This is the template for displaying search results {% endcomment  %}
 
 {% block title %}
-	Reaserch Assistant - search			
+	Research Assistant - search			
 {% endblock %}
 
 
 {% block contents %} 
+
+<div id="popupcontent">This is a popup window!</div>
 
 
 
@@ -41,7 +43,9 @@
 	</form>
 
 	{% else %}
-		<div id='infoLine'> {{numOfResults}} </div>
+		<div id='infoLine'> {{numOfResults}} </div> 
+		</br>
+		</br>
 			
 	{% endif %}
 	
@@ -49,17 +53,31 @@
 	
 	{{RefinedSearch}}
 
+	
 
 
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
 	
 	{% for result in results %}
-		<div id={{result.get_key}} class="Article">
+	
+	
+		<script type="text/javascript"> 
+
+			function doTag() {
+				
+      			server.tag_try(  onTagSuccess);
+    		}
+  			
+		</script>
+		
+		<div id={{result.get_key}} class="article">
+		<input name="check_article"  type="checkbox" value="on" />
 		{% for HTML_url in result.HTML_urlList %}
 			{% if HTML_url.get_has_link %}
 				<a href= {{HTML_url.get_article_url}}> {{HTML_url.get_article_title}} </a>&nbsp;
 					
 			{% else %}
+			
 				 {{HTML_url.get_article_title}}
 			{% endif %}
 		{% endfor %}
@@ -75,8 +93,13 @@
 		{% if result.all_versionsID %}
 			<a href= "/Search?Id={{result.all_versionsID}}&Title={{result.get_article_title_quoted}}&Type=AllVersions"> All Versions</a> - 
 		{% endif %}
-		<a href= "/Search?Id={{result.key}}&Type=Import2BibTex">Import into BibTex</a></form>	
+		<a href= "/Search?Id={{result.key}}&Type=Import2BibTex">Import into BibTex</a></form>
+		 	
 			<form method="post" action={{formAction}}>
+			
+			<input type="button" value="Pop up" onclick="popUp()" />
+			<input type="button" value="TAG" onclick="doTag()" />
+			
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>

@@ -1,0 +1,37 @@
+
+ <script language="JavaScript">
+		<!--
+			function calcHeight(){
+				//find the height of the internal page
+					var the_height=document.getElementById('the_iframe').contentWindow.
+					document.body.scrollHeight;
+
+				//change the height of the iframe
+					document.getElementById('the_iframe').height=the_height;
+			}
+		//-->
+		</script>
+
+
+
+<iframe width="90%" id="the_iframe" name="frame"
+						onLoad="calcHeight();"
+						src="{{currPage}}"
+						scrolling="NO"
+						frameborder="0"
+						height="1">
+					An iframe capable browser is required to view this web site.
+				</iframe>
+				
+				
+			   function onTagSuccess(response) {    
+
+        var Parent = $('sidebar');
+        var NewLI =  $('tag1').cloneNode(true);
+        
+      //  NewLI.value = response;
+
+        Parent.appendChild(NewLI);
+        Parent.insertAfter(NewLI, Parent.firstChild);    
+    } 	
+				
