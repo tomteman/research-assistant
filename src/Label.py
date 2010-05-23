@@ -130,5 +130,13 @@ def get_number_of_articles_with_label(user, label_name):
     pass
     #def Add_comment???
 
+def get_list_of_label_users(user,label_name):
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 ", 
+                    user, label_name)
+    label = query.fetch(1)[0]
+    return label.users_list
+    
+
 
     
