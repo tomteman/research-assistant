@@ -1,10 +1,11 @@
 from google.appengine.api import mail
 from google.appengine.ext import db
-from Follow import *
+import Follow
 import pickle
 import HTMLparser
 #import ResearchExceptions
 import GeneralFuncs
+import datetime
 
 class DBFollow(db.Model):
     user = db.UserProperty()
@@ -23,13 +24,13 @@ class DBFollow(db.Model):
     
     def convert2Follow(self):
     
-        new_follow = Follow()
+        new_follow = Follow.Follow()
         new_follow.user = self.user
         if (self.user != None):
             new_follow.user_nickname = self.user.nickname()
         new_follow.user_id = self.user_id
         new_follow.follow_name = self.follow_name
-        new_follow.search_params = pickle.loads(self.search_params_str)  # db.TextProperty()
+        new_follow.search_params = pickle.loads(str(self.search_params_str))  # db.TextProperty()
         new_follow.update_frequency = self.update_frequency #db.StringProperty(choices=set(["daily","weekly","monthly"]))
         new_follow.num_of_update_requests = self.num_of_update_requests #db.IntegerProperty()
         new_follow.num_of_meaningful_updates = self.num_of_meaningful_updates #db.IntegerProperty()
@@ -90,8 +91,6 @@ class DBFollow(db.Model):
         
         return True
     
-       #Other Methods:
-   # TODO: When tom writes the part that returns details from a key, you can make this function better.
     def create_email_message(self, diff_list, all_resultsList, diff_keys_list):
         html_msg = "<html><body>"
         plain_msg = ""
@@ -125,7 +124,7 @@ class DBFollow(db.Model):
                 #html_msg = html_msg + unicode(article.get_HTML_abstract(),errors='replace') + "<br>"
                 html_msg = html_msg + unicode(article.get_HTML_abstract(),"utf-8") + "<br>"
                 
-                html_msg = html_msg + """<hr size="3" width="85%" align="left" color="009999"></hr><br>"""
+                html_msg = html_msg + """<hr size="3" width="100%" align="left" color="009999"></hr><br>"""
         
         plain_msg = plain_msg + "To remove this follow please press HERE\n\n"
         plain_msg = plain_msg + "This update brought to you by RESEARCH ASSISTANT\n"

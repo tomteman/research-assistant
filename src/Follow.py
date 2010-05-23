@@ -1,12 +1,3 @@
-# -*- coding: cp1255 -*-
-#QM = "\""
-
-################### Lea:  TODO for next time:
-
-# Check the follow on 8081 :) http://localhost:8081/_ah/admin/datastore?kind=DBFollow
-# some problem with the pickle #search_params_str = db.StringProperty(multiline=True)
-
-
 from SearchParams import *
 from ArticleData import ArticleData
 import datetime
@@ -14,11 +5,8 @@ import string
 import HTMLparser
 from DBFollow import DBFollow
 import pickle
-# TODO: change defaults in the __init__ function
-# TODO : decide which fields should be required
+import urllib
 
-
-    
 class Follow:
     def __init__(self, 
                  user = None, 
@@ -61,20 +49,20 @@ class Follow:
         # if it is citing an article:
         if (self.search_params.citesArticleName != None and (len(self.search_params.citesArticleName) > 0)):
             if (len(self.search_params.author) > 0):
-                self.follow_name += "author: " +  self.search_params.author + " + "
+                self.follow_name += "author: " +  urllib.unquote_plus(self.search_params.author) + " + "
             if (len(self.search_params.keywords) > 0):
-                self.follow_name += "keyword: " +  self.search_params.keywords + " + "
+                self.follow_name += "keyword: " +  urllib.unquote_plus(self.search_params.keywords) + " + "
             self.follow_name += "Documents citing: " 
-            self.follow_name += self.search_params.citesArticleName
+            self.follow_name += urllib.unquote_plus(self.search_params.citesArticleName)
         else:
             if (len(self.search_params.keywords) != 0):
-                self.follow_name += "keywords: " + self.search_params.keywords
+                self.follow_name += "keywords: " + urllib.unquote_plus(self.search_params.keywords)
             if (len(self.search_params.author) != 0):
-                self.follow_name += "author: " + self.search_params.author
+                self.follow_name += " author: " + urllib.unquote_plus(self.search_params.author)
             if (len(self.search_params.journal)!= 0):
-                self.follow_name += "journal : " + self.search_params.journal
+                self.follow_name += " journal : " + urllib.unquote_plus(self.search_params.journal)
             if (len(self.search_params.year_start) != 0):
-                self.follow_name += "From Year : " + self.search_params.year_start
+                self.follow_name += " From Year : " + urllib.unquote_plus(self.search_params.year_start)
         
         return True
     
@@ -111,8 +99,6 @@ class Follow:
         return True
         
    
-# TODO: make everything here in try and catch, so if convert fails, it will write something instead in the field.
-# In case it is a critical value - inform...
     def convert2DBFollow(self):
         
         db_follow = DBFollow()

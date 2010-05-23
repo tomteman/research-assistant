@@ -1,6 +1,5 @@
 import cgi
 import os
-
 from google.appengine.ext.webapp import template
 from google.appengine.api import users
 from google.appengine.ext import webapp
@@ -8,9 +7,7 @@ from django.template import Template,Context
 from django.conf import settings 
 from django.template.loader import get_template
 from google.appengine.ext import db
-
 from SearchParams import *
-
 import Follow
 import string
 
@@ -55,9 +52,14 @@ class FollowFormDone(webapp.RequestHandler):
                                search_params=s_params, 
                                update_frequency=vars["update_frequency"])
                                
-        if (follow.first_follow_query() == 0): # no results where found
+        num_of_query_results = follow.first_follow_query()
+        if (num_of_query_results == 0): # no results where found
             # TODO: need to notify user there are no results for this query
             pass
+        if (num_of_query_results == 1000):
+            pass
+            # TODO: we should notify user here as well
+        
         follow.create_follow_name_from_search_params()
         follow.first_upload()
         
