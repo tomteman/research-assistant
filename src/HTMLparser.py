@@ -473,7 +473,7 @@ def getResultsFromURLwithProxy(url):
     # first we fetch the HTML from Google Scholar
     newHTML = getHTML(url)
     #newHTML.getHTMLfromURLwithProxy("74.115.1.13", 80)
-    newHTML.getHTMLfromURLwithProxy("221.130.13.228", 80)
+    newHTML.getHTMLfromURLwithProxy("211.138.124.198", 80)
     
     # parse the results
     newHTMLdata = HTMLparser(url,newHTML.get_html())
