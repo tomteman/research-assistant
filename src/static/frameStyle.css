@@ -286,7 +286,7 @@ hr { display: none; }
 
 /*aaaa*/
 
-#scrollable {
+#authors {
 	width:300px;
     height:50px;
     background-color:#ffffff;
@@ -368,8 +368,6 @@ hr { display: none; }
 	padding-left: 17px;
 }
 
-
-
 #sidebar {
 	float: left;
 	width: 162px;
@@ -392,8 +390,7 @@ hr { display: none; }
 }
 
 #popupcontent{
-    position: absolute;
-    visibility: hidden;
+    display:none;
     overflow: hidden;
    	padding:5px;
     border:1px solid;	
@@ -407,6 +404,40 @@ hr { display: none; }
 	left: 25%;
 	
 }
+#popupk {
+	height: 100%;
+	width: 100%;
+	background: #000000;
+	position: absolute;
+	top: 0;
+	-moz-opacity:0.75;
+	-khtml-opacity: 0.75;
+	opacity: 0.75;
+	filter:alpha(opacity=75);
+}
+
+#window {
+	width: 400px;
+	height: 200px;
+	margin: 0 auto;
+	background-color: #EEE;
+    color: #333;
+    border: 1px solid black;
+	position: absolute;
+	top: 20%;
+	left: 25%;	
+	display: none;
+ 
+	
+}
+
+
+
+
+#explanation{
+	display:none;
+	}
+	
 #article {
 	padding: 56px 0;
 	margin: 0 0 5px 0px;

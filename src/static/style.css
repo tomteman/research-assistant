@@ -219,11 +219,6 @@ hr { display: none; }
 }
 
 
-#frame {
-	float: left;
-	
-	
-	}
 
 /* Page */
 
@@ -300,6 +295,9 @@ hr { display: none; }
 }
 
 /* Content */
+
+
+
 
 #content {
 	float: right;
@@ -392,7 +390,11 @@ hr { display: none; }
 	color: #42423E;
 }
 
-
+#article {
+	padding: 56px 0;
+	margin: 0 0 5px 0px;
+	
+	}
 
 #footer {
 	width: 1000px;
@@ -415,3 +417,5 @@ hr { display: none; }
 #footer a {
 	color: #000000;
 }
+
+
