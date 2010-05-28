@@ -14,7 +14,7 @@ class HTMLparser:
     def __init__(self, url, html):
         self.url = url
         self.html = html
-        self.results = {}
+        self.results = []
         self.noResultsFlag = False
         self.refinedSearchNoResultsFlag = False  # flag indicating if refined search (search within citation) yielded no results
         self.numOfResults = 0
@@ -473,7 +473,7 @@ def getResultsFromURLwithProxy(url):
     # first we fetch the HTML from Google Scholar
     newHTML = getHTML(url)
     #newHTML.getHTMLfromURLwithProxy("74.115.1.13", 80)
-    newHTML.getHTMLfromURLwithProxy("74.115.1.11", 80)
+    newHTML.getHTMLfromURLwithProxy("221.130.13.228", 80)
     
     # parse the results
     newHTMLdata = HTMLparser(url,newHTML.get_html())
@@ -488,7 +488,7 @@ def getAllResultsFromURL(searchParams):
     isFinished = False
     
     searchParams.updateNumOfResults(100)
-    searchParams.updateYearStart(2009)
+    searchParams.updateYearStart(2010)
     searchURL = searchParams.constructURL()
     
     HTMLdata = getResultsFromURL(searchURL)
@@ -521,7 +521,7 @@ def getAllResultsFromURLwithProxy(searchParams):
     isFinished = False
     
     searchParams.updateNumOfResults(100)
-    searchParams.updateYearStart(2009)
+    searchParams.updateYearStart(2010)
     
     searchURL = searchParams.constructURL()
     
