@@ -9,8 +9,7 @@
 
 {% block contents %} 
 
-<div id="popupcontent">This is a popup window!</div>
-
+   
 
 
 	{% if  CitedBy %}   
@@ -59,16 +58,6 @@
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
 	
 	{% for result in results %}
-	
-	
-		<script type="text/javascript"> 
-
-			function doTag() {
-				
-      			server.tag_try(  onTagSuccess);
-    		}
-  			
-		</script>
 		
 		<div id={{result.get_key}} class="article">
 		<input name="check_article"  type="checkbox" value="on" />
@@ -97,8 +86,8 @@
 		 	
 			<form method="post" action={{formAction}}>
 			
-			<input type="button" value="Pop up" onclick="popUp()" />
-			<input type="button" value="TAG" onclick="doTag()" />
+			<input type="button" name="popUp" value="Pop up" onclick="popUp()" />
+			<input type="button" class="addTag" name="addTag" id="addTag" value="TAG"  />
 			
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
