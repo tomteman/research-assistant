@@ -143,4 +143,23 @@ class DBFollow(db.Model):
         #print plain_msg
         return plain_msg
 
+def get_all_users_dbfollows(user):
+    query = db.GqlQuery("SELECT * FROM DBFollow WHERE user = :1 ",user) 
+    dbfollows_list = []
+    for dbfollow in query:
+        dbfollows_list.append(dbfollow)
+    return dbfollows_list
+
+def remove_DBFollow(user, follow_name):
+    query = db.GqlQuery("SELECT * FROM DBFollow WHERE user = :1 " + 
+                        "AND follow_name = :2",
+                        user, follow_name)
+    count = 0
+    for dbfollow in query:
+        dbfollow.delete()
+        count += 1
+    return count
+
+        #if self.is_saved():
+        #    self.delete()
         
