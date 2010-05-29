@@ -1,4 +1,6 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+
 {% comment %} This is the basic template for our website {% endcomment  %}
 <html>
 	<head>
@@ -13,9 +15,8 @@
 
  		<style type="text/css">
  		 
-            @import "/static/frameStyle.css";
-            @import "/static/jqModal.css";
-            
+            @import "/static/frameStyle.css"; 
+			@import "/static/jquery-ui-1.8.1.custom.css";                   
             
         </style>
         
@@ -23,17 +24,10 @@
           	
     	   	<script type="text/javascript" src="/static/jquery-1.4.2.min.js"></script>
     	   	<script type="text/javascript" src="/static/jquery.form.js"></script>
-    	   	<script type="text/javascript" src="/static/jqModal.js"></script>
-   			
-	       	
+    	   		   	<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"></script>       	
 	        <script type="text/javascript" src="/static/myJquery.js"> </script>
-    	   	<script type="text/javascript" src="/static/json.js"> </script>
-    	      
-    	   	  	
-   	
-    		 
-    		 	
-    		 </script>
+    	
+    	     
 	
        
         {% endblock %}

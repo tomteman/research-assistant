@@ -1,45 +1,16 @@
 {% extends "frameBase.html" %}
 
+
+
+
 {% block title %}
-	Research Assistant
+	Reaserch Assistant - new follow			
 {% endblock %}
 
 
 
-{% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
-
 {% block contents %}
 
-		</br>
-		</br>
-		<div id="search_index">
-			<form method="post" action="/Search">
-				<fieldset>
-					<input type="text" name="SearchTerm" id="search_index_text" size="15" />
-					<input type="submit" id="search_index_submit" value="Search" />
-					</br>
-					<a href="/AdvancedSearch" >Advanced Search</a>
-				</fieldset>
-			</form>	
-		</div>		
 
 
-	
-		<div id="window" style="display: none;">
-			<div id="popup_content">
-			<h3>Aaaa jjkjkj jhjhj</h3>
-				<input type="button" id="firstUpload" value="Yes"/>
-				<input type="button" id="noUpload" value="No" onclick="Close_Popup();"/> 
-			
-			</div>
-		</div>
-	
-
-	<input type="button" id="popUp" value="Pop up" onclick="Show_Popup();" />
-		</br>
-		</br>
-		</br>
-		</br>
-			
-					
 {% endblock %}

@@ -1,0 +1,26 @@
+{% extends "frameBase.html" %}
+
+
+{% block title %}
+	My Follows		
+{% endblock %}
+
+
+{% block contents %}
+
+<h2>Your Follows:</h2>
+
+<br/>
+<list  id="follows_list" style="background: #EEE;">
+
+	{% for follow in myFollows %}
+	<ul>
+		{{follow.follow_name}}
+		<input type="button" id="removeButton" value="Remove"/>
+		<br/>
+		
+	</ul>
+	{% endfor %}
+	</list>
+		
+{% endblock %}

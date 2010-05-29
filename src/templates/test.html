@@ -1,37 +1,27 @@
-
- <script language="JavaScript">
-		<!--
-			function calcHeight(){
-				//find the height of the internal page
-					var the_height=document.getElementById('the_iframe').contentWindow.
-					document.body.scrollHeight;
-
-				//change the height of the iframe
-					document.getElementById('the_iframe').height=the_height;
-			}
-		//-->
-		</script>
-
-
-
-<iframe width="90%" id="the_iframe" name="frame"
-						onLoad="calcHeight();"
-						src="{{currPage}}"
-						scrolling="NO"
-						frameborder="0"
-						height="1">
-					An iframe capable browser is required to view this web site.
-				</iframe>
+function validate(formData, jqForm, options) { 
+ 
+ 	not_checked=0;
+    for (var i=0; i < formData.length; i++) { 
+        if (!formData[i].value){
+        	if (formData[i].name == "ch_keywords" or formData[i].name == "ch_journal" 
+        		or formData[i].name == "ch_author" or formData[i].name == "ch_citing" ) {
+        		not_checked = not_checked+1;
+        	}
+        }
+    } 
+    if (not_checked == 4){
+    	 alert('Check one of the check boxes'); 
+         return false; 
+    }else
+    	return true;
+     
+}
 				
 				
-			   function onTagSuccess(response) {    
 
-        var Parent = $('sidebar');
-        var NewLI =  $('tag1').cloneNode(true);
-        
-      //  NewLI.value = response;
 
-        Parent.appendChild(NewLI);
-        Parent.insertAfter(NewLI, Parent.firstChild);    
-    } 	
-				
+
+
+
+
+

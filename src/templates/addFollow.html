@@ -11,10 +11,18 @@
 
 {% block contents %}
 
+	<div id="popup_content" style="display: none;">
+		<p id="popupText">Some text</p>
+		<input type="button" id="butUpload" value="Yes" onclick="Close_Popup();"/>
+		<input type="button" id="butNoUpload" value="No" onclick="Close_Popup();"/>
+	</div>
 	
 	
 	
-	<form id="newFollow" class="addFollow"  action={{formDoneAction}} method="post">
+	
+	
+	
+	<form id="newFollow" class="addFollow" action='/Submit'  method="post">
 	<h1><a>Add New Follow</a></h1>	
 	<!-- notify on --->
 		<div class="description" for="followDefinitions">Notify me on new article </div>
@@ -34,7 +42,7 @@
 						<label class="choice">with keywords</label>
 					</td>
 					<td class="textbox">
-						<input name="keywords" type="text" maxlength="255" value="{{keywords}}">
+						<input name="keywords" type="text" maxlength="255" value="matrix">
 					</td>
 				</tr>
 
@@ -49,7 +57,7 @@
 						  	<div name="authors">
 						  		{% for author in authors %}	
    							   		<input name="ch_author" type="checkbox" checked="checked" value="on" />
-										<label class="choice">{{author}}</label></br>
+										<label class="choice">{{author}}</label> <br/>
 								{% endfor %}
 														
 							</div>
@@ -74,7 +82,7 @@
 							
 			</table>
 			<div id="explanation"> "Publication" is enabled only when "citing" checkbox is off</div> 	
-			</br>
+			<br/>
 		</dt>	
 		<!--end notify on --->
 			
@@ -97,6 +105,7 @@
 					
 		<!-- submit button --->					
 		<dt class="buttons">
+			<input type="hidden" name="first" value="1" />
 		    <input type="hidden" name="form_id" value="233471" />
 			<input type="hidden" name="citing_num" value={{numCitations}} />    
 			<input id="submit" class="button_text" type="submit" name="submit" value="Submit" />
@@ -105,6 +114,8 @@
 	</dl>
 		
 </form>	
+
+
 
 
 
