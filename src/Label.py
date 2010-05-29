@@ -3,11 +3,14 @@ import pickle
 import ArticleData
 from google.appengine.api import users 
 from google.appengine.api import mail
+from django.utils import simplejson
+import JSONConvertors
+import HTMLparser
 
 class Label(db.Model):
      users_list = db.ListProperty(users.User) 
      label_name = db.StringProperty()
-     Comment  = db.TextProperty()
+     comment  = db.TextProperty()
      serialized_article  = db.TextProperty()
      article_key = db.StringProperty()
      is_shared = db.BooleanProperty()
@@ -115,6 +118,23 @@ def get_articles_list_with_label(user,label_name):
      
      return article_objects_list
  
+#####
+## This function is called when user presses a certain label
+## and then he gets all the articles he has tagged on that label
+####
+def get_articles_list_with_label_as_HTMLParser_JSON(user, label_name):
+    article_objects_list = get_articles_list_with_label(user, label_name)
+    
+    html_parser = HTMLparser.HTMLparser(url=None, html=None)
+    html_parser.results =  article_objects_list
+    html_parser.numOfResults = len(article_objects_list)
+    
+    my_htmlparser_encoder = JSONConvertors.HTMLparserEncoder()
+    as_json =my_htmlparser_encoder.encode(html_parser)
+    
+    return as_json
+    
+    
 def get_articles_keys_list_with_label(user,label_name):
      query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
@@ -137,6 +157,26 @@ def get_list_of_label_users(user,label_name):
     label = query.fetch(1)[0]
     return label.users_list
     
+#####################################
 
+def get_articlekey_labellist_dict(user):
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
+    articlekey_labellist_dict = {}
+    for label in query:
+        articlekey_labellist_dict[label.article_key] = label
+    return articlekey_labellist_dict
+
+def get_articlekey_labellist_dict_JSON(user):
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
+    
+    my_label_encoder = JSONConvertors.LabelEncoder()
+    articlekey_labellist_dict_JSON = {}
+    
+    for label in query:
+        articlekey_labellist_dict_JSON[label.article_key] = my_label_encoder.default(label)
+        
+    return simplejson.dumps(articlekey_labellist_dict_JSON)
+        
+   
 
     
