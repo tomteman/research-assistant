@@ -92,10 +92,11 @@ class Follow:
         db_follow = self.convert2DBFollow()
         db_follow.time_last_updated = datetime.datetime.now()
 
-        #try: 
-        db_follow.put()
-        #except Exception:
-        #   print "In first upload: Could not upload to DB\n"
+        try: 
+            db_follow.put()
+        except Exception:
+           return False
+       
         return True
         
    
