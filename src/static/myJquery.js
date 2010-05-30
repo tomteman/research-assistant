@@ -49,7 +49,28 @@ $(document).ready(function() {
         $('#newFollow').ajaxSubmit(options2); 
         return false; 
     }); 
-   
+    
+    
+    var options_rm_follow = { 
+        target:        '#result',  	      // target element(s) to be updated with server response 
+        beforeSubmit:  showRequest,		  // pre-submit callback 
+        success:       showResponse2,      // post-submit callback 
+ 		url:      '/MyFollows',              // override for form's 'action' attribute 
+ 		type:      "POST",
+ 		dataType:  'json'
+      
+    }; 
+    
+  
+     // Remove follow when button is clicked 
+    $('.removeButton').click(function() {
+     
+    	var id_name = $(this).attr("id");	
+    	$(this).parent("li").remove();
+    	$("#name_to_remove").val(id_name);
+        $("#follow_to_remove").ajaxSubmit(options_rm_follow); 
+        return false; 
+    }); 
  });
 
  
@@ -64,10 +85,10 @@ function showRequest(formData, jqForm, options) {
 // post-submit callback 
 function showResponse(responseText, statusText, xhr, $form)  { 
    
+   alert(responseText);
    if (responseText == "1000"){
    		$('#popupText').html("Search with current configuration returned more than 1000 results.<br/> There is a chance that we won't be able to bring you new updates.<br/> Do you want to continue?");
    		$('#popup_content').dialog({ width: 600 });
-   	
 	}
 	
 	if (responseText == "0"){
@@ -78,6 +99,13 @@ function showResponse(responseText, statusText, xhr, $form)  {
 		location.href = '/FollowFormDone';
    		
 	}      
+};
+
+ 
+
+function showResponse2(responseText, statusText, xhr, $form)  { 
+   
+   alert(responseText); 
 };
 
 	
