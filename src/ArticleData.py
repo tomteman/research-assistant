@@ -1,5 +1,6 @@
 from bibtexParser import parser
 from getHTML import getHTML
+import re
 
 class ArticleData:
     def __init__(self):
@@ -21,6 +22,7 @@ class ArticleData:
         self.articleTitle = ""
         self.articleTitleQuoted = ""
         self.articleURL = ""
+        self.year = None
 
         
 
@@ -307,6 +309,20 @@ class ArticleData:
         values = self.BibTex_dict.values()[0]
         #return the value of the requested fieldname
         return values.get(fieldname)
+    
+    def get_year_from_HTML_author_year_pub(self):
+        m = re.search('.*(\d\d\d\d).*', self.HTML_author_year_pub)
+        if (m != None):
+            try:
+                year = int(m.group(1))
+            except Exception:
+                return None
+            
+            if ((year > 1900) and (year < 2020)):
+                self.year = year
+                return year
+            else:
+                return None
         
 def parseBibTexItems(bibtexID):
     # get the BibTex HTML
