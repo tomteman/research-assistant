@@ -6,6 +6,7 @@ import HTMLparser
 from DBFollow import DBFollow
 import pickle
 import urllib
+from google.appengine.ext import db
 
 class Follow:
     def __init__(self, 
@@ -67,6 +68,15 @@ class Follow:
         return True
     
     # Return value: number of results found 
+    def check_if_already_exists(self, user, follow_name):
+        query = db.GqlQuery("SELECT * FROM DBFollow WHERE user = :1 " + 
+                            "AND follow_name = :2",
+                            user, follow_name)
+        if (query.count() > 0):
+            return True
+        else: 
+            return False
+         
     def first_follow_query(self):
         
         results = HTMLparser.getAllResultsFromURLwithProxy(self.search_params)
@@ -92,10 +102,10 @@ class Follow:
         db_follow = self.convert2DBFollow()
         db_follow.time_last_updated = datetime.datetime.now()
 
-    #    try: 
-        db_follow.put()
-     #   except Exception:
-     #      return False
+        try: 
+            db_follow.put()
+        except Exception:
+            return False
        
         return True
         

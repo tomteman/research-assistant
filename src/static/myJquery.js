@@ -85,6 +85,15 @@ function showRequest(formData, jqForm, options) {
 // post-submit callback 
 function showResponse(responseText, statusText, xhr, $form)  { 
    
+    if (responseText == "-2"){
+           $('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
+           $('#popupText').dialog({ width: 600 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+    }
+    
+   if (responseText == "-1"){
+           $('#popupText').html("This follow already exists <br/>");
+           $('#popupText').dialog({ width: 600 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+    }
 
    if (responseText == "1000"){
    		$('#popupText').html("Search with current configuration returned more than 1000 results.<br/> There is a chance that we won't be able to bring you new updates.<br/> Do you want to continue?");
@@ -95,7 +104,7 @@ function showResponse(responseText, statusText, xhr, $form)  {
    		$('#popupText').html("Search with current configuration returned no results.<br/> Do you want to continue?");
    		$('#popup_content').dialog({ width: 600  });
 	}
-	if  (!(responseText == "1000" || responseText == "0")){
+	if  (!(responseText == "1000" || responseText == "0" || responseText == "-1")){
 		location.href = '/FollowFormDone';
    		
 	}      
