@@ -61,7 +61,10 @@ class DBFollow(db.Model):
         #    raise ResearchExceptions.InputError("In update follow", "Function: HTMLparser.getResultsFromURL(self.url) returned None\n")  
         new_resultsKeys = []
         for article in new_resultsList:
-            new_resultsKeys.append(article.get_key())
+            year= article.get_year_from_HTML_author_year_pub()
+            if (year != None):
+                if (year > 2008):
+                    new_resultsKeys.append(article.get_key())
         
         # Check if There are new articles  
         diff_list = GeneralFuncs.compareKeysLists(self.pastResultsKeysList, new_resultsKeys)
@@ -99,6 +102,9 @@ class DBFollow(db.Model):
         #plain_msg = ""
         plain_msg = plain_msg + "There is a new update on your follow named: \n" + self.follow_name + "\n"
         html_msg = html_msg + "There are " + str(len(diff_list)) + " new articles on your follow&trade; named: <br><b>" + self.follow_name + "</b><br><br><br>"
+        if (len(diff_list) > 50):
+            html_msg = html_msg + "Presented are the first 50 of them: <br><br><br>"
+            
         plain_msg = plain_msg + "There are " + str(len(diff_list)) + " new articles: \n\n"
         
         # create dictionary of new articles to report
@@ -137,6 +143,12 @@ class DBFollow(db.Model):
         html_msg = html_msg + "</body></html>"
         mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                       to=self.user.email(),
+                      subject="You Have a new Scholar Update!",
+                      body=plain_msg, 
+                      html=html_msg)
+        ## Sending another mail specifically to Lea.
+        mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
+                      to="lea.stolo@gmail.com",
                       subject="You Have a new Scholar Update!",
                       body=plain_msg, 
                       html=html_msg)
