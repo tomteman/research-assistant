@@ -61,8 +61,8 @@ class Follow:
                 self.follow_name += " author: " + urllib.unquote_plus(self.search_params.author)
             if (len(self.search_params.journal)!= 0):
                 self.follow_name += " journal : " + urllib.unquote_plus(self.search_params.journal)
-            if (len(self.search_params.year_start) != 0):
-                self.follow_name += " From Year : " + urllib.unquote_plus(self.search_params.year_start)
+#            if (len(self.search_params.year_start) != 0):
+#                self.follow_name += " From Year : " + urllib.unquote_plus(self.search_params.year_start)
         
         return True
     
@@ -92,10 +92,10 @@ class Follow:
         db_follow = self.convert2DBFollow()
         db_follow.time_last_updated = datetime.datetime.now()
 
-        try: 
-            db_follow.put()
-        except Exception:
-           return False
+    #    try: 
+        db_follow.put()
+     #   except Exception:
+     #      return False
        
         return True
         
