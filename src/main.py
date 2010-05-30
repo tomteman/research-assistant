@@ -19,7 +19,9 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 #local imports
 
 from FollowForm import AddFollow
-from FollowFormDone import FollowFormDone 
+from FollowFormDone import FollowFormDone
+from FollowFormDone import Submit
+from FollowFormDone import FirstUpload 
 from SearchParams import *
 from HTMLparser import getResultsFromURL, HTMLparser, getResultsFromURLwithProxy
 
@@ -28,7 +30,7 @@ from django.conf import settings
 from django.template.loader import get_template
 from django import forms
 from getHTML import getHTML
-
+from MyFollows import MyFollows
 
 from django.utils import simplejson
 
@@ -52,12 +54,18 @@ class MainPage(webapp.RequestHandler):
 #       add custom content
 #TODO: Define default values/ required fields. 
         c = Context()
+        
+        page=self.request.get('page')
+        if (page != ""):
+            page = "/" + page;
+        else:
+            page = "/Index"   
         if (users.get_current_user()):
             c['logout'] = users.create_logout_url(self.request.uri)
         else:
             c['login'] = users.create_login_url(self.request.uri)
         c['users'] = users
-        c['currPage'] = "/Index"
+        c['currPage'] = page
 #       show it to the world!!!
         self.response.out.write(t.render(c))
         
@@ -218,18 +226,11 @@ class About(webapp.RequestHandler):
 
 
 
-class Profile(webapp.RequestHandler):
-#Create the about us page    
-    def get(self):
-        t = get_template('profile.html')
-        c = Context()
-        if (users.get_current_user()):
-            c['logout'] = users.create_logout_url(self.request.uri)
-        else:
-            c['login'] = users.create_login_url(self.request.uri)
-        c['users'] = users
 
-        self.response.out.write(t.render(c))
+
+
+
+
 
 
 class AdvancedSearch(webapp.RequestHandler):
@@ -247,55 +248,6 @@ class AdvancedSearch(webapp.RequestHandler):
         
         
 
-class RPCHandler(webapp.RequestHandler):
-    """ Allows the functions defined in the RPCMethods class to be RPCed."""
-    def __init__(self):
-        webapp.RequestHandler.__init__(self)
-        self.methods = RPCMethods()
-
-    def get(self):
-        func = None
-
-        action = self.request.get('action')
-        if action:
-            if action[0] == '_':
-                self.error(403) # access denied
-                return
-            else:
-                func = getattr(self.methods, action, None)
-        if not func:
-            self.error(404) # file not found
-            return
-
-        args = ()
-        while True:
-            key = 'arg%d' % len(args)
-            val = self.request.get(key)
-            if val:
-                args += (simplejson.loads(val),)
-            else:
-                break
-        result = func(*args)
-        self.response.out.write(simplejson.dumps(result))
-
-
-class RPCMethods:
-    """ Defines the methods that can be RPCed.
-    NOTE: Do not allow remote callers access to private/protected "_*" methods.
-    """
-
-    def AddTag(self, *args):
-        return 2
-    
-        
-    def tag(self, *args):
-        ints = [int(arg) for arg in args]
-        return 1
-            
-        
-    def tag_try(self,  *args):
-        #ints = [(arg) for arg in args]
-        return 2     
 
         
         
@@ -311,8 +263,9 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/FollowFormDone', FollowFormDone)
                                       ,('/DisplayTag', DisplayTag)
                                       ,('/About', About)
-                                      ,('/rpc', RPCHandler)
-                                      ,('/Profile', Profile)
+                                      ,('/Submit', Submit)
+                                      ,('/FirstUpload', FirstUpload)
+                                      ,('/MyFollows', MyFollows)
                                       ,('/AdvancedSearch', AdvancedSearch)],
                                       debug=True)
 
