@@ -31,7 +31,7 @@ from django.template.loader import get_template
 from django import forms
 from getHTML import getHTML
 from MyFollows import MyFollows
-
+import GlobalVariables
 from django.utils import simplejson
 
 # Django settings configuration : currently for setting the templates directory
@@ -70,9 +70,7 @@ class MainPage(webapp.RequestHandler):
         self.response.out.write(t.render(c))
         
         
-#global variable for search parameters        
-searchParams = SearchParams()
-numOfResults = 0
+
 
 
 class Index(webapp.RequestHandler):
@@ -96,11 +94,11 @@ class Search(webapp.RequestHandler):
 #      2.make sure user is signed in on 'addFollow' button
 #      3.add citing: and relaTED: and allversions:
     def post(self):
-        global searchParams
-        global numOfResults
+#        GlobalVariables.GLOBAL_searchParams
+#        GlobalVariables.GLOBAL_numOfResults
         if (self.request.arguments().count('SearchTerm')):
             keywords = self.request.get('SearchTerm')
-            searchParams = SearchParams(keywords = keywords)
+            GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords)
         else:
             ###Advanced search###
             
@@ -113,13 +111,13 @@ class Search(webapp.RequestHandler):
             journal = self.request.get('journal')
             year_start = self.request.get('year_start')
             year_finish = self.request.get('year_finish')
-            searchParams = SearchParams(keywords = keywords, exact_phrase = exact_phrase, without_the_words=without_the_words,
+            GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords, exact_phrase = exact_phrase, without_the_words=without_the_words,
                                    one_of_the_words = one_of_the_words, occurence=occurence, author=author, journal=journal,
                                    year_start=year_start, year_finish=year_finish  )
         
-        searchURL = searchParams.constructURL()
+        searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         parserStruct = getResultsFromURLwithProxy(searchURL)
-        numOfResults = parserStruct.get_numOfResults() 
+        GLOBAL_numOfResults = parserStruct.get_numOfResults() 
         results = parserStruct.get_results()
         t = get_template('search.html')
         c = Context()
@@ -131,69 +129,73 @@ class Search(webapp.RequestHandler):
         c['results'] = results
         c['formAction'] = '/AddFollow'
         c['keyword'] = keywords
-        c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of " + str(numOfResults)
+        c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
         self.response.out.write(t.render(c))        
 #get function for handling links on the search page(citedby, related articles, etc.)    
     def get(self):
-        global searchParams
-        global numOfResults
+#        GlobalVariables.GLOBAL_searchParams
+#        GlobalVariables.GLOBAL_numOfResults
         t = get_template('search.html')
         c = Context()
         
+        if self.request.get('Type')=='FollowResults':
+            (GlobalVariables.GLOBAL_searchParams).updateStartFrom(0)
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
+            
         if self.request.get('Type')=='CitedBy':
-            searchParams = SearchParams()
-            searchParams.citationsID = self.request.get('Id')
-            searchURL = searchParams.constructURL()
+            GlobalVariables.GLOBAL_searchParams = SearchParams()
+            (GlobalVariables.GLOBAL_searchParams).citationsID = self.request.get('Id')
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             c['CitedBy']='CitedBy'
             c['infoLine'] = """Articles Citing:<b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
                     
         elif self.request.get('Type')=='RelatedArticles':
-            searchParams = SearchParams()
-            searchParams.relatedArticles = self.request.get('Id')
-            searchURL = searchParams.constructURL()
+            GlobalVariables.GLOBAL_searchParams = SearchParams()
+            (GlobalVariables.GLOBAL_searchParams).relatedArticles = self.request.get('Id')
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             c['infoLine'] = """Articles Related To : <b><a href="/Search?Id="""+ self.request.get('AllVer') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
         
         elif self.request.get('Type')=='AllVersions':
-            searchParams = SearchParams()
-            searchParams.allVersions = self.request.get('Id')
-            searchURL = searchParams.constructURL()
+            GlobalVariables.GLOBAL_searchParams = SearchParams()
+            (GlobalVariables.GLOBAL_searchParams).allVersions = self.request.get('Id')
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             c['infoLine'] = """All Versions Of : <b><a href="/Search?Id="""+ self.request.get('Id') +"""&Type=AllVersions">"""+self.request.get('Title')+"</b></a>"+"<br><br><br>"
         
         elif self.request.get('Type')=='Import2BibTex':
-            searchParams = SearchParams()
-            searchParams.bibTex = self.request.get('Id')
-            searchURL = searchParams.constructURL()
+            GlobalVariables.GLOBAL_searchParams = SearchParams()
+            (GlobalVariables.GLOBAL_searchParams.bibTex) = self.request.get('Id')
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             bibTexHTML = getHTML(searchURL)
             bibTexHTML.getHTMLfromURL()
             self.response.out.write(bibTexHTML.get_html())
             return
         
         elif self.request.get('Type')=='Next':
-            searchParams.updateStartFrom(searchParams.start_from+10)
-            searchURL = searchParams.constructURL()
+            (GlobalVariables.GLOBAL_searchParams).updateStartFrom((GlobalVariables.GLOBAL_searchParams).start_from+10)
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             
         elif self.request.get('Type')=='Back':
-            searchParams.updateStartFrom(searchParams.start_from-10)
-            searchURL = searchParams.constructURL()
+            (GlobalVariables.GLOBAL_searchParams).updateStartFrom((GlobalVariables.GLOBAL_searchParams).start_from-10)
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             
         
         else:
-            searchURL = searchParams.constructURL()
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
              
         parserStruct = getResultsFromURLwithProxy(searchURL) 
         results = parserStruct.get_results()
         numResults = parserStruct.get_numOfResults()
         numResultsDec =int(removeComma(parserStruct.get_numOfResults()))
         
-        if ((numResultsDec-searchParams.start_from)<searchParams.num_of_results):
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(numResults) + " of "
+        if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
+            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of "
         else:
-            c['numOfResults'] =  """Displaying results """ + str(searchParams.start_from) + """ - """ + str(searchParams.start_from + searchParams.num_of_results) + " of "
+            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of "
         c['users'] = users
         c['results'] = results      
         c['numOfResults']+= str(numResults)
         c['formAction'] = '/AddFollow'
-        c['keyword'] = searchParams.keywords
+        c['keyword'] = (GlobalVariables.GLOBAL_searchParams).keywords
         self.response.out.write(t.render(c))
         
         
