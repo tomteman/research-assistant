@@ -1,11 +1,19 @@
-from json import *
+#from json import *
 import json
 import ArticleData
 import HTMLparser
 import ArticleURLandTitle
 from urllib import quote
+import Label
+from django.utils import simplejson
+from google.appengine.api import users
 
-class ArticleURLandTitleEncoder(JSONEncoder):
+####
+## use default method if you intentto later on wrap the data with json.dumps
+## and encode if this is the final wrap
+#### 
+
+class ArticleURLandTitleEncoder(simplejson.JSONEncoder):
     """  a custom JSON encoder for ArticleURLandTitle objs """
     def default(self, obj):
         if not isinstance (obj, ArticleURLandTitle.ArticleURLandTitle):
@@ -18,12 +26,12 @@ class ArticleURLandTitleEncoder(JSONEncoder):
         
         return json_dict
     
-    #def encode(self,obj):
-    #    return json.dumps(self.default(obj))
+    def encode(self,obj):
+        return json.dumps(self.default(obj))
         #return self.default(obj)
     
 
-class ArticleDataEncoder(JSONEncoder):
+class ArticleDataEncoder(simplejson.JSONEncoder):
     """  a custom JSON encoder for ArticleData objs """
     def default(self, obj):
         if not isinstance (obj, ArticleData.ArticleData):
@@ -57,11 +65,11 @@ class ArticleDataEncoder(JSONEncoder):
         
         return json_dict
     
-    #def encode(self,obj):
-    #    return json.dumps(self.default(obj))
+    def encode(self,obj):
+        return json.dumps(self.default(obj))
         #return self.default(obj)
     
-class HTMLparserEncoder(JSONEncoder):
+class HTMLparserEncoder(simplejson.JSONEncoder):
     # """a custom JSON encoder for HTMLparser objs """
     def default(self, obj):
         if not isinstance (obj, HTMLparser.HTMLparser):
@@ -90,9 +98,53 @@ class HTMLparserEncoder(JSONEncoder):
     def encode(self,obj):
         return json.dumps(self.default(obj))
         #return self.default(obj)
-    
-    
 
-    
-    
 
+
+class LabelEncoder(simplejson.JSONEncoder):
+    # """a custom JSON encoder for Label objs """
+    def default(self, obj):
+        if not isinstance (obj, Label.Label):
+            print 'You cannot use the JSON custom LabelEncoder for a non-Label obj.'
+            return
+    
+        json_dict = {}
+        
+        my_user_encoder = UserEncoder()
+        json_dict['users_list'] = []
+        for my_user in obj.users_list:
+            json_dict['users_list'].append(my_user_encoder.default(my_user))
+            
+        #users_list = db.ListProperty(users.User) 
+        json_dict['label_name'] = obj.label_name
+        json_dict['comment']  = obj.comment
+        json_dict['serialized_article']  = obj.serialized_article
+        json_dict['article_key'] = obj.article_key
+        json_dict['is_shared'] = obj.is_shared
+    
+        return json_dict
+    
+    def encode(self,obj):
+        return json.dumps(self.default(obj))
+        #return self.default(obj)
+    
+    
+class UserEncoder(simplejson.JSONEncoder):
+    # """a custom JSON encoder for Label objs """
+    def default(self, obj):
+        if not isinstance (obj, users.User):
+            print 'You cannot use the JSON custom UserEncoder for a non-users.User obj.'
+            return
+    
+        json_dict = {}
+        json_dict['user_email'] = obj.email()
+        json_dict['user_id'] = obj.user_id()
+        json_dict['user_nickname'] = obj.nickname()        
+        
+    
+        return json_dict
+    
+    def encode(self,obj):
+        return json.dumps(self.default(obj))
+        #return self.default(obj)
+   
