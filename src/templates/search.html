@@ -1,3 +1,4 @@
+
 {% extends "frameBase.html" %}
 
 {% comment %} This is the template for displaying search results {% endcomment  %}
@@ -5,11 +6,19 @@
 {% block title %}
 	Research Assistant - search			
 {% endblock %}
+{% block customScripts %}
+<script type="text/javascript"> 
+	$(function(){
+		displayTagsOnResults('{{resultsJSON}}');
+	});
+</script>	       	 
+	       	 
+{% endblock %}
 
+{% block contents %}
 
-{% block contents %} 
+<div id="popupcontent">This is a popup window!</div>
 
-   
 
 
 	{% if  CitedBy %}   
@@ -43,6 +52,7 @@
 
 	{% else %}
 		<div id='infoLine'> {{numOfResults}} </div> 
+		<div id='didYouMean'>{{didYouMean}}</div>
 		</br>
 		</br>
 			
@@ -58,9 +68,18 @@
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
 	
 	{% for result in results %}
+	
+	
+		<script type="text/javascript"> 
+
+			function doTag() {
+				
+      			server.tag_try(  onTagSuccess);
+    		}
+  			
+		</script>
 		
-		<div id={{result.get_key}} class="article">
-		<input name="check_article"  type="checkbox" value="on" />
+		<div id="{{result.get_key}}" class="article A{{forloop.counter0}}">
 		{% for HTML_url in result.HTML_urlList %}
 			{% if HTML_url.get_has_link %}
 				<a href= {{HTML_url.get_article_url}}> {{HTML_url.get_article_title}} </a>&nbsp;
@@ -84,21 +103,22 @@
 		{% endif %}
 		<a href= "/Search?Id={{result.key}}&Type=Import2BibTex">Import into BibTex</a></form>
 		 	
+			
 			<form method="post" action={{formAction}}>
-			
-			<input type="button" name="popUp" value="Pop up" onclick="popUp()" />
-			<input type="button" class="addTag" name="addTag" id="addTag" value="TAG"  />
-			
+				<input class="addLabel" type="button" value="TAG" />
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
 				<input type="submit" value="addFollow" />
  
 			</form>
-		</div>
+			<input type="text" name="q" class="labelBox" id="query" />
+			
+		</div></br>
 	{% endfor %}
 	<a href="/Search?Type=Back">Back</a>
 	<a href="/Search?Type=Next">Next</a>
+	
 {% endblock %}
 
 
