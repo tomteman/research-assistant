@@ -1,16 +1,41 @@
 {% extends "frameBase.html" %}
-
-
-
-
 {% block title %}
-	Reaserch Assistant - new follow			
+	Research Assistant
 {% endblock %}
 
-
+{% block customScripts %}
+ 
+{% endblock %}
+{% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
 
 {% block contents %}
-
-
-
+		</br>
+		</br>
+		<div id="search_index">
+			<form method=post action="/Search">
+				<fieldset>
+					<input type="text" name="SearchTerm" id="search_index_text" size="15" />
+					<input type="submit" id="search_index_submit" value="Search" />
+					</br>
+					<a href="/AdvancedSearch" >Advanced Search</a>
+				</fieldset>
+			</form>	
+		</div>		
+		</br>
+		</br>
+		</br>
+		</br>
+		
+		<div id="WelcomeParagraph">
+			<b>Welcome to Research Assistant!</b>
+			<p>Here You can: 
+			<ul>
+			<li> Follow &#8482; Your favourite articles, authors and articles citing other articles. </li>
+			<li> Get periodic updates </li>
+			<li> Tag, Share and Comment on articles </li>
+			</ul>
+			</p>
+			 
+		</div>	
+<p><div id="mydiv">Hello World</div></p>				
 {% endblock %}
