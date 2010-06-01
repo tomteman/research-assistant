@@ -72,24 +72,25 @@ class ArticleDataDecoder(json.JSONDecoder):
         for article_url_and_data_string in old_html_url_list:
             new_html_url_list.append(article_url_and_data_decoder.decode(article_url_and_data_string))
             
-        article_data = ArticleData.ArticleData(article_data_dict['key'], 
-                                               article_data_dict['BibTexURL'], 
-                                               new_html_url_list, 
-                                               article_data_dict['HTML_author_year_pub'],
-                                               article_data_dict['HTML_abstract'],
-                                               article_data_dict['BibTex_dict'],
-                                               article_data_dict['citationsURL'],
-                                               article_data_dict['citationsID'],
-                                               article_data_dict['citationsNUM'],
-                                               article_data_dict['related_articlesURL'],
-                                               article_data_dict['related_articlesID'],
-                                               article_data_dict['all_versionsURL'],
-                                               article_data_dict['all_versionsID'],
-                                               article_data_dict['cacheURL'],
-                                               article_data_dict['cacheID'],
-                                               article_data_dict['articleTitle'],
-                                               article_data_dict['articleTitleQuoted'],
-                                               article_data_dict['articleURL'])
+        article_data = ArticleData.ArticleData()
+        article_data.set_key(article_data_dict['key'])
+        article_data.set_bib_tex_url(article_data_dict['BibTexURL'])
+        article_data.set_HTML_urlList(new_html_url_list)
+        article_data.set_HTML_author_year_pub(article_data_dict['HTML_author_year_pub'])
+        article_data.set_HTML_abstract(article_data_dict['HTML_abstract'])
+        article_data.set_bib_tex_dict(article_data_dict['BibTex_dict'])
+        article_data.set_citations_url(article_data_dict['citationsURL'])
+        article_data.set_citations_ID(article_data_dict['citationsID'])
+        article_data.set_citations_NUM(article_data_dict['citationsNUM'])
+        article_data.set_related_articles_url(article_data_dict['related_articlesURL'])
+        article_data.set_related_articls_ID(article_data_dict['related_articlesID'])
+        article_data.set_all_versions_url(article_data_dict['all_versionsURL'])
+        article_data.set_all_versions_ID(article_data_dict['all_versionsID'])
+        article_data.set_cache_url(article_data_dict['cacheURL'])
+        article_data.set_cache_ID(article_data_dict['cacheID'])
+        article_data.set_articleTitle(article_data_dict['articleTitle'])
+        article_data.set_articleTitleQuoted(article_data_dict['articleTitleQuoted'])
+        article_data.set_articleURL(article_data_dict['articleURL'])
                                                
         
         return article_data
