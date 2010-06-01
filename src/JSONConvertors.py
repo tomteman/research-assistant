@@ -27,7 +27,7 @@ class ArticleURLandTitleEncoder(simplejson.JSONEncoder):
         return json_dict
     
     def encode(self,obj):
-        return json.dumps(self.default(obj))
+        return simplejson.dumps(self.default(obj))
         #return self.default(obj)
         
 class ArticleURLandTitleDecoder(simplejson.JSONEncoder):
@@ -52,11 +52,11 @@ class ArticleURLandTitleDecoder(simplejson.JSONEncoder):
         return json_dict
     
     def encode(self,obj):
-        return json.dumps(self.default(obj))
+        return simplejson.dumps(self.default(obj))
         #return self.default(obj)
     
 
-class ArticleDataDecoder(json.JSONDecoder):
+class ArticleDataDecoder(simplejson.JSONDecoder):
     def decode (self, json_string):
         # use json's generic decode capability to parse the serialized string
         # into a python dictionary.
@@ -132,7 +132,7 @@ class ArticleDataEncoder(simplejson.JSONEncoder):
         return json_dict
     
     def encode(self,obj):
-        return json.dumps(self.default(obj))
+        return simplejson.dumps(self.default(obj))
         #return self.default(obj)
     
 class HTMLparserEncoder(simplejson.JSONEncoder):
@@ -162,7 +162,7 @@ class HTMLparserEncoder(simplejson.JSONEncoder):
         return json_dict
     
     def encode(self,obj):
-        return json.dumps(self.default(obj))
+        return simplejson.dumps(self.default(obj))
         #return self.default(obj)
 
 
@@ -191,7 +191,7 @@ class LabelEncoder(simplejson.JSONEncoder):
         return json_dict
     
     def encode(self,obj):
-        return json.dumps(self.default(obj))
+        return simplejson.dumps(self.default(obj))
         #return self.default(obj)
     
     
@@ -211,6 +211,6 @@ class UserEncoder(simplejson.JSONEncoder):
         return json_dict
     
     def encode(self,obj):
-        return json.dumps(self.default(obj))
+        return simplejson.dumps(self.default(obj))
         #return self.default(obj)
    
