@@ -18,10 +18,6 @@
 	</div>
 	
 	
-	
-	
-	
-	
 	<form id="newFollow" class="addFollow" action='/Submit'  method="post">
 	<h1><a>Add New Follow</a></h1>	
 	<!-- notify on --->
@@ -29,11 +25,14 @@
 		<dl>
 			<table>		
 				<tr>
-					
-						<input  id="ch_citing"  name="ch_citing" type="checkbox" />
-						<label class="choice">Citing "{{articleName}}"</label>
-											
-					
+					<td>
+						<input  id="ch_citing"  name="ch_citing" type="checkbox" value="1"/
+						<label class="choice" name="citesTitle" >Citing </label>
+						<input name="citesTitle" type="hidden" value = "{{articleName}}">											
+					</td>
+					<td>
+						"{{articleName}}"
+					</td>
 				</tr>
 				
 				<tr>
@@ -42,13 +41,13 @@
 						<label class="choice">with keywords</label>
 					</td>
 					<td class="textbox">
-						<input name="keywords" type="text" maxlength="255" value="{{keywords}}">
+						<input name="keywords" type="text" maxlength="255" value = "{{keywords}}">
 					</td>
 				</tr>
 
 				<tr>
 					<td>			
-						<input name="ch_author" class="element checkbox" type="checkbox" value="1" />
+						<input name="ch_author" id="ch_author" class="element checkbox" type="checkbox" value="1" />
 						<label class="choice" >Articles written by</label>
 					</td>
 					<td>   		
@@ -56,15 +55,16 @@
 						  	
 						  	<div name="authors">
 						  		{% for author in authors %}	
-   							   		<input name="ch_author" type="checkbox" checked="checked" value="on" />
+   							   		<input name="author_name" type="checkbox" checked="checked" value="{{author}}" />
 										<label class="choice">{{author}}</label> <br/>
 								{% endfor %}
 														
 							</div>
 							
 						{% else %}
-							<label class="choice">{{authors}}</label>
-						{% endif %}				
+							<label class="choice" name="author_name" value="{{authors}}">{{authors}}</label>
+						{% endif %}
+								
 					</td>
 				</tr>
 				
@@ -72,7 +72,7 @@
 					<td>
 					
 						<input name="ch_journal" class="element checkbox" type="checkbox" value="1" />
-						<label class="choice" for="element_4_3">Articles published in</label>
+						<label class="choice">Articles published in</label>
 					</td>
 					<td class="textbox">
 						<input name="journal" type="text" maxlength="255" value="{{articleJournal}}">  
@@ -90,7 +90,7 @@
 		<dt id="frequency" >
 			<table>		
 				<tr>
-					<label class="description" for="element_2">How often </label>
+					<label class="description">How often </label>
 					<select class="element select medium" id="element_2" name="update_frequency"> 
 						<option value="Daily" >Daily</option>
 						<option value="Weekly" selected="selected">Weekly</option>
@@ -105,7 +105,6 @@
 					
 		<!-- submit button --->					
 		<dt class="buttons">
-			<input type="hidden" name="first" value="1" />
 		    <input type="hidden" name="form_id" value="233471" />
 			<input type="hidden" name="citing_num" value={{numCitations}} />    
 			<input id="submit" class="button_text" type="submit" name="submit" value="Submit" />

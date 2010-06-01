@@ -26,8 +26,7 @@ class AddFollow(webapp.RequestHandler):
       
         if bibTexData.has_key('title'):
             title = bibTexData['title'][1:len(bibTexData['title'])-1]
-            if len(title) > 80:
-                title = " ".join(title.split()[0:10]) + "..."
+            
         else: 
             title = ""
         
