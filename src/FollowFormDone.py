@@ -68,7 +68,8 @@ class Submit(webapp.RequestHandler):
                 success = GlobalVariables.GLOBAL_current_follow.first_upload()
                 if not success:
                     self.response.out.write(simplejson.dumps(-2))
-            GlobalVariables.GLOBAL_searchParams = s_params        
+            GlobalVariables.GLOBAL_searchParams = s_params 
+            GlobalVariables.GLOBAL_searchParams.num_of_results = 10       
             self.response.out.write(simplejson.dumps(num_of_query_results))
      
 
@@ -81,6 +82,7 @@ class FirstUpload(webapp.RequestHandler):
             if success:
                 self.response.out.write(simplejson.dumps(1))
                 GlobalVariables.GLOBAL_searchParams = GlobalVariables.GLOBAL_current_follow.search_params
+                GlobalVariables.GLOBAL_searchParams.num_of_results = 10
             else: 
                 self.response.out.write(simplejson.dumps(-2))
         else:
