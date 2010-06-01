@@ -13,6 +13,7 @@ class DBFollow(db.Model):
     follow_name = db.StringProperty()
     search_params_str = db.TextProperty()#multiline=True)
     update_frequency = db.StringProperty()#(choices=set(["Daily","Weekly","Monthly"]))
+    num_of_articles_per_update = db.IntegerProperty()
     num_of_update_requests = db.IntegerProperty()
     num_of_meaningful_updates = db.IntegerProperty()
     time_first_created = db.DateTimeProperty(auto_now_add=True)
@@ -38,6 +39,7 @@ class DBFollow(db.Model):
         new_follow.time_last_updated = self.time_last_updated
         new_follow.total_num_of_articles = self.total_num_of_articles
         new_follow.pastResultsKeysList = self.pastResultsKeysList
+        new_follow.num_of_articles_per_update = self.num_of_articles_per_update
         new_follow.url = self.url
         
         return new_follow

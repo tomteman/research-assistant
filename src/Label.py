@@ -31,6 +31,17 @@ def add_label(label_name, user,list_of_articleData_objects):
         new_label.is_shared = False
         new_label.put()
     return True
+
+# Input: user and json object that is a list [article_obj, label_name]
+def add_label_JSON_INPUT(user, json_article_labelname_list):
+    my_list = simplejson.loads(json_article_labelname_list)
+    label_name = my_list[1]
+    article_json_string = my_list[0]
+    
+    article_data_decoder = JSONConvertors.ArticleDataDecoder()
+    article_data_obj = article_data_decoder.decode(article_json_string)     # """{"HTML_urlList":[{"articleTitle":"Supercoil sequencing: a fast and simple method for sequencing plasmid <b>DNA</b>","articleURL":"http://www.liebertonline.com/doi/abs/10.1089/dna.1985.4.165","hasLink":true}],"BibTex_dict":{},"related_articlesID":"lar?q=related:S5jpm321qq0J:scholar.google.com/&amp;hl=en&amp;as_sdt=200","HTML_author_year_pub":"EY CHEN, PH Seeburg - <b>DNA</b>, 1985 - liebertonline.com","cacheID":"","related_articlesURL":"http://scholar.google.com/scholar?q=related:lar?q=related:S5jpm321qq0J:scholar.google.com/&amp;hl=en&amp;as_sdt=200:scholar.google.com/&hl=en&num=10&as_sdt=2000","all_versionsURL":"http://scholar.google.com/scholar?cluster=12514014065693661259&hl=en&num=10&as_sdt=2000","HTML_abstract":"%3Cbr%3E%3Cb%3E...%3C%2Fb%3E%20LABORATORY%20METHODS%20Supercoil%20Sequencing%3A%20A%20Fast%20and%20Simple%20Method%20for%20Sequencing%3Cbr%3E%0A%0APlasmid%20%3Cb%3EDNA%3C%2Fb%3E%20ELLSON%20Y.%20CHEN%20and%20PETER%20H.%20SEEBURG%204%5CBSTRACT%20A%20method%20for%20obtaining%3Cbr%3E%0Asequence%20information%20directly%20from%20plasmid%20%3Cb%3EDNA%3C%2Fb%3E%20is%20presented.%20The%20procedure%20in-%20%3Cb%3E...%3C%2Fb%3E%20%0A%3Cbr%3E","all_versionsID":"12514014065693661259","BibTexURL":"http://scholar.google.com/scholar.bib?q=info:S5jpm321qq0J:scholar.google.com/&output=citation&hl=en&as_sdt=2000&ct=citation&cd=0","articleTitleQuoted":"Supercoil+sequencing%3A+a+fast+and+simple+method+for+sequencing+plasmid+%3Cb%3EDNA%3C%2Fb%3E","key":"S5jpm321qq0J","citationsURL":"http://scholar.google.com/scholar?cites=12514014065693661259&hl=en&num=10&as_sdt=2000","articleTitle":"Supercoil sequencing: a fast and simple method for sequencing plasmid <b>DNA</b>","citationsID":"12514014065693661259","articleURL":"http://www.liebertonline.com/doi/abs/10.1089/dna.1985.4.165","cacheURL":"","citationsNUM":"1932"}""")
+    article_data_obj_list = [article_data_obj]
+    add_label(label_name, user, article_data_obj_list)
     
     
 

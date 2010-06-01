@@ -15,7 +15,8 @@ class Follow:
                  user_id = None,
                  follow_name = None, 
                  search_params = None, 
-                 update_frequency = "weekly",
+                 update_frequency = "Weekly",
+                 num_of_articles_per_update = 10,
                  is_empty_query = False, # this is filled with True when user added a follow 
                                          # and was prompt that the search params he gave result in a url that 
                                          # currently gives no answer.
@@ -36,6 +37,7 @@ class Follow:
         self.pastResultsKeysList = pastResultsKeysList
         self.url = url
         self.update_frequency = update_frequency
+        self.num_of_articles_per_update = num_of_articles_per_update
         self.num_of_update_requests = num_of_update_requests
         self.num_of_meaningful_updates = num_of_meaningful_updates
         self.time_first_created = time_first_created
@@ -116,7 +118,7 @@ class Follow:
         db_follow.user = self.user
         db_follow.user_nickname = self.user_nickname
         db_follow.follow_name = self.follow_name
-        
+        db_follow.num_of_articles_per_update = self.num_of_articles_per_update
         db_follow.search_params_str = pickle.dumps(self.search_params)
         db_follow.update_frequency = self.update_frequency #db.StringProperty(choices=set(["daily","weekly","monthly"]))
         db_follow.num_of_update_requests = self.num_of_update_requests #db.IntegerProperty()

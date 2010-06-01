@@ -29,7 +29,72 @@ class ArticleURLandTitleEncoder(simplejson.JSONEncoder):
     def encode(self,obj):
         return json.dumps(self.default(obj))
         #return self.default(obj)
+        
+class ArticleURLandTitleDecoder(simplejson.JSONEncoder):
+    """  a custom JSON decoder for ArticleURLandTitle objs """
+    def decode (self, json_string):
+        article_url_and_data_dict = json_string #simplejson.loads(json_string)
+        article_url_and_data_obj = ArticleURLandTitle.ArticleURLandTitle()
+        article_url_and_data_obj.set_article_title(article_url_and_data_dict['articleTitle'])
+        article_url_and_data_obj.set_article_url(article_url_and_data_dict['articleURL'])
+        article_url_and_data_obj.set_article_url(article_url_and_data_dict['hasLink'])
+        return article_url_and_data_obj.set_article_url(article_url_and_data_dict['articleURL'])
     
+    def default(self, obj):
+        if not isinstance (obj, ArticleURLandTitle.ArticleURLandTitle):
+            print 'You cannot use the JSON custom ArticleDataEncoder for a non-ArticleURLandTitleEncoder obj.'
+            return
+        json_dict = {}
+        json_dict['articleTitle'] = obj.articleTitle
+        json_dict['articleURL'] = obj.articleURL
+        json_dict['hasLink'] = obj.hasLink  # false if CITATION
+        
+        return json_dict
+    
+    def encode(self,obj):
+        return json.dumps(self.default(obj))
+        #return self.default(obj)
+    
+
+class ArticleDataDecoder(json.JSONDecoder):
+    def decode (self, json_string):
+        # use json's generic decode capability to parse the serialized string
+        # into a python dictionary.
+        article_data_dict = json_string # simplejson.loads(json_string) - 
+                                        # if you want to return this for other uses, you should call from "add_label" 
+                                        # with simplejson.dumps
+                                        # example: instead of:
+                                                    # article_data_obj = article_data_decoder.decode(article_json_string)
+                                                    # write: article_data_obj = article_data_decoder.decode(simplejson.dumps(article_json_string))  
+        article_url_and_data_decoder = ArticleURLandTitleDecoder()
+        old_html_url_list = article_data_dict['HTML_urlList']
+        new_html_url_list = []
+        for article_url_and_data_string in old_html_url_list:
+            new_html_url_list.append(article_url_and_data_decoder.decode(article_url_and_data_string))
+            
+        article_data = ArticleData.ArticleData(article_data_dict['key'], 
+                                               article_data_dict['BibTexURL'], 
+                                               new_html_url_list, 
+                                               article_data_dict['HTML_author_year_pub'],
+                                               article_data_dict['HTML_abstract'],
+                                               article_data_dict['BibTex_dict'],
+                                               article_data_dict['citationsURL'],
+                                               article_data_dict['citationsID'],
+                                               article_data_dict['citationsNUM'],
+                                               article_data_dict['related_articlesURL'],
+                                               article_data_dict['related_articlesID'],
+                                               article_data_dict['all_versionsURL'],
+                                               article_data_dict['all_versionsID'],
+                                               article_data_dict['cacheURL'],
+                                               article_data_dict['cacheID'],
+                                               article_data_dict['articleTitle'],
+                                               article_data_dict['articleTitleQuoted'],
+                                               article_data_dict['articleURL'])
+                                               
+        
+        return article_data
+        
+
 
 class ArticleDataEncoder(simplejson.JSONEncoder):
     """  a custom JSON encoder for ArticleData objs """

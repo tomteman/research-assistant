@@ -3,26 +3,46 @@ from getHTML import getHTML
 import re
 
 class ArticleData:
-    def __init__(self):
-        self.key = ""
-        self.BibTexURL = ""
-        self.HTML_urlList = [] # list of ArticleURLandTitle objects
-        self.HTML_author_year_pub = ""
-        self.HTML_abstract = ""   
-        self.BibTex_dict = {}
-        self.citationsURL = ""
-        self.citationsID = ""
-        self.citationsNUM = ""
-        self.related_articlesURL = ""
-        self.related_articlesID = ""
-        self.all_versionsURL = ""
-        self.all_versionsID = ""
-        self.cacheURL = ""
-        self.cacheID = ""
-        self.articleTitle = ""
-        self.articleTitleQuoted = ""
-        self.articleURL = ""
-        self.year = None
+    def __init__(self, 
+                 key = "",
+                BibTexURL = "",
+                HTML_urlList = [], # list of ArticleURLandTitle objects
+                HTML_author_year_pub = "",
+                HTML_abstract = "",
+                BibTex_dict = {},
+                citationsURL = "",
+                citationsID = "",
+                citationsNUM = "",
+                related_articlesURL = "",
+                related_articlesID = "",
+                all_versionsURL = "",
+                all_versionsID = "",
+                cacheURL = "",
+                cacheID = "",
+                articleTitle = "",
+                articleTitleQuoted = "",
+                articleURL = "",
+                year = None):
+        
+        self.key = key
+        self.BibTexURL = BibTexURL
+        self.HTML_urlList = HTML_urlList # list of ArticleURLandTitle objects
+        self.HTML_author_year_pub = HTML_author_year_pub
+        self.HTML_abstract = HTML_abstract  
+        self.BibTex_dict = BibTex_dict
+        self.citationsURL = citationsURL
+        self.citationsID = citationsID
+        self.citationsNUM = citationsNUM
+        self.related_articlesURL = related_articlesURL
+        self.related_articlesID = related_articlesID
+        self.all_versionsURL = all_versionsURL
+        self.all_versionsID = all_versionsID
+        self.cacheURL = cacheURL
+        self.cacheID = cacheID
+        self.articleTitle = articleTitle
+        self.articleTitleQuoted = articleTitleQuoted
+        self.articleURL = articleURL
+        self.year = year
 
         
 
