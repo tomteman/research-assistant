@@ -67,13 +67,21 @@ class Submit(webapp.RequestHandler):
         else: # if this is indeed a new follow
             num_of_query_results = GlobalVariables.GLOBAL_current_follow.first_follow_query()
             if not ((num_of_query_results == 0 ) or (num_of_query_results == 1000)):
+                # this should be uploaded
                 success = GlobalVariables.GLOBAL_current_follow.first_upload()
-                if not success:
+                if success:
+                    GlobalVariables.GLOBAL_searchParams = s_params 
+                    GlobalVariables.GLOBAL_searchParams.num_of_results = 10 
+                    self.response.out.write(simplejson.dumps(num_of_query_results))
+                else:
                     self.response.out.write(simplejson.dumps(-2))
-            GlobalVariables.GLOBAL_searchParams = s_params 
-            GlobalVariables.GLOBAL_searchParams.num_of_results = 10       
-            self.response.out.write(simplejson.dumps(num_of_query_results))
-     
+            else:             
+                # num_of_query_results are either 1000 or 0
+                self.response.out.write(simplejson.dumps(num_of_query_results))
+        #### return values:for self.response.out.write(simplejson.dumps(-2)) 
+        ### -1 Follow already exists
+        ### -2 Cannot connect to DB / for some reason global follow results where None
+        ### otherwise we return the number of results
 
 class FirstUpload(webapp.RequestHandler):
     def post(self):
