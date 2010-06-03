@@ -4,37 +4,6 @@ Design by Free CSS Templates
 http://www.freecsstemplates.org
 Released for free under a Creative Commons Attribution 2.5 License
 */
-.fg-button { 
-   outline: 0; 
-   margin:0 0 0 0;
-   border: none; 
-   padding: none; 
-   text-decoration:none !important; 
-   cursor:pointer; 
-   position: static; 
-   text-align: left; 
-   background: red; 
-   font-size: 14px;
-   }
-
-.fg-button-x { 
-   outline: 0; 
-   margin:0 3px 0 0; 
-	border: none;   
-	border-left: 1px dotted white;
-   padding: none; 
-   text-decoration:none !important; 
-   cursor:pointer; 
-   position: static; 
-   text-align: center;
-   background: red;  
-   font-size: 14px; 
-   }
-   
-.fg-button-x:hover{
-  background: pink;
-}
-
 .autocomplete-w1 { background:url(/static/images/shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; margin:6px 0 0 6px; /* IE6 fix: */ _background:none; _margin:1px 0 0 0; }
 .autocomplete { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px; _margin:0; _overflow-x:hidden; }
 .autocomplete .selected { background:#F0F0F0; }
