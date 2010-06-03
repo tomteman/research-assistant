@@ -13,6 +13,7 @@
 		</title>
  		<style type="text/css">
             @import "/static/style.css";
+            @import "/static/jquery-ui-1.8.1.custom.css";
         </style>
         
         {% block script %}
@@ -21,7 +22,8 @@
        	<script src="/static/jquery-1.4.2.min.js" type="text/javascript"></script>
        	<script type="text/javascript" src="/static/parent.js"></script>      	
        	<script type="text/javascript" src="/static/myJquery.js"> </script>
-  
+  		<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"> </script>
+  		
         <script language="JavaScript">
 
          google.load("jquery", "1.4.2");
@@ -122,12 +124,48 @@
 
 			<div id="sidebar">
 			
-				<a href="/DisplayTag" class="btn">Tag</a> 
-				<a href="/DisplayTag" class="btn">Tag</a>
- 				<a href="/DisplayTag" class="btn">Tag</a>
- 				<a href="/DisplayTag" class="btn">Tag</a>
- 				 
- 			</div>
+			<meta charset="UTF-8" />
+	
+			<script type="text/javascript">
+			$(function() {
+				$("#rerun")
+				.button()
+				.click( function() {
+					alert( "Running the last action" );
+				})
+			.next()
+				.button( {
+					text: false,
+					icons: {
+						primary: "ui-icon-triangle-1-s"
+					}
+				})
+				.click( function() {
+					alert( "Could display a menu to select an action" );
+				})
+			.parent()
+				.buttonset();
+			});
+		</script>
+		<style>
+		
+		</style>
+
+
+
+		<div class="demo">
+
+			<div>
+				<button id="rerun" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">Run last action</button>
+				
+				<button id="select" class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all">Select an action</button>
+				
+			</div>
+
+		</div>
+			
+			 				 
+ 		</div>
 
 		
 		<div style="clear: both;">&nbsp;</div>
