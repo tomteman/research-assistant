@@ -50,12 +50,13 @@ function articleKeyInLabelList(key, articleNumber){
 }
 
 function displayLabelOnArticle(articleNumber,labelListIndex){
-	x= $("#"+resultsWithParams.results[articleNumber].key)
+	articleKey = resultsWithParams.results[articleNumber].key;
+	x= $("#"+articleKey)
 	
-	str = "<div class=\"labelButton L" + labelUniqueId + "\">" +
+	str = "<div class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
 			"<div>" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\">" + parent.labels[labelListIndex].label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x ui-button ui-widget ui-state-default ui-corner-all L" + labelUniqueId +"\">x</button>" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
@@ -71,13 +72,16 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	labelUniqueId+=1
 }
 
+/* display a label that was just added to an article */
 function displayLabelOnArticleByKey(labelArticleKey,label_name){
 	
 	x= $("#"+labelArticleKey)
 	
-	str = "<div class=\"labelButton L" + labelUniqueId + "\">" +
+	str = "<div class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
+			"<div>" +
 				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all L" + labelUniqueId +"\" input type=\"submit\">x</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+			"</div>" +
 		"</div>"
 	$(x).prepend(str)
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
@@ -240,7 +244,6 @@ function findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name){
 function saveComment(commentContent, article_key, label_name){
 
 	labelIndex = findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name)
-	alert(labelIndex)
 	parent.labels[labelIndex].comment = commentContent
 	
 	commentToDB = {
@@ -319,10 +322,9 @@ $(function(){
 		/* open comment box */
 		$(this).button();
 		$(this).click(function() {
-			classList = $(this).attr('class').split(' ');
+			classList = $(this).parent().parent().attr('class').split(' ');
 			labelKey = classList[1]
-	                     
-			article_key = $(this).parent().parent().parent().closest("div").attr("id");
+			article_key = classList[2]
 			label_name = $(this).text();
 			labelIndex = findLabelIndexInGlobalLabelsByKeyAndName(article_key,label_name)
 			comment = parent.labels[labelIndex].comment
@@ -343,14 +345,12 @@ $(function(){
 		});
 		$(this).click(function(){
 		/* remove tag from DB and global variables */
-			article_key = ($(this).parent().parent().parent().closest("div").attr("id"));
-			label_name = ($(this).prev().text());
-			alert(label_name)
-			alert(article_key)
+			classList = $(this).parent().parent().attr('class').split(' ');
+			labelKey = classList[1]
+			article_key = classList[2];
+			label_name = $(this).prev().text();
 			removeLabelFromArticle(label_name, article_key)
 		/* look for an open comment box and close it */
-			classList = $(this).attr('class').split(' ');
-			labelKey = classList[1]
 			$(".commentbox."+labelKey).hide()
 			$(".commentcontent.#"+labelKey).hide()
 		/* remove tag from HTML */

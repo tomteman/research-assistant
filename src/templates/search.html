@@ -68,18 +68,8 @@
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
 	
 	{% for result in results %}
-	
-	
-		<script type="text/javascript"> 
-
-			function doTag() {
-				
-      			server.tag_try(  onTagSuccess);
-    		}
-  			
-		</script>
 		
-		<div id="{{result.get_key}}" class="article A{{forloop.counter0}}">
+		<div id="{{result.get_key}}" class="article">
 		{% for HTML_url in result.HTML_urlList %}
 			{% if HTML_url.get_has_link %}
 				<a href= {{HTML_url.get_article_url}}> {{HTML_url.get_article_title}} </a>&nbsp;
@@ -115,7 +105,9 @@
 			<input type="text" name="q" class="labelBox" id="query" />
 			
 		</div></br>
+	<br>
 	{% endfor %}
+	<br><br><br><br><br><br><br><br><br>
 	<a href="/Search?Type=Back">Back</a>
 	<a href="/Search?Type=Next">Next</a>
 	
