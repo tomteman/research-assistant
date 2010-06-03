@@ -46,7 +46,7 @@ def add_label_JSON_INPUT(user, json_article_labelname_list):
     
     
 
-def get_labels_dict(user):
+def get_labels_dict_JSON(user):
     q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1", user)
     labels_list = q.fetch(1000)
     new_dict = {}
@@ -55,9 +55,16 @@ def get_labels_dict(user):
             new_dict[label.label_name] += 1
         else:
             new_dict[label.label_name] = 1
-    return new_dict
-         
     
+    final_list = []
+    for key, value in new_dict.items():
+        d = {}
+        d['label_name'] = key
+        d['number'] = value
+        final_list.append(d)
+    
+    return simplejson.dumps(final_list)
+         
 def remove_label_from_article(user, label_name,article_key):
     q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 " +
