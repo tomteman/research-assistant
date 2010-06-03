@@ -1,12 +1,13 @@
 var resultsWithParams
-var addLabelButtonPressed = new Array(10)
-var commentButtonPressed = new Array(10)                   
+var iFrameHeight           
 var labelUniqueId = 0
 
 function displayTagsOnResults(resultsJSON)
 {
 	 resultsWithParams = eval("("+ resultsJSON+ ")");
-	 displayTags()
+	 displayTags();
+
+
 	 return
 }
 
@@ -30,6 +31,7 @@ function displayTags(){
 			}
 		}
 	});
+
 }
 
 
@@ -204,9 +206,30 @@ function removeLabelFromArticle(label_name, article_key){
 	removeLabelFromGlobalLabels(label_name, article_key);
 }
 
-function saveComment(commentContent, article_key, label_name)
+function saveComment(commentContent, article_key, label_name){
+	
+}
+
+function iFrameHeightIncrement(value){
+	newHeight = iFrameHeight + value;
+	jQuery("iframe",top.document).height(newHeight);	
+	iFrameHeight = newHeight
+}
+
+function iFrameHeightDecrement(value){
+	newHeight = iFrameHeight - value;
+	jQuery("iframe",top.document).height(newHeight);
+	iFrameHeight = newHeight
+}
+
+function iFrameHeightInit(){
+	iFrameHeight = jQuery("iframe",top.document).contents().find('body').attr('scrollHeight')
+}
 
 $(function(){
+	iFrameHeightInit()
+	alert(iFrameHeight)
+	
 	$(".labelBox").hide()
 	
 	$(".commentcontent").live("focus", function(){
@@ -214,6 +237,7 @@ $(function(){
 		labelKey = classList[1]            
 		$(".commentcontent.#"+labelKey).animate({"height": "85px", "width": "500px"}, "fast" );
 		$(".button_block.#"+labelKey).slideDown("fast");
+		iFrameHeightIncrement(85)
 		return false;
 	});
 	
@@ -236,7 +260,6 @@ $(function(){
 		classList = $(this).parent().parent().attr('class').split(' ');
 		labelKey = classList[1]
 		alert($(".commentcontent.#"+labelKey).val())
-		alert($())
 		return false;
 		});
 
@@ -255,7 +278,8 @@ $(function(){
 		/* open comment box */
 		classList = $(this).attr('class').split(' ');
 		labelKey = classList[3]
-		$(".commentbox."+labelKey).show()	
+		$(".commentbox."+labelKey).show()
+		iFrameHeightIncrement(35)
 		/* update DB and globals*/
 		
 	});
