@@ -22,9 +22,9 @@ class Submit(webapp.RequestHandler):
     def post(self):
          
         # = self.request.get()
-        forms = ("follow_name", "ch_keywords", "keywords",
-                  "ch_author", "author", "ch_journal", "journal",
-                 "ch_citing", "citing_num", "update_frequency" ,"article")
+        forms = ("follow_name", "ch_keywords", "keywords","ch_author",
+                  "ch_journal", "journal","ch_citing", "citing_num",
+                "update_frequency" , "update_quantity", "citesTitle")
         
        
         vars = {}
@@ -32,10 +32,11 @@ class Submit(webapp.RequestHandler):
             vars[form] = self.request.get(form)
            
         keywords = vars["keywords"] if vars['ch_keywords'] else ""
-        author = vars["author"] if vars["ch_author"] else ""              
+        author = vars["ch_author"]             
         journal = vars["journal"] if vars["ch_journal"] else ""      
         citationsID =  vars["citing_num"] if vars["ch_citing"] else ""
-        citesTitle =  vars["article"] if vars["ch_citing"] else ""
+        citesTitle =  vars["citesTitle"] if vars["ch_citing"] else ""
+        update_quantity = int(vars["update_quantity"])      
                        
         s_params = SearchParams(keywords = keywords,  
                                 author=author, 
@@ -57,7 +58,8 @@ class Submit(webapp.RequestHandler):
                                user_id=user_id, 
                                follow_name=vars["follow_name"],
                                search_params=s_params, 
-                               update_frequency=vars["update_frequency"])
+                               update_frequency=vars["update_frequency"],
+                               num_of_articles_per_update=update_quantity)
         
         GlobalVariables.GLOBAL_current_follow.create_follow_name_from_search_params()
         if (GlobalVariables.GLOBAL_current_follow.check_if_already_exists(user,GlobalVariables.GLOBAL_current_follow.follow_name )):

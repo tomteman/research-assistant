@@ -11,18 +11,23 @@
 <h2>Your Follows:</h2>
 
 <br/>
-<ul  id="follows_list" >
+<table  id="follows_list" >
 
 	{% for follow in myFollows %}
-	<li id="{{follow.follow_name}}">
-		{{follow.follow_name}}					
-		<input type="button" class="removeButton" id="{{follow.follow_name}}" value="Remove"/>
-		<br/>
-	</li>	
+	<tr id="{{follow.follow_name}}">
+		<td>
+			{{follow.follow_name}}
+		</td>
+		<td>						
+			<input type="button" class="removeButton" id="{{follow.follow_name}}" value="Remove"/>
+		</td>
+	</tr>	
 
 	{% endfor %}
-</ul>
+</table>
+
 <form id="follow_to_remove">
 	<input type="hidden"  id="name_to_remove" name="name_to_remove" value =""/>
 </form>		
+
 {% endblock %}
