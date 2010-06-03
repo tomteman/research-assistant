@@ -1,5 +1,3 @@
-#from json import *
-import json
 import ArticleData
 import HTMLparser
 import ArticleURLandTitle
