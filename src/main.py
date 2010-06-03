@@ -296,6 +296,8 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/MyFollows', MyFollows)
                                       ,('/AdvancedSearch', AdvancedSearch)
                                       ,('/UpdateLabelDB', UpdateLabelDB)
+                                      ,('/UpdateArticleLabelDB',UpdateArticleLabelDB)
+                                      ,('/RemoveLabelDB',RemoveLabelDB)
                                       ,('/GetAllLabels',GetAllLabels)],
                                       debug=True)
 

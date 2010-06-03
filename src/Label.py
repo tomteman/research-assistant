@@ -21,11 +21,10 @@ def update_comment(user, label_name, article_key, comment_content):
                     "AND label_name = :2 " +
                     "AND article_key = :3", 
                     user, label_name, article_key)
-    results = q.fetch(10)
     # this is supposed to be only one result but who knows...
-    for label in results:
+    for label in q:
         label.comment = comment_content
-        
+        label.put()
     return True
     
 
