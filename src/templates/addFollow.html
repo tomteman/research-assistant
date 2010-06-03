@@ -7,6 +7,9 @@
 	Reaserch Assistant - new follow			
 {% endblock %}
 
+{% block customScripts %}
+ 	<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"></script>
+ {% endblock %}
 
 
 {% block contents %}
@@ -91,6 +94,15 @@
 			<table>		
 				<tr>
 					<label class="description">How often </label>
+					<select class="element select medium" id="element_2" name="update_frequency"> 
+						<option value="Daily" >Daily</option>
+						<option value="Weekly" selected="selected">Weekly</option>
+						<option value="Monthly">Monthly</option>
+
+					</select>
+				</tr>
+				<tr>
+				<label class="description">How often </label>
 					<select class="element select medium" id="element_2" name="update_frequency"> 
 						<option value="Daily" >Daily</option>
 						<option value="Weekly" selected="selected">Weekly</option>
