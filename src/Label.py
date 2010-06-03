@@ -15,7 +15,8 @@ class Label(db.Model):
      article_key = db.StringProperty()
      is_shared = db.BooleanProperty()
     
- 
+def update_comment(user, label_name, article_key, comment_content):
+    pass
 
 def add_label(label_name, user,list_of_articleData_objects):
     # TODO: should we check that this label does not exist already?
@@ -56,7 +57,7 @@ def get_labels_dict(user):
             new_dict[label.label_name] += 1
     return new_dict
          
-    pass
+    
 def remove_label_from_article(user, label_name,article_key):
     q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 " +
@@ -177,6 +178,16 @@ def get_articlekey_labellist_dict(user):
         articlekey_labellist_dict[label.article_key] = label
     return articlekey_labellist_dict
 
+def get_label_object_list_for_user_JSON(user):
+     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
+     my_label_encoder = JSONConvertors.LabelEncoder()
+     labellist_JSON  = []
+     
+     for label in query:
+         labellist_JSON.append(my_label_encoder.default(label))
+    
+     return simplejson.dumps(labellist_JSON)
+     
 def get_articlekey_labellist_dict_JSON(user):
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
     
