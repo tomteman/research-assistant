@@ -11,6 +11,8 @@ from django.template.loader import get_template
 from ArticleData import ArticleData, parseBibTexItems
 import DBFollow
 from django.utils import simplejson
+import GlobalVariables
+import SearchParams
          
        
 class MyFollows(webapp.RequestHandler):
@@ -41,10 +43,17 @@ class MyFollows(webapp.RequestHandler):
     def post(self):
         
         name=self.request.get("name_to_remove")
-        user = users.get_current_user()      
-        count = DBFollow.remove_DBFollow(user, name)
+        action_type=self.request.get("action_type")
+        user = users.get_current_user()
         
-        self.response.out.write(simplejson.dumps(count))
+        if (action_type == "remove"):
+            count = DBFollow.remove_DBFollow(user, name)
+            self.response.out.write(simplejson.dumps(count))
+        else:
+            sParams = DBFollow.getSearchParamsObj(user, name)
+            sParams.year_start=""
+            GlobalVariables.GLOBAL_searchParams = sParams
+            self.response.out.write(simplejson.dumps("true"))
         
         
         

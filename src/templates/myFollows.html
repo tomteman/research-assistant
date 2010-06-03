@@ -15,8 +15,11 @@
 
 	{% for follow in myFollows %}
 	<tr id="{{follow.follow_name}}">
-		<td>
+		<td width=500px>
 			{{follow.follow_name}}
+		</td>
+		<td width=100px>
+			<input type="button" class="runSearch" id="{{follow.follow_name}}" value="Run Search"/>
 		</td>
 		<td>						
 			<input type="button" class="removeButton" id="{{follow.follow_name}}" value="Remove"/>
@@ -27,6 +30,7 @@
 </table>
 
 <form id="follow_to_remove">
+	<input type="hidden"  id="action_type" name="action_type" value =""/>
 	<input type="hidden"  id="name_to_remove" name="name_to_remove" value =""/>
 </form>		
 

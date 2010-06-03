@@ -124,8 +124,8 @@ class Search(webapp.RequestHandler):
                                    year_start=year_start, year_finish=year_finish  )
         
         searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
-        parserStruct = getResultsFromURL_OFFLINE(searchURL)
-        #parserStruct = getResultsFromURLwithProxy(searchURL)
+        #parserStruct = getResultsFromURL_OFFLINE(searchURL)
+        parserStruct = getResultsFromURLwithProxy(searchURL)
         
         GLOBAL_numOfResults = parserStruct.get_numOfResults() 
         results = parserStruct.get_results()
@@ -209,12 +209,13 @@ class Search(webapp.RequestHandler):
         else:
             searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         
-        parserStruct = getResultsFromURL_OFFLINE(searchURL) 
-        #parserStruct = getResultsFromURLwithProxy(searchURL) 
+        #parserStruct = getResultsFromURL_OFFLINE(searchURL) 
+        parserStruct = getResultsFromURLwithProxy(searchURL) 
         results = parserStruct.get_results()
         
         numResults = parserStruct.get_numOfResults()
-        numResultsDec =int(removeComma(parserStruct.get_numOfResults()))
+        #numResultsDec =int(removeComma(parserStruct.get_numOfResults()))
+        numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
             
         if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
             c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of "

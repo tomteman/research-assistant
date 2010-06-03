@@ -50,7 +50,7 @@ $(document).ready(function() {
     
     //////////////////////remove follow
     var options_rm_follow = { 
-        target:        '#result',  	      // target element(s) to be updated with server response   
+    	success:       gotoSearch,    	// post-submit callback   
  		url:      '/MyFollows',              // override for form's 'action' attribute 
  		type:      "POST",
  		dataType:  'json'
@@ -60,12 +60,28 @@ $(document).ready(function() {
     $('.removeButton').click(function() {
     	var id_name = $(this).attr("id");
     	$(this).parent().parent().remove();
+    	$("#action_type").val("remove");
     	$("#name_to_remove").val(id_name);
         $("#follow_to_remove").ajaxSubmit(options_rm_follow); 
         return false; 
-    });  
+    });
+    
+    $('.runSearch').click(function() {
+    	var id_name = $(this).attr("id");
+    	$("#action_type").val("search");
+    	$("#name_to_remove").val(id_name);
+        $("#follow_to_remove").ajaxSubmit(options_rm_follow); 
+        return false; 
+    });
     
  });
+
+function gotoSearch(responseText, statusText, xhr, $form)  {
+	if (responseText == "true"){
+		location.href = '/Search?Type=FollowResults';
+	}
+	
+}
 
 
 function updateAuthors(){
@@ -74,7 +90,7 @@ function updateAuthors(){
 		all_authors.each( function () {
 			var author_name=$(this).fieldValue();
 			if (author_name != "") 
-			authors = authors + author_name;	
+			authors = authors + " "+ author_name;	
 	});	 
 	
  	$('#ch_author').val(authors);
