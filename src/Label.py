@@ -51,10 +51,10 @@ def get_labels_dict(user):
     labels_list = q.fetch(1000)
     new_dict = {}
     for label in labels_list:
-        if (new_dict[label.label_name] == None):
-            new_dict[label.label_name] = 1
-        else:
+        if (new_dict.has_key(label.label_name)):
             new_dict[label.label_name] += 1
+        else:
+            new_dict[label.label_name] = 1
     return new_dict
          
     
