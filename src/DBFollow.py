@@ -4,7 +4,6 @@ import Follow
 import pickle
 import HTMLparser
 #import ResearchExceptions
-import GeneralFuncs
 import datetime
 
 class DBFollow(db.Model):
@@ -23,6 +22,7 @@ class DBFollow(db.Model):
     #num_of_articles_added_last_update = db.IntegerProperty()
     total_num_of_articles = db.IntegerProperty()
     
+ 
     def convert2Follow(self):
     
         new_follow = Follow.Follow()
@@ -53,6 +53,12 @@ class DBFollow(db.Model):
     # which is done with Follow.first_upload
     def update_DBfollow(self):
         
+        try:
+            num_of_articles_per_update = self.num_of_articles_per_update
+        except Exception:
+            num_of_articles_per_update = 10
+            
+        
         # GET OLD ARTICLE KEYS FROM DB
         self.num_of_update_requests += 1   
         search_params_object = pickle.loads(str(self.search_params_str))
@@ -69,7 +75,7 @@ class DBFollow(db.Model):
                     new_resultsKeys.append(article.get_key())
         
         # Check if There are new articles  
-        diff_list = GeneralFuncs.compareKeysLists(self.pastResultsKeysList, new_resultsKeys)
+        diff_list = compareKeysListswithOrder(self.pastResultsKeysList, new_resultsKeys,num_of_articles_per_update )
         
         num_new_articles = len(diff_list)
         self.total_num_of_articles += num_new_articles
@@ -174,6 +180,34 @@ def remove_DBFollow(user, follow_name):
         count += 1
     return count
 
+def getSearchParamsObj(user, follow_name):
+    query = db.GqlQuery("SELECT * FROM DBFollow WHERE user = :1 " + 
+                        "AND follow_name = :2",
+                        user, follow_name)
+    if (query.count() != 1):
+        return False
+    else:
+        dbfollow = query.fetch(1)[0]
+        return pickle.loads(str(dbfollow.search_params_str))
+        
+
+# Gets two lists or articles Keys, and returns a list with the differences 
+def compareKeysLists(oldKeys, newKeys):
+    return list(set(newKeys).difference(set(oldKeys)))
+
+def compareKeysListswithOrder(oldKeys, newKeys, max_new_to_append):
+    diff_list = []
+    num_appended = 0
+    for newkey in newKeys:
+        if newkey not in oldKeys:
+            diff_list.append(newkey)
+            num_appended += 1
+            if (num_appended >= max_new_to_append):
+                break
+            
+    return diff_list
         #if self.is_saved():
         #    self.delete()
+
+
         
