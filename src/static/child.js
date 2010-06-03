@@ -54,8 +54,8 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
-					"<input type=\"submit\" id=\"button\" value=\" Save \"/>" +
-					"<input type=\"submit\" id=\"cancel\" value=\" Close\" />" +
+					"<input type=\"submit\" id=\"save\" value=\" Save \"/>" +
+					"<input type=\"submit\" id=\"close\" value=\" Close\" />" +
 				"</div>" +
 			"</div>" 
 	
@@ -71,12 +71,11 @@ function displayLabelOnArticleByKey(labelArticleKey,label_name){
 		+label_name+"</button>" +
 		"<button class=\"fg-button-x\" type=\"submit\">x</button>"
 	$(x).prepend(str)
-	commentId= labelArticleKey
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
-					"<input type=\"submit\" id=\"button\" value=\" Save \"/>" +
-					"<input type=\"submit\" id=\"cancel\" value=\" Close\" />" +
+					"<input type=\"submit\" id=\"save\" value=\" Save \"/>" +
+					"<input type=\"submit\" id=\"close\" value=\" Close\" />" +
 				"</div>" +
 			"</div>" 
 	
@@ -205,6 +204,7 @@ function removeLabelFromArticle(label_name, article_key){
 	removeLabelFromGlobalLabels(label_name, article_key);
 }
 
+function saveComment(commentContent, article_key, label_name)
 
 $(function(){
 	$(".labelBox").hide()
@@ -225,17 +225,18 @@ $(function(){
 		return false;
 	});
 
-	$("#cancel").live("click",function(){
+	$("#close").live("click",function(){
 		classList = $(this).parent().parent().attr('class').split(' ');
 		labelKey = classList[1]
 		$(".commentbox."+labelKey).hide()
 		return false;
 		});
 
-	$("#cancel").live("click",function(){
+	$("#save").live("click",function(){
 		classList = $(this).parent().parent().attr('class').split(' ');
 		labelKey = classList[1]
-		$(".commentbox."+labelKey).hide()
+		alert($(".commentcontent.#"+labelKey).val())
+		alert($())
 		return false;
 		});
 
