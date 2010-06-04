@@ -352,7 +352,13 @@
 .ui-button-icon-only { width: 2.2em; } /* to make room for the icon, a width needs to be set here */
 button.ui-button-icon-only { width: 2.4em; } /* button elements seem to need a little more width */
 .ui-button-icons-only { width: 3.4em; } 
-button.ui-button-icons-only { width: 3.7em; } 
+button.ui-button-icons-only { width: 3.7em; }
+button.ui-button-label {width: auto; height: 8%; font-size: 80%; vertical-align:center;}
+button.ui-button-label-x {height:  8%; font-size: 80%;vertical-align:center; text-align: center;}
+button.ui-button-shared {background: #0B610B; color: #FFFFFF;}
+button.ui-button-private {background: #5858FA; color: #FFFFFF;}
+
+
 
 /*button text element */
 .ui-button .ui-button-text { display: block; line-height: 1.4;  }
