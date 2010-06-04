@@ -47,8 +47,12 @@
 	</head>
 	
 	<body>
-
-	<div id="popup" style="display: none;"></div>
+	<div id="popup_content" style="display: none;">
+		<p id="popupText">Some text</p>
+		<input type="button" id="butUpload" value="Yes" onclick="showLoadingImage();"/>
+		<input type="button" id="butNoUpload" value="No" onclick="Close_Popup();"/>
+	</div>
+	
 	
 	<hr />	
 		<div id="wrapper">
@@ -126,11 +130,11 @@
 		<!-- sidebar -->
 		<div id="sidebar">
 		
-		{% if logged %}	
+		{% if users.get_current_user %}	
 				
 			<div id="labelList">
 
-				<div class="label" id ="firstLabel" style="display:none" type="get" >
+				<div class="label" id ="firstLabel" style="display:none" >
 				
 					<div id="labelButtons">
 						<input type="button" class="labelButton" style="width:130px" value="first"/><button id="menuButton">V</button>
@@ -138,20 +142,19 @@
 				
 					<div id="dropDown" class="dropDown" style="display:none">  
     				  
-    				  	<a href="/About" class="first" target="frame">Share</a>
-      					 
+    				  	<a class="menuItem" id="Share" >Share</a>
+      					 	
+      					<a class="menuItem" id="Rename" >Rename</a>
       					
-      					<a href="/About" class="first" target="frame">Rename</a>
-      					
-      					 <a href="/About" class="first" target="frame">Delete</a>   
+      					<a class="menuItem" id="Delete" >Delete</a>   
 					
 					</div>
 				</div>
 				
 			</div>
 			
-			<form id="label2show action="/ShowArticlesByLabel">
-				<input type="hidden" id="Id" name="Id" value =""/>
+			<form id="labelName" action="/ShowArticlesByLabel">
+				<input type="hidden" id="label_name" name="label_name" value =""/>
 			</form>	
 				
 

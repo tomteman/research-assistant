@@ -24,6 +24,8 @@ $(function(){
       getLabelsFromDB();
       getUniqueLabelsFromDB();
       
+      
+      
     	  
  });
 
@@ -40,28 +42,37 @@ function printLabels(){
 function addLabel(labelName, number){
 	var newLabel = $("#firstLabel").clone();
 	var labelButton = newLabel.find(".labelButton");
+	var menuItem = newLabel.find(".menuItem")
+	
 	newLabel.show();
 	labelButton.val(labelName + "("+number+")");
 	labelButton.attr("id", labelName);
 	labelButton.click( function() { showLabeledArticles(labelButton.attr("id")) } );
-	newLabel.find("#menuButton").click( function() {menu($(this).parent());})
+	newLabel.find("#menuButton").click( function() {menu($(this).parent().parent().find("#dropDown"));})
 	
+	menuItem.mouseover( function () {$(this).css("background", "#0078ae")  })
+    menuItem.mouseout( function () {$(this).css("background", "#d0e5f5") })  
+    
+    newLabel.find("#Delete").click( function() { menu( menuItem.parent()); } );
+	newLabel.find("#Remove").click( function() { menu(menuItem.parent());  } );
+	newLabel.find("#Share").click( function() { menu(menuItem.parent()); }  );
 	$("#labelList").append(newLabel);
 	
 }
 
 
 function showLabeledArticles(label_name){
-	$("#the_iframe").attr("src", '/ShowArticlesByLabel?Id='+label_name);
-	
+	$("#the_iframe").attr("src", '/ShowArticlesByLabel?Id='+label_name);	
 }
 
-function menu(parent){
+
+
+function menu(div_menu){
 	if (menuStatus == 0){
-		parent.parent().find("#dropDown").show();
+		div_menu.show();
 		menuStatus=1;
 	}else{
-		parent.parent().find("#dropDown").hide();
+		div_menu.hide();
 		menuStatus=0;
 	}	
 }
