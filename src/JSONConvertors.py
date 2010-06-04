@@ -15,7 +15,7 @@ class ArticleURLandTitleEncoder(simplejson.JSONEncoder):
     """  a custom JSON encoder for ArticleURLandTitle objs """
     def default(self, obj):
         if not isinstance (obj, ArticleURLandTitle.ArticleURLandTitle):
-            print 'You cannot use the JSON custom ArticleDataEncoder for a non-ArticleURLandTitleEncoder obj.'
+            print 'You cannot use the JSON custom ArticleDataEncoder for a non-ArticleURLandTitle obj.'
             return
         json_dict = {}
         json_dict['articleTitle'] = obj.articleTitle
@@ -35,24 +35,10 @@ class ArticleURLandTitleDecoder(simplejson.JSONEncoder):
         article_url_and_data_obj = ArticleURLandTitle.ArticleURLandTitle()
         article_url_and_data_obj.set_article_title(article_url_and_data_dict['articleTitle'])
         article_url_and_data_obj.set_article_url(article_url_and_data_dict['articleURL'])
-        article_url_and_data_obj.set_article_url(article_url_and_data_dict['hasLink'])
-        return article_url_and_data_obj.set_article_url(article_url_and_data_dict['articleURL'])
+        article_url_and_data_obj.set_has_link(article_url_and_data_dict['hasLink'])
+        return article_url_and_data_obj
     
-    def default(self, obj):
-        if not isinstance (obj, ArticleURLandTitle.ArticleURLandTitle):
-            print 'You cannot use the JSON custom ArticleDataEncoder for a non-ArticleURLandTitleEncoder obj.'
-            return
-        json_dict = {}
-        json_dict['articleTitle'] = obj.articleTitle
-        json_dict['articleURL'] = obj.articleURL
-        json_dict['hasLink'] = obj.hasLink  # false if CITATION
-        
-        return json_dict
-    
-    def encode(self,obj):
-        return simplejson.dumps(self.default(obj))
-        #return self.default(obj)
-    
+
 
 class ArticleDataDecoder(simplejson.JSONDecoder):
     def decode (self, json_string):
