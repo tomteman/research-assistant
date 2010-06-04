@@ -272,10 +272,10 @@ def share_label_request(inviting_user, label_name, new_user_email, notify=True):
     if (num_results == 0):
         return -4
     
-    # check if the invited user already has this label
+    # check if the invited user already has a label with the same name
     new_user = users.User(new_user_email)
     one_label_object = query.fetch(2)[0]
-    if new_user in one_label_object.users_list:
+    if ((new_user in one_label_object.users_list) and (one_label_object.is_shared == True)):
             return -3 
     
     # create pending in DB and notify the invited user
@@ -295,11 +295,22 @@ def share_label_request(inviting_user, label_name, new_user_email, notify=True):
     return True
     
 # RC = -4 == no results where found for label_name and user
-def execute_label_sharing_after_approved(old_user,label_name, new_user):
+def execute_label_sharing_after_approved(inviting_user,label_name, invited_user):
+    # check if the invited user already has a label with the same name
+    # if yes, and that label is private - rename it
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                "AND label_name = :2 ", 
+                invited_user, label_name)
+    
+    if (query.count(2) != 0):
+        label = query.fetch(1000)[0]
+        if (label.is_shared == False):
+            rename_label(invited_user, label.label_name, label.label_name + "_1")
+    
     # get the current label object
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                 "AND label_name = :2 ", 
-                old_user, label_name)
+                inviting_user, label_name)
 
     labels = query.fetch(1000)
     if ((labels == None) or (len(labels)== 0)):
@@ -307,8 +318,8 @@ def execute_label_sharing_after_approved(old_user,label_name, new_user):
     
     for label_object in labels:
         label_object.is_shared = True
-        if not new_user in label_object.users_list:
-            label_object.users_list.append(new_user)
+        if not invited_user in label_object.users_list:
+            label_object.users_list.append(invited_user)
             label_object.put()
     
     return True

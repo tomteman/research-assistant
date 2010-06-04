@@ -6,7 +6,6 @@ import Label
 class PendingSharedLabel(db.Model):
         inviting_user = db.UserProperty()
         invited_user = db.UserProperty()
-        invited_user_email_addr = db.StringProperty()
         label_name = db.StringProperty()
         time_mail_sent = db.DateTimeProperty(auto_now_add=True)
         Id = db.StringProperty() # this will actually be the key to the DB
