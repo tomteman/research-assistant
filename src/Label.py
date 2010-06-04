@@ -8,6 +8,12 @@ import JSONConvertors
 import HTMLparser
 import PendingSharedLabel
 
+# RC = -2 == email address not valid
+# RC = -3 == new_user already has this label
+# RC = -4 == no results where found for label_name and user 
+# RC = -7 == no connection to DB
+# creates a pending in the DB
+
 class Label(db.Model):
     users_list = db.ListProperty(users.User) 
     label_name = db.StringProperty()
@@ -36,7 +42,7 @@ def add_label_to_article(label_name, user,list_of_articleData_objects):
     # check if label exists. 
     # if not, update the creator. if yes, take his name
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 " +
+                    "AND label_name = :2 ", 
                     user, label_name)
     
     if (query.count(2) == 0):
@@ -59,20 +65,15 @@ def add_label_to_article(label_name, user,list_of_articleData_objects):
         if is_new_label:
             new_label.users_list = [user]
             new_label.creator = user
+            new_label.is_shared = False
         else: 
             new_label.users_list = users_list
             new_label.is_shared = is_shared
             new_label.creator = creator
-    
-        
-        
-        
-        
-        new_label.is_shared = False
         try:
             new_label.put()
         except Exception:
-            return False
+            return -7
         
     return True
 
@@ -83,7 +84,7 @@ def add_label_JSON_INPUT(user, json_article_labelname_list):
     article_json_string = my_list[0]
     
     article_data_decoder = JSONConvertors.ArticleDataDecoder()
-    article_data_obj = article_data_decoder.decode(article_json_string)     # """{"HTML_urlList":[{"articleTitle":"Supercoil sequencing: a fast and simple method for sequencing plasmid <b>DNA</b>","articleURL":"http://www.liebertonline.com/doi/abs/10.1089/dna.1985.4.165","hasLink":true}],"BibTex_dict":{},"related_articlesID":"lar?q=related:S5jpm321qq0J:scholar.google.com/&amp;hl=en&amp;as_sdt=200","HTML_author_year_pub":"EY CHEN, PH Seeburg - <b>DNA</b>, 1985 - liebertonline.com","cacheID":"","related_articlesURL":"http://scholar.google.com/scholar?q=related:lar?q=related:S5jpm321qq0J:scholar.google.com/&amp;hl=en&amp;as_sdt=200:scholar.google.com/&hl=en&num=10&as_sdt=2000","all_versionsURL":"http://scholar.google.com/scholar?cluster=12514014065693661259&hl=en&num=10&as_sdt=2000","HTML_abstract":"%3Cbr%3E%3Cb%3E...%3C%2Fb%3E%20LABORATORY%20METHODS%20Supercoil%20Sequencing%3A%20A%20Fast%20and%20Simple%20Method%20for%20Sequencing%3Cbr%3E%0A%0APlasmid%20%3Cb%3EDNA%3C%2Fb%3E%20ELLSON%20Y.%20CHEN%20and%20PETER%20H.%20SEEBURG%204%5CBSTRACT%20A%20method%20for%20obtaining%3Cbr%3E%0Asequence%20information%20directly%20from%20plasmid%20%3Cb%3EDNA%3C%2Fb%3E%20is%20presented.%20The%20procedure%20in-%20%3Cb%3E...%3C%2Fb%3E%20%0A%3Cbr%3E","all_versionsID":"12514014065693661259","BibTexURL":"http://scholar.google.com/scholar.bib?q=info:S5jpm321qq0J:scholar.google.com/&output=citation&hl=en&as_sdt=2000&ct=citation&cd=0","articleTitleQuoted":"Supercoil+sequencing%3A+a+fast+and+simple+method+for+sequencing+plasmid+%3Cb%3EDNA%3C%2Fb%3E","key":"S5jpm321qq0J","citationsURL":"http://scholar.google.com/scholar?cites=12514014065693661259&hl=en&num=10&as_sdt=2000","articleTitle":"Supercoil sequencing: a fast and simple method for sequencing plasmid <b>DNA</b>","citationsID":"12514014065693661259","articleURL":"http://www.liebertonline.com/doi/abs/10.1089/dna.1985.4.165","cacheURL":"","citationsNUM":"1932"}""")
+    article_data_obj = article_data_decoder.decode(article_json_string)     
     article_data_obj_list = [article_data_obj]
     return add_label_to_article(label_name, user, article_data_obj_list)
     
@@ -255,15 +256,17 @@ def get_articlekey_labellist_dict_JSON(user):
 # RC = -2 == email address not valid
 # RC = -3 == new_user already has this label
 # RC = -4 == no results where found for label_name and user 
+# RC = -7 == problems connecting to db
 # creates a pending in the DB
-def share_label_request(user, label_name, new_user_email, notify=True):
+def share_label_request(inviting_user, label_name, new_user_email, notify=True):
     # Varify new_user_email
     if not mail.is_email_valid(new_user_email):
         return -2
     
+    # check if this label really exists
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
-                    user, label_name)
+                    inviting_user, label_name)
     
     num_results = query.count(10)
     if (num_results == 0):
@@ -274,17 +277,21 @@ def share_label_request(user, label_name, new_user_email, notify=True):
     one_label_object = query.fetch(2)[0]
     if new_user in one_label_object.users_list:
             return -3 
-
+    
+    # create pending in DB and notify the invited user
     pending_obj = PendingSharedLabel.PendingSharedLabel()
-    pending_obj.inviting_user = user
+    pending_obj.inviting_user = inviting_user
     pending_obj.invited_user = new_user
     pending_obj.label_name= label_name
-    Id = user.nickname()+":" + new_user.nickname() + ":" +label_name
+    Id = inviting_user.nickname()+":" + new_user.nickname() + ":" +label_name
     pending_obj.Id = Id
-    key = pending_obj.put()
+    try:
+        key = pending_obj.put()
+    except Exception:
+        return -7
     
     if notify:
-        notify_user_on_shared_label(user, new_user, label_name, key)
+        notify_user_on_shared_label(inviting_user, new_user, label_name, key)
     return True
     
 # RC = -4 == no results where found for label_name and user
@@ -323,26 +330,29 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
     html_msg = "<html><body>"
     html_msg = html_msg + "<b>Hello Dear " + new_user.nickname() + ",</b><br><br>"
     html_msg = html_msg + "<b>" + old_user.nickname() + "</b> has shared a Research Assistant Label with you! <br>"
-    html_msg = html_msg + "Label is named: <font color=\"red\" ><b>" + str(label_name) +  "</b></font><br>"
+    html_msg = html_msg + "Label is named: <font color=\"red\" ><b>" + str(label_name) +  "</b></font></br><br>"
     
     is_new_user = is_new_user_to_RA(new_user)
-    if (is_new_user):
-        html_msg = html_msg + "Research Assistant is a new online tool which enables you to keep track on all articles! <br>"
-        html_msg = html_msg + "You can: <br>"
-        html_msg = html_msg + "* Label articles and write comments on them<br>"
-        html_msg = html_msg + "* Get email updates on new articles of interest<br>"
-        html_msg = html_msg + "* Collaborate! - Share Labels with you collegues<br>"
-        html_msg = html_msg + "* Search withing articles citing one specific article<br>"
-        html_msg = html_msg + "....And much more!<br>"
-        html_msg = html_msg + "<br>Since you are new to ResearchAssitant, we invite you to visit our site and view a short video "
-        html_msg = html_msg + "<a href =\"research-assistant.appspot.com/\" <font color=\"6633cc\"> here" + "</font></a><br>"
-
     html_msg = html_msg + "To see the label details and accept/reject press: "
-    html_msg = html_msg + """<a href =\"http://research-assistant.appspot.com/?page=MyPendingLabels\" <font color=\"6633cc\">this link*</font></a><br><br>"""
+    html_msg = html_msg + """<a href =\"http://research-assistant.appspot.com/?page=MyPendingLabels\" <font color=\"6633cc\">this link</font></a><br>"""
     if (is_new_user):
-        html_msg = html_msg + "(If you do not have a Google account, you will be prompted to create one)"
+        html_msg = html_msg + "<i>(If you do not have a Google account, you will be prompted to create one)</i><br>"
  
-    html_msg = html_msg + "&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
+    
+    if (is_new_user):
+        html_msg = html_msg + """<br><hr size="3" width="100%" align="left" color="009999"></hr><br>"""
+        html_msg = html_msg + "Research Assistant is a new online tool which enables you to keep track on all articles! <br>"
+        html_msg = html_msg + "You are welcome to: <br>"
+        html_msg = html_msg + "<ul><li> Label articles and write comments on them<br>"
+        html_msg = html_msg + "<li>Get email updates on new articles of interest<br>"
+        html_msg = html_msg + "<li>Collaborate! - Share Labels with you colleagues<br>"
+        html_msg = html_msg + "<li>Search within articles citing a specific article</ul>"
+        html_msg = html_msg + "....And much more!<br><br>"
+        html_msg = html_msg + "We invite you to visit our site and view a short video "
+        html_msg = html_msg + "<a href =\"research-assistant.appspot.com/\" <font color=\"6633cc\"> here" + "</font></a><br><br>"
+    
+    html_msg = html_msg + """<br><hr size="3" width="100%" align="left" color="009999"></hr><br>"""
+    html_msg = html_msg + "<br>&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
     html_msg = html_msg + "</body></html>"
     plain_msg = "Hello Hello"
     mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
