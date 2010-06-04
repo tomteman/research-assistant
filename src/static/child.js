@@ -53,10 +53,10 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	articleKey = resultsWithParams.results[articleNumber].key;
 	x= $("#"+articleKey)
 	
-	str = "<div class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
-			"<div>" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
+			"<div style=\"display: inline\">" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
@@ -77,10 +77,10 @@ function displayLabelOnArticleByKey(labelArticleKey,label_name){
 	
 	x= $("#"+labelArticleKey)
 	
-	str = "<div class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
-			"<div>" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
+			"<div style=\"display: inline\">" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
@@ -284,6 +284,15 @@ $(function(){
 	$(".labelBox").hide()
 	
 	$(".commentcontent").live("click", function(){
+        $(this).focus()
+        classList = $(this).parent().attr('class').split(' ');
+        labelKey = classList[1]
+        $(".commentcontent.#"+labelKey).animate({"height": "85px", "width": "500px"}, "fast" );
+        $(".button_block.#"+labelKey).slideDown("fast");
+        return false;
+    });
+  
+	$(".commentcontent").live("click", function(){
 		$(this).focus()
 		classList = $(this).parent().attr('class').split(' ');
 		labelKey = classList[1]            
@@ -291,38 +300,32 @@ $(function(){
 		$(".button_block.#"+labelKey).slideDown("fast");
 		return false;
 	});
+
+    $("#close").live("click",function(){
+        classList = $(this).parent().parent().attr('class').split(' ');
+        labelKey = classList[1]
+        $(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
+        $(".button_block.#"+labelKey).slideUp("fast");
+        $(".commentcontent.#"+labelKey).blur()
+        $(".commentbox."+labelKey).hide()
+        iFrameHeightDecrement(100)
+        return false;
+        });
 	
-/*	$(".commentcontent").live("mouseout", function(){
-		$(this).blur()
-		classList = $(this).parent().attr('class').split(' ');
-		labelKey = classList[1]            
-		$(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
-		$(".button_block.#"+labelKey).slideUp("fast");
-		return false;
-	});
-*/
-	$("#close").live("click",function(){
-		classList = $(this).parent().parent().attr('class').split(' ');
-		labelKey = classList[1]
-		$(".commentcontent.#"+labelKey).blur()
-		$(".commentbox."+labelKey).hide()
-		iFrameHeightDecrement(85)
-		return false;
-		});
 
-	$("#save").live("click",function(){
-		classList = $(this).parent().parent().attr('class').split(' ');
-		labelKey = classList[1]
-		$(".commentcontent.#"+labelKey).blur()
-		$(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
-		$(".button_block.#"+labelKey).slideUp("fast");
-		commentContent = $(".commentcontent.#"+labelKey).val()
-		label_name = $(".fg-button."+labelKey).text()
-		article_key = $(this).parent().parent().parent().closest("div").attr("id");
-		saveComment(commentContent,article_key,label_name)
-     	return false;
-});
+    $("#save").live("click",function(){
+        classList = $(this).parent().parent().attr('class').split(' ');
+        labelKey = classList[1]
+        $(".commentcontent.#"+labelKey).blur()
+         $(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
+         $(".button_block.#"+labelKey).slideUp("fast");
+        commentContent = $(".commentcontent.#"+labelKey).val()
+        label_name = $(".fg-button."+labelKey).text()
+        article_key = $(this).parent().parent().parent().closest("div").attr("id");
+        saveComment(commentContent,article_key,label_name)
+         return false;
 
+    });
 	
 	$(".fg-button").livequery(function(){
 		/* open comment box */
@@ -337,7 +340,7 @@ $(function(){
 			$(".commentbox."+labelKey+" .commentcontent").val(comment)
 		
 			$(".commentbox."+labelKey).show()
-			iFrameHeightIncrement(85)
+			iFrameHeightIncrement(100)
 			/* update DB and globals*/
 		});
 	});
@@ -396,6 +399,7 @@ $(function(){
             
         });
 	    ac.enable();
+	    selectedLabelBox.focus();
 	    /* handle "user pressed Enter key" event */
 	    $('.labelBox').keyup(function(e) {
 	    	if(e.keyCode == 13) {
