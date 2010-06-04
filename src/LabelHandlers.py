@@ -1,6 +1,18 @@
 from google.appengine.ext import webapp
 from google.appengine.api import users
+
+import os
+import types
+from google.appengine.ext.webapp import template
+from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import db
+from django.template import Template,Context
+from django.conf import settings 
+from django.template.loader import get_template
+
 import Label
+import JSONConvertors
+
 
 class GetAllLabels(webapp.RequestHandler):
     
@@ -40,8 +52,24 @@ class RemoveLabelDB(webapp.RequestHandler):
         Label.remove_label_from_article(user, label_name, article_key)
         
         
-        
-        
+
+class ShowArticlesByLabel(webapp.RequestHandler):
+    
+    def get(self):
+        t = get_template('search.html')
+        c = Context()
+        user = users.get_current_user()
+        label_name = self.request.get('Id')
+        results = Label.get_articles_list_with_label_as_HTMLParser(user, label_name)
+        my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
+        resultsJSON = my_html_parser_encoder.encode(results)
+        c['users'] = users
+        c['results'] = results
+        c['resultsJSON'] = resultsJSON
+        c['formAction'] = '/AddFollow'
+        self.response.out.write(t.render(c))
+                
+
         
         
         
