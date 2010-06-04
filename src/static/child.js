@@ -9,7 +9,6 @@ function displayTagsOnResults(resultsJSON)
 	 iFrameHeightInit()
 	 /* add hiehgt to iframe for label adders (autocomplete) */
 	 iFrameHeightIncrement(10*15)
-  	 recolorLabels("haim", true);
 
 
 	 return
@@ -31,7 +30,7 @@ function displayTags(){
 		labelListIndexes = articleKeyInLabelList(resultsWithParams.results[articleNumber].key, articleNumber);
 		if (labelListIndexes.length){
 			for (var i = 0, j = labelListIndexes.length; i<j; i++){
-				currentLabelUniqueId = displayLabelOnArticle(articleNumber,labelListIndexes[i]);
+				displayLabelOnArticle(articleNumber,labelListIndexes[i]);
 			}
 		}
 	});
@@ -54,23 +53,13 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	articleKey = resultsWithParams.results[articleNumber].key;
 	x= $("#"+articleKey)
 	
-	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
-			"<div style=\"display: inline\">" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+	str = "<div class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
+			"<div>" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
-	
-	/* check is label is shared or private and color it appropriately */
-	if (parent.labels[labelListIndex].is_shared){
-		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
-		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
-	}
-	else{ 					
-		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
-		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
-	}
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
@@ -81,47 +70,20 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	$(x).append(str)
 	$(".commentbox.L" + labelUniqueId).hide()	
 	labelUniqueId+=1
-	return labelUniqueId;
 }
-
-
-/* recolor labels that were marked as private/shared*/
-function recolorLabels(label_name, is_shared){
-	$(".fg-button").each(function(intIndex, objValue){
-		if ($(this).text() == label_name){
-			if (is_shared){
-				$(this).removeClass("ui-button-private")
-				$(this).addClass("ui-button-shared");
-				$(this).next().removeClass("ui-button-private")
-				$(this).next().addClass("ui-button-shared");		
-			}
-			else{
-				$(this).removeClass("ui-button-shared")
-				$(this).addClass("ui-button-private");
-				$(this).next().removeClass("ui-button-shared")
-				$(this).next().addClass("ui-button-private");			
-			}
-		}
-	});
-}
-
 
 /* display a label that was just added to an article */
 function displayLabelOnArticleByKey(labelArticleKey,label_name){
 	
 	x= $("#"+labelArticleKey)
 	
-	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
-			"<div style=\"display: inline\">" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+	str = "<div class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
+			"<div>" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
-	/* new labels are 'private' by default */
-	$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
-	$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
-	
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
@@ -318,9 +280,11 @@ function iFrameHeightInit(){
 
 $(function(){
 	
+	
 	$(".labelBox").hide()
 	
-	$(".commentcontent").live("focus", function(){
+	$(".commentcontent").live("click", function(){
+		$(this).focus()
 		classList = $(this).parent().attr('class').split(' ');
 		labelKey = classList[1]            
 		$(".commentcontent.#"+labelKey).animate({"height": "85px", "width": "500px"}, "fast" );
@@ -328,17 +292,19 @@ $(function(){
 		return false;
 	});
 	
-	$(".commentcontent").live("blur", function(){
+/*	$(".commentcontent").live("mouseout", function(){
+		$(this).blur()
 		classList = $(this).parent().attr('class').split(' ');
 		labelKey = classList[1]            
 		$(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
 		$(".button_block.#"+labelKey).slideUp("fast");
 		return false;
 	});
-
+*/
 	$("#close").live("click",function(){
 		classList = $(this).parent().parent().attr('class').split(' ');
 		labelKey = classList[1]
+		$(".commentcontent.#"+labelKey).blur()
 		$(".commentbox."+labelKey).hide()
 		iFrameHeightDecrement(85)
 		return false;
@@ -347,6 +313,9 @@ $(function(){
 	$("#save").live("click",function(){
 		classList = $(this).parent().parent().attr('class').split(' ');
 		labelKey = classList[1]
+		$(".commentcontent.#"+labelKey).blur()
+		$(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
+		$(".button_block.#"+labelKey).slideUp("fast");
 		commentContent = $(".commentcontent.#"+labelKey).val()
 		label_name = $(".fg-button."+labelKey).text()
 		article_key = $(this).parent().parent().parent().closest("div").attr("id");
@@ -406,29 +375,25 @@ $(function(){
 		var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
 		//$(this).attr("disabled", "disabled");
 		$(".labelBox").val("")
-	    $(this).parent().next(".labelBox").slideToggle(50)
-	    selectedLabelBox = $(this).parent().next(".labelBox")
-    	var ac = selectedLabelBox.autocomplete({
-    		minLength: 1,
-            select: function(event, ui){ // Callback function, triggered if one of the suggested options is selected,
- 
-    			existingLabelSelected(ui.item.label, labelArticleKey);
-    			$(this).val("")
-    			$(this).hide()
-    			return false    			
+	    $(this).parent().next(".labelBox").slideToggle(200)
+    	var ac = $(this).parent().next(".labelBox").autocomplete({
+            minChars: 1, // Minimum request length for triggering autocomplete
+            delimiter: /(,|;)\s*/, // Delimiter for separating requests (a character or regex)
+            maxHeight: 400, // Maximum height of the suggestion list, in pixels
+            width: 300, // List width
+            zIndex: 9999, // List's z-index
+            deferRequestBy: 0, // Request delay (milliseconds), if you prefer not to send lots of requests while the user is typing. I usually set the delay at 300 ms.
+            select: function(data, value){ // Callback function, triggered if one of the suggested options is selected,
+    			existingLabelSelected(data, labelArticleKey)
+    			$(".article."+articleClassID).closest(".labelBox").val("")
+    			$(".article."+articleClassID).closest(".labelBox").hide()
+    			
     			},
-
-    		open: function() {
-    			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
-    		},
-   			//close the drop down
-   			close: function() {
-   				$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-   			},
-
-
-    		delay: 0,
-            source: parent.uniqueLabelsNames // List of suggestions for local autocomplete 
+            lookup: parent.uniqueLabelsNames, // List of suggestions for local autocomplete
+            multiple: true,
+            multipleSeparator: ",",
+            selectFirst: false
+            
         });
 	    ac.enable();
 	    /* handle "user pressed Enter key" event */
