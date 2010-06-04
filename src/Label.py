@@ -9,12 +9,13 @@ import HTMLparser
 import PendingSharedLabel
 
 class Label(db.Model):
-     users_list = db.ListProperty(users.User) 
-     label_name = db.StringProperty()
-     comment  = db.TextProperty()
-     serialized_article  = db.TextProperty()
-     article_key = db.StringProperty()
-     is_shared = db.BooleanProperty()
+    users_list = db.ListProperty(users.User) 
+    label_name = db.StringProperty()
+    comment  = db.TextProperty()
+    serialized_article  = db.TextProperty()
+    article_key = db.StringProperty()
+    is_shared = db.BooleanProperty()
+    creator = db.UserProperty()
     
 # returns False on failure
 def update_comment(user, label_name, article_key, comment_content):
@@ -22,7 +23,7 @@ def update_comment(user, label_name, article_key, comment_content):
                     "AND label_name = :2 " +
                     "AND article_key = :3", 
                     user, label_name, article_key)
-   # results = q.fetch(10)
+    # results = q.fetch(10)
     # this is supposed to be only one result but who knows...
     for label in query:
         label.comment = str(comment_content)
@@ -31,17 +32,42 @@ def update_comment(user, label_name, article_key, comment_content):
     return True
     
 
-def add_label(label_name, user,list_of_articleData_objects):
-    # TODO: should we check that this label does not exist already?
-    # because if we dont check, user can add twice, and when he removes it will 
-    # not be removed
+def add_label_to_article(label_name, user,list_of_articleData_objects):
+    # check if label exists. 
+    # if not, update the creator. if yes, take his name
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 " +
+                    user, label_name)
+    
+    if (query.count(2) == 0):
+        # true when this is the first time a label for this user is called this way
+        is_new_label = True 
+    else:
+        is_new_label= False
+        label = query.fetch(1)[0]
+        creator = label.creator
+        users_list = label.users_list
+        is_shared = label.is_shared
+ 
     for article in list_of_articleData_objects:
         new_label = Label()
         new_label.label_name = label_name
-        new_label.users_list = [user]
         new_label.comment = ""
         new_label.serialized_article = pickle.dumps(article)
         new_label.article_key = article.key
+        
+        if is_new_label:
+            new_label.users_list = [user]
+            new_label.creator = user
+        else: 
+            new_label.users_list = users_list
+            new_label.is_shared = is_shared
+            new_label.creator = creator
+    
+        
+        
+        
+        
         new_label.is_shared = False
         try:
             new_label.put()
@@ -59,32 +85,43 @@ def add_label_JSON_INPUT(user, json_article_labelname_list):
     article_data_decoder = JSONConvertors.ArticleDataDecoder()
     article_data_obj = article_data_decoder.decode(article_json_string)     # """{"HTML_urlList":[{"articleTitle":"Supercoil sequencing: a fast and simple method for sequencing plasmid <b>DNA</b>","articleURL":"http://www.liebertonline.com/doi/abs/10.1089/dna.1985.4.165","hasLink":true}],"BibTex_dict":{},"related_articlesID":"lar?q=related:S5jpm321qq0J:scholar.google.com/&amp;hl=en&amp;as_sdt=200","HTML_author_year_pub":"EY CHEN, PH Seeburg - <b>DNA</b>, 1985 - liebertonline.com","cacheID":"","related_articlesURL":"http://scholar.google.com/scholar?q=related:lar?q=related:S5jpm321qq0J:scholar.google.com/&amp;hl=en&amp;as_sdt=200:scholar.google.com/&hl=en&num=10&as_sdt=2000","all_versionsURL":"http://scholar.google.com/scholar?cluster=12514014065693661259&hl=en&num=10&as_sdt=2000","HTML_abstract":"%3Cbr%3E%3Cb%3E...%3C%2Fb%3E%20LABORATORY%20METHODS%20Supercoil%20Sequencing%3A%20A%20Fast%20and%20Simple%20Method%20for%20Sequencing%3Cbr%3E%0A%0APlasmid%20%3Cb%3EDNA%3C%2Fb%3E%20ELLSON%20Y.%20CHEN%20and%20PETER%20H.%20SEEBURG%204%5CBSTRACT%20A%20method%20for%20obtaining%3Cbr%3E%0Asequence%20information%20directly%20from%20plasmid%20%3Cb%3EDNA%3C%2Fb%3E%20is%20presented.%20The%20procedure%20in-%20%3Cb%3E...%3C%2Fb%3E%20%0A%3Cbr%3E","all_versionsID":"12514014065693661259","BibTexURL":"http://scholar.google.com/scholar.bib?q=info:S5jpm321qq0J:scholar.google.com/&output=citation&hl=en&as_sdt=2000&ct=citation&cd=0","articleTitleQuoted":"Supercoil+sequencing%3A+a+fast+and+simple+method+for+sequencing+plasmid+%3Cb%3EDNA%3C%2Fb%3E","key":"S5jpm321qq0J","citationsURL":"http://scholar.google.com/scholar?cites=12514014065693661259&hl=en&num=10&as_sdt=2000","articleTitle":"Supercoil sequencing: a fast and simple method for sequencing plasmid <b>DNA</b>","citationsID":"12514014065693661259","articleURL":"http://www.liebertonline.com/doi/abs/10.1089/dna.1985.4.165","cacheURL":"","citationsNUM":"1932"}""")
     article_data_obj_list = [article_data_obj]
-    return add_label(label_name, user, article_data_obj_list)
+    return add_label_to_article(label_name, user, article_data_obj_list)
     
+# RC = -4 == no results where found for label_name and user    
+def is_shared_label(user, label_name):
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 " +
+                    user, label_name)
+    if (query.count(2) == 0):
+        return -4
+    else:
+        label = query.fetch(1)[0]
+        return label.is_shared
+        
     
-
 def get_labels_dict_JSON(user):
-    try: 
-        q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1", user)
-        labels_list = q.fetch(1000)
-        new_dict = {}
-        for label in labels_list:
-            if (new_dict.has_key(label.label_name)):
-                new_dict[label.label_name] += 1
-            else:
-                new_dict[label.label_name] = 1
+    q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1", user)
+    labels_list = q.fetch(1000)
+    num_dict = {}
+    is_shared_dict = {}
+    for label in labels_list:
+        if (num_dict.has_key(label.label_name)):
+            num_dict[label.label_name] += 1
+        else:
+            num_dict[label.label_name] = 1
         
-        final_list = []
-        for key, value in new_dict.items():
-            d = {}
-            d['label_name'] = key
-            d['number'] = value
-            final_list.append(d)
-        
-        return simplejson.dumps(final_list)
+        is_shared_dict[label.label_name] = label.is_shared
     
-    except Exception:
-        return False
+    final_list = []
+    for key, value in num_dict.items():
+        d = {}
+        d['label_name'] = key
+        d['number'] = value
+        d['is_shared'] = is_shared_dict[key]
+        final_list.append(d)
+    
+    return simplejson.dumps(final_list)
+    
     
     
          
@@ -250,8 +287,7 @@ def share_label_request(user, label_name, new_user_email, notify=True):
         notify_user_on_shared_label(user, new_user, label_name, key)
     return True
     
-# RC = -4 == conflict: found more than one label with label_name for user user
-# RC = -5 == no results where found for label_name and user
+# RC = -4 == no results where found for label_name and user
 def execute_label_sharing_after_approved(old_user,label_name, new_user):
     # get the current label object
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
