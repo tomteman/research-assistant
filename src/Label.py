@@ -189,7 +189,16 @@ def get_articles_list_with_label_as_HTMLParser_JSON(user, label_name):
     
     return as_json
     
+def get_articles_list_with_label_as_HTMLParser(user, label_name):
+    article_objects_list = get_articles_list_with_label(user, label_name)
     
+    html_parser = HTMLparser.HTMLparser(url=None, html=None)
+    html_parser.results =  article_objects_list
+    html_parser.numOfResults = len(article_objects_list)
+    
+    return html_parser
+
+
 def get_articles_keys_list_with_label(user,label_name):
      query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
