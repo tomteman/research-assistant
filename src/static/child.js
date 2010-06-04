@@ -10,7 +10,6 @@ function displayTagsOnResults(resultsJSON)
 	 /* add hiehgt to iframe for label adders (autocomplete) */
 	 iFrameHeightIncrement(10*15)
 
-
 	 return
 }
 
@@ -56,10 +55,20 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
 			"<div style=\"display: inline\">" +
 				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
+	
+	/* check is label is shared or private and color it appropriately */
+	if (parent.labels[labelListIndex].is_shared){
+		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
+		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
+	}
+	else{ 					
+		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+	}
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
@@ -70,7 +79,30 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	$(x).append(str)
 	$(".commentbox.L" + labelUniqueId).hide()	
 	labelUniqueId+=1
+	return labelUniqueId;
 }
+
+
+/* recolor labels that were marked as private/shared*/
+function recolorLabels(label_name, is_shared){
+	$(".fg-button").each(function(intIndex, objValue){
+		if ($(this).text() == label_name){
+			if (is_shared){
+				$(this).removeClass("ui-button-private")
+				$(this).addClass("ui-button-shared");
+				$(this).next().removeClass("ui-button-private")
+				$(this).next().addClass("ui-button-shared");		
+			}
+			else{
+				$(this).removeClass("ui-button-shared")
+				$(this).addClass("ui-button-private");
+				$(this).next().removeClass("ui-button-shared")
+				$(this).next().addClass("ui-button-private");			
+			}
+		}
+	});
+}
+
 
 /* display a label that was just added to an article */
 function displayLabelOnArticleByKey(labelArticleKey,label_name){
@@ -80,10 +112,14 @@ function displayLabelOnArticleByKey(labelArticleKey,label_name){
 	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
 			"<div style=\"display: inline\">" +
 				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
+	/* new labels are 'private' by default */
+	$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+	$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+	
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
@@ -95,8 +131,6 @@ function displayLabelOnArticleByKey(labelArticleKey,label_name){
 	$(".commentbox.L" + labelUniqueId).hide()	
 	labelUniqueId+=1
 }
-
-
 
 /* This function is called when a user inputs a new (unknown) label name */
 function addNewLabel(label_name, labelArticleKey){
