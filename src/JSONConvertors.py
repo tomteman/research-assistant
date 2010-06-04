@@ -1,7 +1,7 @@
 import ArticleData
 import HTMLparser
 import ArticleURLandTitle
-from urllib import quote
+import urllib 
 import Label
 from django.utils import simplejson
 from google.appengine.api import users
@@ -61,7 +61,7 @@ class ArticleDataDecoder(simplejson.JSONDecoder):
         article_data.set_bib_tex_url(article_data_dict['BibTexURL'])
         article_data.set_HTML_urlList(new_html_url_list)
         article_data.set_HTML_author_year_pub(article_data_dict['HTML_author_year_pub'])
-        article_data.set_HTML_abstract(article_data_dict['HTML_abstract'])
+        article_data.set_HTML_abstract(urllib.unquote(article_data_dict['HTML_abstract']))
         article_data.set_bib_tex_dict(article_data_dict['BibTex_dict'])
         article_data.set_citations_url(article_data_dict['citationsURL'])
         article_data.set_citations_ID(article_data_dict['citationsID'])
@@ -98,7 +98,7 @@ class ArticleDataEncoder(simplejson.JSONEncoder):
             json_dict['HTML_urlList'].append(my_article_URL_and_title_encoder.default(article_url_and_title))
           
         json_dict['HTML_author_year_pub'] = obj.HTML_author_year_pub
-        json_dict['HTML_abstract'] = quote(obj.HTML_abstract, "")  
+        json_dict['HTML_abstract'] = urllib.quote(obj.HTML_abstract, "")  
         json_dict['BibTex_dict'] = obj.BibTex_dict
         json_dict['citationsURL'] = obj.citationsURL
         json_dict['citationsID'] = obj.citationsID
