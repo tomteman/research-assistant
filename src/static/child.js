@@ -412,27 +412,30 @@ $(function(){
 		var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
 		//$(this).attr("disabled", "disabled");
 		$(".labelBox").val("")
-	    $(this).parent().next(".labelBox").slideToggle(200)
-    	var ac = $(this).parent().next(".labelBox").autocomplete({
-            minChars: 1, // Minimum request length for triggering autocomplete
-            delimiter: /(,|;)\s*/, // Delimiter for separating requests (a character or regex)
-            maxHeight: 400, // Maximum height of the suggestion list, in pixels
-            width: 300, // List width
-            zIndex: 9999, // List's z-index
-            deferRequestBy: 0, // Request delay (milliseconds), if you prefer not to send lots of requests while the user is typing. I usually set the delay at 300 ms.
-            select: function(data, value){ // Callback function, triggered if one of the suggested options is selected,
-    			existingLabelSelected(data, labelArticleKey)
-    			$(".article."+articleClassID).closest(".labelBox").val("")
-    			$(".article."+articleClassID).closest(".labelBox").hide()
-    			
+	    selectedLabelBox = $(this).parent().next(".labelBox")
+	    selectedLabelBox.slideToggle(200)
+    	var ac = selectedLabelBox.autocomplete({
+    		minLength: 1,
+            select: function(event, ui){ // Callback function, triggered if one of the suggested options is selected,
+ 
+    			existingLabelSelected(ui.item.label, labelArticleKey);
+    			$(this).val("")
+    			$(this).hide()
+    			return false    			
     			},
-            lookup: parent.uniqueLabelsNames, // List of suggestions for local autocomplete
-            multiple: true,
-            multipleSeparator: ",",
-            selectFirst: false
-            
+
+    		open: function() {
+    			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+    		},
+   			//close the drop down
+   			close: function() {
+   				$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+   			},
+
+
+    		delay: 0,
+            source: parent.uniqueLabelsNames // List of suggestions for local autocomplete 
         });
-	    ac.enable();
 	    selectedLabelBox.focus();
 	    /* handle "user pressed Enter key" event */
 	    $('.labelBox').keyup(function(e) {
