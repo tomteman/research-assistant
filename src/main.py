@@ -13,6 +13,7 @@ import re
 
 
 from google.appengine.api import users
+from google.appengine.ext.webapp.util import login_required
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
@@ -234,7 +235,7 @@ class Search(webapp.RequestHandler):
         
         
 class DisplayTag(webapp.RequestHandler):
-#Create the about us page    
+    @login_required  
     def get(self):
         t = get_template('displayTag.html')
         c = Context()
@@ -299,6 +300,8 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/UpdateLabelDB', UpdateLabelDB)
                                       ,('/UpdateArticleLabelDB',UpdateArticleLabelDB)
                                       ,('/RemoveLabelDB',RemoveLabelDB)
+                                      ,('/ShowArticlesByLabel',ShowArticlesByLabel)
+                                      ,('/ShowArticlesByLabel',ShowArticlesByLabel)
                                       ,('/GetAllLabels',GetAllLabels)],
                                       debug=True)
 
