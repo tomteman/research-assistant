@@ -12,6 +12,9 @@ from django.template.loader import get_template
 
 import Label
 import JSONConvertors
+import HTMLparser
+import pickle
+from django.utils import simplejson
 
 
 class GetAllLabels(webapp.RequestHandler):
@@ -44,6 +47,7 @@ class UpdateArticleLabelDB(webapp.RequestHandler):
         comment_content =self.request.get('comment_content')
         Label.update_comment(user, label_name, article_key, comment_content)
 
+
 class RemoveLabelDB(webapp.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -51,6 +55,16 @@ class RemoveLabelDB(webapp.RequestHandler):
         article_key = self.request.get('article_key')
         Label.remove_label_from_article(user, label_name, article_key)
         
+    def get(self):
+        user = users.get_current_user()
+        label_name = self.request.get('label_name')
+        Label.delete_label(user,label_name)
+        
+        self.response.out.write(simplejson.dumps(label_name))
+        
+            
+
+
         
 
 class ShowArticlesByLabel(webapp.RequestHandler):
@@ -60,13 +74,15 @@ class ShowArticlesByLabel(webapp.RequestHandler):
         c = Context()
         user = users.get_current_user()
         label_name = self.request.get('Id')
-        results = Label.get_articles_list_with_label_as_HTMLParser(user, label_name)
+        htmlParser = Label.get_articles_list_with_label_as_HTMLParser(user, label_name)
+        results = htmlParser.results
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
-        resultsJSON = my_html_parser_encoder.encode(results)
+        resultsJSON = my_html_parser_encoder.encode(htmlParser)
         c['users'] = users
         c['results'] = results
         c['resultsJSON'] = resultsJSON
         c['formAction'] = '/AddFollow'
+        
         self.response.out.write(t.render(c))
                 
 
