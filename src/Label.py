@@ -6,6 +6,7 @@ from google.appengine.api import mail
 from django.utils import simplejson
 import JSONConvertors
 import HTMLparser
+import PendingSharedLabel
 
 class Label(db.Model):
      users_list = db.ListProperty(users.User) 
@@ -17,14 +18,16 @@ class Label(db.Model):
     
 # returns False on failure
 def update_comment(user, label_name, article_key, comment_content):
-    q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 " +
                     "AND article_key = :3", 
                     user, label_name, article_key)
+   # results = q.fetch(10)
     # this is supposed to be only one result but who knows...
-    for label in q:
-        label.comment = comment_content
+    for label in query:
+        label.comment = str(comment_content)
         label.put()
+        
     return True
     
 
@@ -86,16 +89,12 @@ def get_labels_dict_JSON(user):
     
          
 def remove_label_from_article(user, label_name,article_key):
-    try: 
-        q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                        "AND label_name = :2 " +
-                        "AND article_key = :3", 
-                        user, label_name, article_key)
-        results = q.fetch(10)
-        db.delete(results)
-    except Exception:
-        return False
-    return True
+    q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 " +
+                    "AND article_key = :3", 
+                    user, label_name, article_key)
+    results = q.fetch(10)
+    db.delete(results)
     
 def delete_label(user,label_name):
     try: 
@@ -121,57 +120,19 @@ def rename_label(user,old_label_name, new_label_name):
             label_object.put()
     except Exception:
         False
-    
-def share_label(user,label_name, new_users_list, notify=True):
-    # get the current label object
-    try:
-        query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                        "AND label_name = :2 ", 
-                        user, label_name)
-        label_object = query.fetch(1000)
-        for label_object in query:
-            label_object.is_shared = True
-            for new_user in new_users_list:
-                if new_user not in label_object.users_list:
-                    label_object.users_list.append(new_user)
-                    if notify:
-                        notify_user_on_shared_label(user, new_user, label_name)
-            label_object.put()
-    except Exception:
-        return False
-   
-def notify_user_on_shared_label(old_user, new_user, label_name):
-    # is this user first time in ResearchAssistant (is not in DB)
-    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 ", 
-                    new_user, label_name)
-    
-    html_msg = "<html><body>"
-    html_msg = html_msg + "<b>Hello Dear " + new_user.nickname() + "</b><br><br>"
-    html_msg = html_msg + "<b>" + old_user.nickname() + "</b> has shared with you a ResearchAssistant Label named: <b>" + str(label_name) +  "</b><br>"
-    html_msg = html_msg + "here comes a link to the label<br><br>"
-    html_msg = html_msg + "If you are new to ResearchAssitant, we invite you to visit our site and view a short video "
-    html_msg = html_msg + "<a href =\"research-assistant.appspot.com/\" <font color=\"6633cc\"> here" + "</font></a><br>"
-    html_msg = html_msg + "&copy; brought to you by <a href=http://research-assistant.appspot.com/> RESEARCH ASSISTANT</a><br>"
-    html_msg = html_msg + "</body></html>"
-    plain_msg = "Hello Hello"
-    mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
-                  to=new_user.email(),
-                  subject="A new Research Assistant Label was shared with you",
-                  body=plain_msg, 
-                  html=html_msg)
-    # create dictionary of new articles to report
+
+
   
     
 def get_articles_list_with_label(user,label_name):
-     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
                     user, label_name)
-     article_objects_list = []
-     for label_object in query:
+    article_objects_list = []
+    for label_object in query:
         article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
      
-     return article_objects_list
+    return article_objects_list
  
 #####
 ## This function is called when user presses a certain label
@@ -188,7 +149,7 @@ def get_articles_list_with_label_as_HTMLParser_JSON(user, label_name):
     as_json =my_htmlparser_encoder.encode(html_parser)
     
     return as_json
-    
+
 def get_articles_list_with_label_as_HTMLParser(user, label_name):
     article_objects_list = get_articles_list_with_label(user, label_name)
     
@@ -197,8 +158,8 @@ def get_articles_list_with_label_as_HTMLParser(user, label_name):
     html_parser.numOfResults = len(article_objects_list)
     
     return html_parser
-
-
+    
+    
 def get_articles_keys_list_with_label(user,label_name):
      query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
@@ -250,7 +211,107 @@ def get_articlekey_labellist_dict_JSON(user):
         articlekey_labellist_dict_JSON[label.article_key] = my_label_encoder.default(label)
         
     return simplejson.dumps(articlekey_labellist_dict_JSON)
-        
-   
 
+###################################
+##########3 Sharing Labels:
+
+# RC = -2 == email address not valid
+# RC = -3 == new_user already has this label
+# RC = -4 == no results where found for label_name and user 
+# creates a pending in the DB
+def share_label_request(user, label_name, new_user_email, notify=True):
+    # Varify new_user_email
+    if not mail.is_email_valid(new_user_email):
+        return -2
     
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 ", 
+                    user, label_name)
+    
+    num_results = query.count(10)
+    if (num_results == 0):
+        return -4
+    
+    # check if the invited user already has this label
+    new_user = users.User(new_user_email)
+    one_label_object = query.fetch(2)[0]
+    if new_user in one_label_object.users_list:
+            return -3 
+
+    pending_obj = PendingSharedLabel.PendingSharedLabel()
+    pending_obj.inviting_user = user
+    pending_obj.invited_user = new_user
+    pending_obj.label_name= label_name
+    Id = user.nickname()+":" + new_user.nickname() + ":" +label_name
+    pending_obj.Id = Id
+    key = pending_obj.put()
+    
+    if notify:
+        notify_user_on_shared_label(user, new_user, label_name, key)
+    return True
+    
+# RC = -4 == conflict: found more than one label with label_name for user user
+# RC = -5 == no results where found for label_name and user
+def execute_label_sharing_after_approved(old_user,label_name, new_user):
+    # get the current label object
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                "AND label_name = :2 ", 
+                old_user, label_name)
+
+    labels = query.fetch(1000)
+    if ((labels == None) or (len(labels)== 0)):
+        return -4
+    
+    for label_object in labels:
+        label_object.is_shared = True
+        if not new_user in label_object.users_list:
+            label_object.users_list.append(new_user)
+            label_object.put()
+    
+    return True
+   
+def is_new_user_to_RA(user):
+    query1 = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
+    query2 = db.GqlQuery("SELECT * FROM DBFollow WHERE users_list = :1 ", user)
+    if ((query1.count(5) == 0) and (query2.count(5) == 0)):
+        return  True
+    else:
+        return False
+    
+def notify_user_on_shared_label(old_user, new_user, label_name, key):
+    # is this user first time in ResearchAssistant (is not in DB)
+#    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+#                    "AND label_name = :2 ", 
+#                    new_user, label_name)
+#    
+    html_msg = "<html><body>"
+    html_msg = html_msg + "<b>Hello Dear " + new_user.nickname() + ",</b><br><br>"
+    html_msg = html_msg + "<b>" + old_user.nickname() + "</b> has shared a Research Assistant Label with you! <br>"
+    html_msg = html_msg + "Label is named: <font color=\"red\" ><b>" + str(label_name) +  "</b></font><br>"
+    
+    is_new_user = is_new_user_to_RA(new_user)
+    if (is_new_user):
+        html_msg = html_msg + "Research Assistant is a new online tool which enables you to keep track on all articles! <br>"
+        html_msg = html_msg + "You can: <br>"
+        html_msg = html_msg + "* Label articles and write comments on them<br>"
+        html_msg = html_msg + "* Get email updates on new articles of interest<br>"
+        html_msg = html_msg + "* Collaborate! - Share Labels with you collegues<br>"
+        html_msg = html_msg + "* Search withing articles citing one specific article<br>"
+        html_msg = html_msg + "....And much more!<br>"
+        html_msg = html_msg + "<br>Since you are new to ResearchAssitant, we invite you to visit our site and view a short video "
+        html_msg = html_msg + "<a href =\"research-assistant.appspot.com/\" <font color=\"6633cc\"> here" + "</font></a><br>"
+
+    html_msg = html_msg + "To see the label details and accept/reject press: "
+    html_msg = html_msg + """<a href =\"http://research-assistant.appspot.com/?page=MyPendingLabels\" <font color=\"6633cc\">this link*</font></a><br><br>"""
+    if (is_new_user):
+        html_msg = html_msg + "(If you do not have a Google account, you will be prompted to create one)"
+ 
+    html_msg = html_msg + "&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
+    html_msg = html_msg + "</body></html>"
+    plain_msg = "Hello Hello"
+    mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
+                  to=new_user.email(),
+                  subject=old_user.nickname() + " has shared a Research Assistant Label with you",
+                  body=plain_msg, 
+                  html=html_msg)
+        
