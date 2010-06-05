@@ -18,6 +18,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 #local imports
+import ShowPendings
 import LabelHandlers
 from LabelHandlers import *
 import JSONConvertors
@@ -307,6 +308,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/UpdateArticleLabelDB',UpdateArticleLabelDB)
                                       ,('/RemoveLabelDB',RemoveLabelDB)
                                       ,('/ShowArticlesByLabel',ShowArticlesByLabel)
+                                      ,('/ShowPendings',ShowPendings)
                                       ,('/RenameLabelDB',RenameLabelDB)
                                       ,('/ShareLabel',ShareLabel)
                                       ,('/GetAllLabels',GetAllLabels)],

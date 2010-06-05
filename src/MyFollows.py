@@ -23,16 +23,12 @@ class MyFollows(webapp.RequestHandler):
         
         user = users.get_current_user()
         follows = DBFollow.get_all_users_dbfollows(user)
-
-
-        
-        
         if (users.get_current_user()):
             c['logout'] = users.create_logout_url(self.request.uri)
         else:
             c['login'] = users.create_login_url(self.request.uri)
         
-        
+        c['users'] = users
         c['users'] = users
         c['myFollows']=follows;
         
@@ -48,7 +44,10 @@ class MyFollows(webapp.RequestHandler):
         
         if (action_type == "remove"):
             count = DBFollow.remove_DBFollow(user, name)
-            self.response.out.write(simplejson.dumps(count))
+            if (count == 0):
+                self.response.out.write(simplejson.dumps(count))
+            else:    
+                self.response.out.write(simplejson.dumps("1"))
         else:
             sParams = DBFollow.getSearchParamsObj(user, name)
             sParams.year_start=""
