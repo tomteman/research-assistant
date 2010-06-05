@@ -45,9 +45,6 @@ class ShowPendings(webapp.RequestHandler):
         elif (action_type == "reject"):
             res = PendingSharedLabel.remove_PendingSharedLabel(invited_user, pending_id)
             
-        elif (action_type == "preview"):
-            res = PendingSharedLabel.pending_share_preview_as_HTMLparser(invited_user, pending_id)
-            
         self.response.out.write(simplejson.dumps(res))
         
         
