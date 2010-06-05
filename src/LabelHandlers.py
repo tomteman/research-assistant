@@ -9,6 +9,7 @@ from google.appengine.ext import db
 from django.template import Template,Context
 from django.conf import settings 
 from django.template.loader import get_template
+import PendingSharedLabel
 
 import Label
 import JSONConvertors
@@ -82,41 +83,44 @@ class RenameLabelDB(webapp.RequestHandler):
 
 
         
-
 class ShowArticlesByLabel(webapp.RequestHandler):
     
     def get(self):
         t = get_template('search.html')
         c = Context()
         user = users.get_current_user()
-        label_name = self.request.get('Id')
-        htmlParser = Label.get_articles_list_with_label_as_HTMLParser(user, label_name)
-        results = htmlParser.results
+        if self.request.get('action_type') == "ShowLabel":
+            label_name = self.request.get('Id') 
+            htmlParser = Label.get_articles_list_with_label_as_HTMLParser(user, label_name)
+            
+        elif self.request.get('action_type') == "ShowPending":
+            pending_id = self.request.get('pending_id')
+            htmlParser = PendingSharedLabel.pending_share_preview_as_HTMLparser(user, pending_id)
+            if (htmlParser == -7):
+                self.response.out.write(htmlParser)
+                return     
+        results = htmlParser.results    
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
         resultsJSON = my_html_parser_encoder.encode(htmlParser)
         c['users'] = users
         c['results'] = results
         c['resultsJSON'] = resultsJSON
         c['formAction'] = '/AddFollow'
-        
+        c['showlabel'] = True
         self.response.out.write(t.render(c))
                 
 
         
+
 class ShareLabel(webapp.RequestHandler):
     
     def get(self):
         inviting_user = users.get_current_user()
         label_name = self.request.get('Id')
-        new_user_email = "romalabunsky@gmail.com"
-        user = users.User("romalabunsky@gmail.com")
+        new_user_email = "dina.vain@gmail.com"
+        res = Label.share_label_request( inviting_user , label_name, new_user_email)
         
-        
-        Label.share_label_request(inviting_user, label_name, new_user_email)
-        res = PendingSharedLabel.acceptPendingSharedLabel(user, "test@example.com:romalabunsky:Roman")
                 
-        self.response.out.write(res)        
-        
-        
-        
+        self.response.out.write(res)            
+
         
