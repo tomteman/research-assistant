@@ -30,6 +30,25 @@ $(function(){
 
 
 /////////////////////////////////////////////////////////////////////////
+
+
+function recolor(){
+	var iframe = document.getElementById("the_iframe");
+	iframe.contentWindow.colorLabelsAsShared("dggg")
+}
+
+function deleteLabel(){
+	var iframe = document.getElementById("the_iframe");
+	iframe.contentWindow.deleteLabelInstances("dggg")
+}
+
+function renameLabel(){
+	var iframe = document.getElementById("the_iframe");
+	iframe.contentWindow.renameLabelInstances("dggg", "oomoo")
+}
+
+
+
 function addLabel(labelName, number){
 	var newLabel = $("#firstLabel").clone();
 	var labelButton = newLabel.find(".labelButton");
