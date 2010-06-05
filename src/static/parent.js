@@ -276,10 +276,10 @@ function getShareTarget(label_name){
 			modal: true,
 			buttons: {
 				'Share': function() { 
-    						var userName= $('#userName').val();
+    						var user_name= $('#userName').val();
     						sharedLabel = {
     								   label_name:label_name,
-    								   user_name:userName
+    								   user_name:user_name
     									}
     						alert(sharedLabel.label_name)
     						alert(sharedLabel.user_name)
@@ -288,6 +288,7 @@ function getShareTarget(label_name){
 								url: "/ShareLabel",
 								data: sharedLabel,
 								success: function(data, textStatus){
+								alert(data)
 									if (data <= 0){
 										alert(data)
 									}
