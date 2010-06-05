@@ -119,8 +119,6 @@ class ShareLabel(webapp.RequestHandler):
         label_name = self.request.get('Id')
         new_user_email = "dina.vain@gmail.com"
         res = Label.share_label_request( inviting_user , label_name, new_user_email)
-        
-                
         self.response.out.write(res)            
 
         
