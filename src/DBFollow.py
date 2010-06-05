@@ -18,6 +18,7 @@ class DBFollow(db.Model):
     time_first_created = db.DateTimeProperty(auto_now_add=True)
     time_last_updated = db.DateTimeProperty()
     pastResultsKeysList = db.StringListProperty()
+    num_of_new_articles_added_last_update = db.IntegerProperty()
     url = db.TextProperty()
     #num_of_articles_added_last_update = db.IntegerProperty()
     total_num_of_articles = db.IntegerProperty()
@@ -53,6 +54,7 @@ class DBFollow(db.Model):
     # which is done with Follow.first_upload
     def update_DBfollow(self):
         
+        num_of_articles_per_update = 10
         try:
             num_of_articles_per_update = self.num_of_articles_per_update
         except Exception:
@@ -78,6 +80,15 @@ class DBFollow(db.Model):
         diff_list = compareKeysListswithOrder(self.pastResultsKeysList, new_resultsKeys,num_of_articles_per_update )
         
         num_new_articles = len(diff_list)
+        try:
+            self.num_of_new_articles_added_last_update = num_new_articles
+        except Exception:
+            from Tkinter import *
+            root = Tk()
+            root.title('Message')
+            Message(root, text=str(num_new_articles), bg='royalblue', fg='ivory', relief=GROOVE).pack(padx=10, pady=10)
+            root.mainloop()
+            
         self.total_num_of_articles += num_new_articles
 
         # Update the user on changes, and update the DB
@@ -143,8 +154,8 @@ class DBFollow(db.Model):
         plain_msg = plain_msg + "To remove this follow please press HERE\n\n"
         plain_msg = plain_msg + "This update brought to you by RESEARCH ASSISTANT\n"
         
-        html_msg = html_msg + "To remove this follow please press HERE<br><br>"
-        html_msg = html_msg + "&copy; This update brought to you by <a href=http://research-assistant.appspot.com/> RESEARCH ASSISTANT</a><br>"
+        html_msg = html_msg + """<a href =\"http://research-assistant.appspot.com/?page=MyFollows\" <font color=\"6633cc\"> List My Follows</font></a><br><br>"""
+        html_msg = html_msg + "&copy; This update brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
         
         
         
@@ -157,11 +168,14 @@ class DBFollow(db.Model):
         ## Sending another mail specifically to Lea.
         mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                       to="lea.stolo@gmail.com",
-                      subject="You Have a new Scholar Update!",
+                      subject="Research Assistant Update for your follow: " + str(self.follow_name[:20]),
                       body=plain_msg, 
                       html=html_msg)
         #print plain_msg
         return plain_msg
+
+##############################################################
+##############################################################
 
 def get_all_users_dbfollows(user):
     query = db.GqlQuery("SELECT * FROM DBFollow WHERE user = :1 ",user) 
