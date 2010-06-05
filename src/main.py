@@ -68,6 +68,10 @@ class MainPage(webapp.RequestHandler):
             c['login'] = users.create_login_url(self.request.uri)
         c['users'] = users
         c['currPage'] = page
+        
+        
+                        
+            
 #       show it to the world!!!
         self.response.out.write(t.render(c))
         
@@ -125,8 +129,8 @@ class Search(webapp.RequestHandler):
                                    year_start=year_start, year_finish=year_finish  )
         
         searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
-        #parserStruct = getResultsFromURL_OFFLINE(searchURL)
-        parserStruct = getResultsFromURLwithProxy(searchURL)
+        parserStruct = getResultsFromURL_OFFLINE(searchURL)
+        #parserStruct = getResultsFromURLwithProxy(searchURL)
         
         GLOBAL_numOfResults = parserStruct.get_numOfResults() 
         results = parserStruct.get_results()
@@ -210,8 +214,8 @@ class Search(webapp.RequestHandler):
         else:
             searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         
-        #parserStruct = getResultsFromURL_OFFLINE(searchURL) 
-        parserStruct = getResultsFromURLwithProxy(searchURL) 
+        parserStruct = getResultsFromURL_OFFLINE(searchURL) 
+        #parserStruct = getResultsFromURLwithProxy(searchURL) 
         results = parserStruct.get_results()
         
         numResults = parserStruct.get_numOfResults()
@@ -284,6 +288,8 @@ class AdvancedSearch(webapp.RequestHandler):
         self.response.out.write(t.render(c))        
         
 
+
+
 #----------------------------    Classes end Here   ------------------------
 
 application = webapp.WSGIApplication([('/', MainPage)
@@ -301,7 +307,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/UpdateArticleLabelDB',UpdateArticleLabelDB)
                                       ,('/RemoveLabelDB',RemoveLabelDB)
                                       ,('/ShowArticlesByLabel',ShowArticlesByLabel)
-                                      ,('/ShowArticlesByLabel',ShowArticlesByLabel)
+                                      ,('/RenameLabelDB',RenameLabelDB)
                                       ,('/GetAllLabels',GetAllLabels)],
                                       debug=True)
 

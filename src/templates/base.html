@@ -47,10 +47,13 @@
         {% endblock %}
 	</head>
 	
-	<body>
+	<div id="popup_rename" style="display: none;">
+		<label id="renameText">Some text</label> <input type="text" id="newName" value=""/>
+	</div>
+	
 	<div id="popup_content" style="display: none;">
 		<p id="popupText">Some text</p>
-		<input type="button" id="butUpload" value="Yes" onclick="showLoadingImage();"/>
+		<input type="button" id="butUpload" value="Yes"/>
 		<input type="button" id="butNoUpload" value="No" onclick="Close_Popup();"/>
 	</div>
 	
@@ -136,9 +139,9 @@
 			<div id="labelList">
 
 				<div class="label" id ="firstLabel" style="display:none" >
-				
-					<div id="labelButtons">
-						<input type="button" class="labelButton" style="width:130px" value="first"/><button id="menuButton">V</button>
+		
+					<div class="labelButtons" >
+						<input type="button" class="labelButton" style="width:130px" value=""/><button id="menuButton">V</button>
 					</div>	
 				
 					<div id="dropDown" class="dropDown" style="display:none">  
@@ -156,6 +159,7 @@
 			
 			<form id="labelName" action="/ShowArticlesByLabel">
 				<input type="hidden" id="label_name" name="label_name" value =""/>
+				<input type="hidden" id="new_name" name="new_name" value =""/>
 			</form>	
 				
 
