@@ -1,15 +1,16 @@
 var resultsWithParams
 var iFrameHeight           
 var labelUniqueId = 0
+var uniqueLabelsNames = []
 
 function displayTagsOnResults(resultsJSON)
 {
 	 resultsWithParams = eval("("+ resultsJSON+ ")");
-	 displayTags();
+	 displayLabels();
 	 iFrameHeightInit()
 	 /* add hiehgt to iframe for label adders (autocomplete) */
 	 iFrameHeightIncrement(10*15)
-
+	 
 	 return
 }
 
@@ -23,13 +24,13 @@ function indexOfArticleInResultsFromKey(article_key){
 }
 	
 
-function displayTags(){
-	$.each(resultsWithParams.results,function(articleNumber , objValue){
+function displayLabels(){
+	$.each(resultsWithParams.results,function(intIndex , objValue){
 		/* return list of user labels matching article key (indexes in label list) */
-		labelListIndexes = articleKeyInLabelList(resultsWithParams.results[articleNumber].key, articleNumber);
+		labelListIndexes = articleKeyInLabelList(resultsWithParams.results[intIndex].key, intIndex);
 		if (labelListIndexes.length){
 			for (var i = 0, j = labelListIndexes.length; i<j; i++){
-				displayLabelOnArticle(articleNumber,labelListIndexes[i]);
+				displayLabelOnArticle(intIndex,labelListIndexes[i]);
 			}
 		}
 	});
@@ -69,6 +70,7 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
 		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
 	}
+	
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
@@ -105,7 +107,8 @@ function recolorLabels(label_name, is_shared){
 
 
 /* display a label that was just added to an article */
-function displayLabelOnArticleByKey(labelArticleKey,label_name){
+function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
+	label_name = uniqueLabelObject.label_name
 	
 	x= $("#"+labelArticleKey)
 	
@@ -116,9 +119,14 @@ function displayLabelOnArticleByKey(labelArticleKey,label_name){
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
-	/* new labels are 'private' by default */
-	$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
-	$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+	if (uniqueLabelObject.is_shared){
+		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
+		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
+	}
+	else{
+		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+	}
 	
 	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
@@ -132,40 +140,6 @@ function displayLabelOnArticleByKey(labelArticleKey,label_name){
 	labelUniqueId+=1
 }
 
-/* This function is called when a user inputs a new (unknown) label name */
-function addNewLabel(label_name, labelArticleKey){
-	if(label_name.length < 1) return false
-	/* add label to labels */
-	addLabelToGlobalLabels(label_name, labelArticleKey)
-	/* convert labeled article to JSON */
-	index = indexOfArticleInResultsFromKey(labelArticleKey)
-	var ArticleDataWithLabelName = []
-	ArticleDataWithLabelName.push(resultsWithParams.results[index])
-	ArticleDataWithLabelName.push(label_name)
-	
-	articleJSON = $.toJSON(ArticleDataWithLabelName)
-	/* update DB */
-	
-	$.ajax({
-		  type: 'POST',
-		  url: "/UpdateLabelDB",
-		  data: articleJSON
-		});	
-	/* update number of labels in uniqueLabels */
-	var newLabel = {
-			label_name: label_name,
-			number: 0
-				};
-			
-	parent.uniqueLabels.push(newLabel);
-	parent.uniqueLabelsNames.push(label_name);
-	incrementUniqueLabelCount(label_name);
-	
-	/* show label in HTML */
-	
-	displayLabelOnArticleByKey(labelArticleKey,label_name)
-}
-
 
 function labelExistsInArticle(label_name, labelArticleKey){
 	var flag = false
@@ -173,34 +147,88 @@ function labelExistsInArticle(label_name, labelArticleKey){
 		if (objValue.label_name == label_name && objValue.article_key == labelArticleKey){
 			flag = true
 		};
-});
+	});
 	return flag
 }
+
+
+/* This function is called when a user inputs a new (unknown) label name */
+function addNewLabel(label_name, labelArticleKey){
+	if(label_name.length < 1) return false
+	/* add label to labels */
+	
+	/* create uniqueLabel object */
+	var uniqueLabelObject = {
+	   		label_name: label_name,
+	   		number: 1,
+	   		is_shared: false			                
+		   };
+	
+	addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey)
+	
+	/* convert labeled article to JSON */
+	index = indexOfArticleInResultsFromKey(labelArticleKey)
+	var ArticleDataWithLabelName = []
+	ArticleDataWithLabelName.push(resultsWithParams.results[index])
+	ArticleDataWithLabelName.push(label_name)	
+	articleJSON = $.toJSON(ArticleDataWithLabelName)
+	/* update DB */
+	
+	$.ajax({
+		type: 'POST',
+		url: "/UpdateLabelDB",
+		data: articleJSON,
+		success: function(data, textStatus){
+			if (data == -7){
+				alert("Error occured while uploading existing label to DB")
+			}
+		}
+	});	
+			
+	parent.uniqueLabels.push(uniqueLabelObject);
+	
+	/* show label in HTML */
+	
+	displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
+	
+	/* display new label tag on the left side bar */
+	parent.addLabel(uniqueLabelObject.label_name, 1)
+}
+
+
 	
 /* This function is called when auto complete matches a result */
-function existingLabelSelected(label_name, labelArticleKey){
+function existingLabelSelected(uniqueLabelObject, labelArticleKey){
+	label_name = uniqueLabelObject.label_name
 	/* add label to labels */
 	if (!labelExistsInArticle(label_name, labelArticleKey)){
-		addLabelToGlobalLabels(label_name, labelArticleKey)
+		addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey)
 		/* convert labeled article to JSON */
 		index = indexOfArticleInResultsFromKey(labelArticleKey)
 		var ArticleDataWithLabelName = []
 		ArticleDataWithLabelName.push(resultsWithParams.results[index])
 		ArticleDataWithLabelName.push(label_name)
 		articleJSON = $.toJSON(ArticleDataWithLabelName)
+		
 		/* update DB */
 		$.ajax({
-			  type: 'POST',
-			  url: "/UpdateLabelDB",
-			  data: articleJSON
-			});	
+			type: 'POST',
+			url: "/UpdateLabelDB",
+			data: articleJSON,
+			success: function(data, textStatus){
+				if (data == -7){
+					alert("Error occured while uploading existing label to DB")
+				}
+			}
+		});	
+		
 		/* update number of labels in uniqueLabels */
 		
 		incrementUniqueLabelCount(label_name);
 		
 		/* show label in HTML */
 		
-		displayLabelOnArticleByKey(labelArticleKey,label_name)
+		displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
 	}
 }
 
@@ -218,7 +246,10 @@ function decrementUniqueLabelCount(label_name){
 		if (objValue.label_name == label_name){
 			objValue.number -= 1;
 			if (objValue.number == 0){
-				removeLabelFromUniqueLabelsNamesList(label_name);
+				/* delete the label button from the left sidebar */
+				parent.deleteTag(label_name)
+				/* remove the uniqueLabelObject from the uniqueLabel list */
+				parent.uniqueLabels = $.grep(parent.uniqueLabels, function(val){return val.number!=0;});
 			}
 			return false
 		}
@@ -227,30 +258,29 @@ function decrementUniqueLabelCount(label_name){
 
 
 
-function removeLabelFromUniqueLabelsNamesList(label_name){
-	parent.uniqueLabelsNames = $.grep(parent.uniqueLabelsNames, function(val) { return val != label_name; });
-}
-
 function removeLabelFromGlobalLabels(label_name, article_key){
 	parent.labels = $.grep(parent.labels, function(label , i) { 
 		return (label.label_name != label_name || label.article_key != article_key);
 	});
 }
 
-function addLabelToGlobalLabels(label_name, labelArticleKey){
+
+/* save the new/existing article label locally */
+function addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey){
 	var labelObject = {
 	   		comment: "",
-	   		is_shared: false,
+	   		is_shared: uniqueLabelObject.is_shared,
 	   		users_list: [],
 	   		serialized_article: "",
-	   		label_name: label_name,
+	   		label_name: uniqueLabelObject.label_name,
 	   		article_key: labelArticleKey			                
 		   };
 	parent.labels.push(labelObject)
 }
 
+/* called when a user presses the X button on a label */
 function removeLabelFromArticle(label_name, article_key){
-	/* decrement label occurence in uniqueLabels (and remove from uniqueLabelsNames if reached 0) */
+	/* decrement label occurence in uniqueLabels (and remove it if reached 0) */
 	decrementUniqueLabelCount(label_name);
 	/* remove from global labels list */
 	removeLabelFromGlobalLabels(label_name, article_key);
@@ -259,10 +289,25 @@ function removeLabelFromArticle(label_name, article_key){
 			   article_key:article_key
 				}
 	$.ajax({
-		  type: 'POST',
-		  url: "/RemoveLabelDB",
-		  data: labelToRemoveFromDB
-		});	
+		type: 'POST',
+		url: "/RemoveLabelDB",
+		data: labelToRemoveFromDB,
+		success: function(data, textStatus){
+			if (data == false){
+				alert("Error occured while deleting label from DB")
+			}
+		}
+	});	
+}
+
+function getUniqueLabel(label_name){
+	uniqueLabelArray = $.grep(parent.uniqueLabels, function(val) { return val.label_name == label_name; });
+	if (uniqueLabelArray.length){
+		return uniqueLabelArray[0];
+	}
+	else{
+		return -1;
+	}
 }
 
 function findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name){
@@ -270,7 +315,7 @@ function findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name){
 	$.each(parent.labels, function(intIndex,objValue){
 		if (objValue.label_name == label_name && objValue.article_key == article_key){
 			index = intIndex
-		};
+		}
 	});
 	return index
 }
@@ -313,8 +358,7 @@ function iFrameHeightInit(){
 }
 
 $(function(){
-	
-	
+		
 	$(".labelBox").hide()
 	
 	$(".commentcontent").live("click", function(){
@@ -344,7 +388,7 @@ $(function(){
         $(".commentbox."+labelKey).hide()
         iFrameHeightDecrement(100)
         return false;
-        });
+    });
 	
 
     $("#save").live("click",function(){
@@ -410,15 +454,18 @@ $(function(){
 		var classList =$(this).parent().parent().closest("div").attr('class').split(' ');
 		var articleClassID = classList[1]
 		var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
-		//$(this).attr("disabled", "disabled");
 		$(".labelBox").val("")
 	    selectedLabelBox = $(this).parent().next(".labelBox")
 	    selectedLabelBox.slideToggle(200)
+	    uniqueLabelsNames.length = 0;
+		$.each(parent.uniqueLabels, function(intIndex, objValue){
+			uniqueLabelsNames.push(objValue.label_name)
+		})
     	var ac = selectedLabelBox.autocomplete({
     		minLength: 1,
             select: function(event, ui){ // Callback function, triggered if one of the suggested options is selected,
- 
-    			existingLabelSelected(ui.item.label, labelArticleKey);
+    			uniqueLabelTest = getUniqueLabel(ui.item.label)
+    			existingLabelSelected(uniqueLabelTest, labelArticleKey);
     			$(this).val("")
     			$(this).hide()
     			return false    			
@@ -434,31 +481,40 @@ $(function(){
 
 
     		delay: 0,
-            source: parent.uniqueLabelsNames // List of suggestions for local autocomplete 
+    		source: uniqueLabelsNames
+   			
+//    		source: function(request, response) {
+//    			
+//    		    response($.map(parent.uniqueLabels, function(item) {
+//    		    	return {
+//    		    		label: item.label_name,
+//    		    		//value: item.number
+//    		    	}
+//    		    }))
+//   			}
+    		
         });
 	    selectedLabelBox.focus();
+	    ac.enable();
 	    /* handle "user pressed Enter key" event */
 	    $('.labelBox').keyup(function(e) {
 	    	if(e.keyCode == 13) {
-	    		
-	    		/* get all the labels the user inputed for this article, and place them in an array */
-	    		var label_names = []
-	    		label_names = $(this).val().split(',');
+	    		label_name = $(this).val();
 	    		/* recognize which article is being labeled */
 	    		labelArticleKey = ($(this).parent().closest("div").attr("id"));
 	    		$(this).val("")
     			$(this).hide()
-	    		for (var i = 0, j = label_names.length; i<j; i++){
-	    			/* if this label already exists */
-	    			if ($.inArray(label_names[i], parent.uniqueLabelsNames) != -1)
-	    				existingLabelSelected(label_names[i], labelArticleKey)
-	    			else
-	    			/* if this is a new label */
-	    				addNewLabel(label_names[i], labelArticleKey)		
+    			uniqueLabelTest = getUniqueLabel(label_name)
+    			/* if this is a new label */
+    			if (uniqueLabelTest == -1){
+    				addNewLabel(label_name, labelArticleKey)
+    			}
+	    		else
+	    			existingLabelSelected(uniqueLabelTest, labelArticleKey);			
 	    		}
-	    	}
+	    	});
 		});
-	   })
-});
+	});
+
 
 
