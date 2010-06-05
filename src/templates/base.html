@@ -141,7 +141,8 @@
 				<div class="label" id ="firstLabel" style="display:none" >
 		
 					<div class="labelButtons" >
-						<input type="button" class="labelButton" style="width:130px" value=""/><button id="menuButton">V</button>
+						<input type="button" class="labelButton" style="width:125px; background: #5858FA; color: #FFFFFF;" value=""/>
+						<button id="menuButton" style="; background: #5858FA; color: #FFFFFF;">Display options</button>
 					</div>	
 				
 					<div id="dropDown" class="dropDown" style="display:none">  
@@ -156,6 +157,29 @@
 				</div>
 				
 			</div>
+			
+			<div id="labelList_shared">
+
+				<div class="label label_shared" id ="firstLabel_shared" style="display:none" >
+		
+					<div class="labelButtons_shared" >
+						<input type="button" class="labelButton_shared" style="width:125px; background: #0B610B; color: #FFFFFF;" value=""/>
+						<button id="menuButton_shared" style="background: #0B610B; color: #FFFFFF;">Display options</button>
+					</div>	
+				
+					<div id="dropDown_shared" class="dropDown_shared" style="display:none">  
+    				  
+    				  	<a class="menuItem_shared" id="Share" >Share2</a>
+      					 	
+      					<a class="menuItem_shared" id="Rename" >Rename2</a>
+      					
+      					<a class="menuItem_shared" id="Delete" >Delete2</a>   
+					
+					</div>
+				</div>
+				
+			</div>
+			
 			
 			<form id="labelName" action="/ShowArticlesByLabel">
 				<input type="hidden" id="label_name" name="label_name" value =""/>
