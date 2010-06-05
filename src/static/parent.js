@@ -5,8 +5,13 @@ var menuStatus = 0;
 var index = 0;
 var userAgent         
 
-$(function(){
+function checkIfUserLoggedIn()
+$.get("/getCurrentUser",function(data){ 
+	alert(data)
+});
 
+$(function(){
+	checkIfUserLoggedIn()
 	userAgent = navigator.userAgent.toString().toLowerCase();
 		if(userAgent.indexOf('chrome') != -1)
 			userAgent="chrome"

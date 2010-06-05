@@ -284,7 +284,10 @@ class About(webapp.RequestHandler):
 
 
 
-
+class getCurrentUser(webapp.RequestHandler):
+    def get(self):
+        user = users.GetCurrentUser()
+        self.response.out.write(user.email())
 
 
 
@@ -326,6 +329,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/ShowArticlesByLabel',ShowArticlesByLabel)
                                       ,('/ShowPendings', ShowPendings)
                                       ,('/RenameLabelDB',RenameLabelDB)
+                                      ,('/getCurrentUser',getCurrentUser)
                                       ,('/ShareLabel',ShareLabel)
                                       ,('/GetAllLabels',GetAllLabels)],
                                       debug=True)
