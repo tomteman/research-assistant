@@ -58,9 +58,24 @@ class RemoveLabelDB(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         label_name = self.request.get('label_name')
-        Label.delete_label(user,label_name)
-        
-        self.response.out.write(simplejson.dumps(label_name))
+        res = Label.delete_label(user,label_name)
+        if (not res):
+            self.response.out.write(simplejson.dumps(""))
+        else:    
+            self.response.out.write(simplejson.dumps(label_name))
+          
+            
+class RenameLabelDB(webapp.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        label_name = self.request.get('label_name')
+        new_name = self.request.get('new_name')
+        res = Label.rename_label(user, label_name, new_name)
+        if (res != True):
+            self.response.out.write(simplejson.dumps(""))
+        else:    
+            self.response.out.write(simplejson.dumps(label_name + "_|_" + new_name))
+          
         
             
 
