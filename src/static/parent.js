@@ -211,8 +211,7 @@ function renameResponse(responseText, statusText, xhr, $form)  {
 		/* update iframe HTML */
 		renameLabelsIniFrame(old_name, new_name);
 	
-		$('#popupText').html("label \'"+ old_name +"\' was renamed to " + new_name );
-		$('#popupText').dialog({ width: 400 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+
 		
 	}else{
 		$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
