@@ -114,10 +114,10 @@ class ShowArticlesByLabel(webapp.RequestHandler):
 
 class ShareLabel(webapp.RequestHandler):
     
-    def get(self):
+    def post(self):
         inviting_user = users.get_current_user()
-        label_name = self.request.get('Id')
-        new_user_email = "dina.vain@gmail.com"
+        label_name = self.request.get('label_name')
+        new_user_email = self.request.get('user_name')
         res = Label.share_label_request( inviting_user , label_name, new_user_email)
         self.response.out.write(res)            
 
