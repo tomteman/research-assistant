@@ -281,8 +281,6 @@ function getShareTarget(label_name){
     								   label_name:label_name,
     								   user_name:user_name
     									}
-    						alert(sharedLabel.label_name)
-    						alert(sharedLabel.user_name)
 							$.ajax({
 								type: 'POST',
 								url: "/ShareLabel",
