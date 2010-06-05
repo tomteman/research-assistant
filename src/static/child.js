@@ -56,7 +56,7 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
 			"<div style=\"display: inline\">" +
 				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
@@ -86,25 +86,35 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 
 
 /* recolor labels that were marked as private/shared*/
-function recolorLabels(label_name, is_shared){
+recolorLabelInstances = function(label_name){
 	$(".fg-button").each(function(intIndex, objValue){
 		if ($(this).text() == label_name){
-			if (is_shared){
-				$(this).removeClass("ui-button-private")
-				$(this).addClass("ui-button-shared");
-				$(this).next().removeClass("ui-button-private")
-				$(this).next().addClass("ui-button-shared");		
-			}
-			else{
-				$(this).removeClass("ui-button-shared")
-				$(this).addClass("ui-button-private");
-				$(this).next().removeClass("ui-button-shared")
-				$(this).next().addClass("ui-button-private");			
-			}
+			$(this).removeClass("ui-button-private")
+			$(this).addClass("ui-button-shared");
+			$(this).next().removeClass("ui-button-private")
+			$(this).next().addClass("ui-button-shared");		
 		}
 	});
 }
 
+deleteLabelInstances = function(label_name){
+	$(".fg-button").each(function(intIndex, objValue){
+		if ($(this).text() == label_name){
+			$(this).next().remove();
+			$(this).remove();
+		}
+	});
+}
+
+renameLabelInstances = function(old_label_name, new_label_name){
+	$(".fg-button").each(function(intIndex, objValue){
+		if ($(this).text() == old_label_name){
+//			alert($(this).text())
+			$(this).button('option', 'label', new_label_name);
+
+		}
+	});
+}
 
 /* display a label that was just added to an article */
 function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
@@ -115,7 +125,7 @@ function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
 	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
 			"<div style=\"display: inline\">" +
 				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
-				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">x</button>" +
+				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
@@ -225,6 +235,7 @@ function existingLabelSelected(uniqueLabelObject, labelArticleKey){
 		/* update number of labels in uniqueLabels */
 		
 		incrementUniqueLabelCount(label_name);
+		
 		
 		/* show label in HTML */
 		
@@ -355,6 +366,10 @@ function iFrameHeightDecrement(value){
 
 function iFrameHeightInit(){
 	iFrameHeight = jQuery("iframe",top.document).contents().find('body').attr('scrollHeight')
+}
+
+function Validate(){
+	alert("lalal");
 }
 
 $(function(){
