@@ -85,7 +85,7 @@ def acceptPendingSharedLabel(invited_user, pending_id):
 # RC = -3 == new_user already has this label
 # RC = -4 == no results where found  
 # RC = -5 == too many results
-# RC = -6 == inviter_user has no label with the name label_name
+# RC = -7 == DB or internet down
 def pending_share_preview_as_HTMLparser(invited_user, pending_id):
     pending_obj = get_single_pending(invited_user, pending_id)
     if not isinstance(pending_obj, PendingSharedLabel):
