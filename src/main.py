@@ -110,7 +110,13 @@ class Search(webapp.RequestHandler):
     def post(self):
 #        GlobalVariables.GLOBAL_searchParams
 #        GlobalVariables.GLOBAL_numOfResults
-        if (self.request.arguments().count('SearchTerm')):
+        if self.request.get('Type') == "Refine":
+            GlobalVariables.GLOBAL_searchParams.author = self.request.get('author')
+            GlobalVariables.GLOBAL_searchParams.keywords = self.request.get('keywords')
+            keywords = GlobalVariables.GLOBAL_searchParams.keywords
+
+        
+        elif (self.request.arguments().count('SearchTerm')):
             keywords = self.request.get('SearchTerm')
             GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords)
         else:
@@ -130,8 +136,8 @@ class Search(webapp.RequestHandler):
                                    year_start=year_start, year_finish=year_finish  )
         
         searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
-        parserStruct = getResultsFromURL_OFFLINE(searchURL)
-        #parserStruct = getResultsFromURLwithProxy(searchURL)
+        #parserStruct = getResultsFromURL_OFFLINE(searchURL)
+        parserStruct = getResultsFromURLwithProxy(searchURL)
         
         GLOBAL_numOfResults = parserStruct.get_numOfResults() 
         results = parserStruct.get_results()
@@ -215,8 +221,8 @@ class Search(webapp.RequestHandler):
         else:
             searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         
-        parserStruct = getResultsFromURL_OFFLINE(searchURL) 
-        #parserStruct = getResultsFromURLwithProxy(searchURL) 
+        #parserStruct = getResultsFromURL_OFFLINE(searchURL) 
+        parserStruct = getResultsFromURLwithProxy(searchURL) 
         results = parserStruct.get_results()
         
         numResults = parserStruct.get_numOfResults()
