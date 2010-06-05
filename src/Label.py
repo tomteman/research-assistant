@@ -22,6 +22,7 @@ class Label(db.Model):
     article_key = db.StringProperty()
     is_shared = db.BooleanProperty()
     creator = db.UserProperty()
+    article_abstract_title_author = db.StringProperty(multiline=True)
     
 # returns False on failure
 def update_comment(user, label_name, article_key, comment_content):
@@ -60,6 +61,8 @@ def add_label_to_article(label_name, user,list_of_articleData_objects):
         new_label.label_name = label_name
         new_label.comment = ""
         new_label.serialized_article = pickle.dumps(article)
+        temp = str(article.get_article_title()) + str(article.get_HTML_abstract()) + str(article.get_HTML_author_year_pub()).lower()
+        new_label.article_abstract_title_author = str(temp[:500])
         new_label.article_key = article.key
         
         if is_new_label:
@@ -210,16 +213,15 @@ def get_articles_keys_list_with_label(user,label_name):
      
      return article_keys_list
 
-def get_number_of_articles_with_label(user, label_name):
-    pass
-    #def Add_comment???
-
 def get_list_of_label_users(user,label_name):
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
                     user, label_name)
-    label = query.fetch(1)[0]
-    return label.users_list
+    if (query.count(2) == 0 ):
+        return -4
+    else:
+        label = query.fetch(1)[0]
+        return label.users_list
     
 #####################################
 
@@ -231,14 +233,14 @@ def get_articlekey_labellist_dict(user):
     return articlekey_labellist_dict
 
 def get_label_object_list_for_user_JSON(user):
-     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
-     my_label_encoder = JSONConvertors.LabelEncoder()
-     labellist_JSON  = []
-     
-     for label in query:
-         labellist_JSON.append(my_label_encoder.default(label))
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
+    my_label_encoder = JSONConvertors.LabelEncoder()
+    labellist_JSON  = []
     
-     return simplejson.dumps(labellist_JSON)
+    for label in query:
+        labellist_JSON.append(my_label_encoder.default(label))
+    
+    return simplejson.dumps(labellist_JSON)
      
 def get_articlekey_labellist_dict_JSON(user):
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
@@ -372,4 +374,44 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
                   subject=old_user.nickname() + " has shared a Research Assistant Label with you",
                   body=plain_msg, 
                   html=html_msg)
-        
+    
+    
+#####################################
+######### SEARCH IN LABEL ###########
+#####################################
+
+def search_in_labels_return_HTMLparser(user, label_name, search_term):
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                "AND label_name = :2",  
+                user, label_name)
+    
+    article_objects_list = []
+    for label_object in query:
+        if (label_object.article_abstract_title_author.lower().find(search_term.lower())  != -1):
+            article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
+    
+    html_parser = HTMLparser.HTMLparser(url=None, html=None)
+    html_parser.results =  article_objects_list
+    html_parser.numOfResults = len(article_objects_list)
+    
+    return html_parser
+
+def search_in_labels_return_HTMLparser_JSON(user, label_name, search_term):
+    
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                "AND label_name = :2",  
+                user, label_name)
+    
+    article_objects_list = []
+    for label_object in query:
+        if (label_object.article_abstract_title_author.lower().find(search_term.lower())  != -1):
+            article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
+    
+    html_parser = HTMLparser.HTMLparser(url=None, html=None)
+    html_parser.results =  article_objects_list
+    html_parser.numOfResults = len(article_objects_list)
+    
+    my_htmlparser_encoder = JSONConvertors.HTMLparserEncoder()
+    as_json = my_htmlparser_encoder.encode(html_parser)
+    
+    return as_json

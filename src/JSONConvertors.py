@@ -171,6 +171,7 @@ class LabelEncoder(simplejson.JSONEncoder):
         json_dict['serialized_article']  = obj.serialized_article
         json_dict['article_key'] = obj.article_key
         json_dict['is_shared'] = obj.is_shared
+        ### currently i'm not passing the article_abstract_title_author
     
         return json_dict
     
