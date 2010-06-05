@@ -163,7 +163,7 @@ def rename_label(user,old_label_name, new_label_name):
         for label_object in query:
             label_object.label_name = new_label_name
             label_object.put()
-            return True
+        return True
     except Exception:
         return -7
     
