@@ -382,14 +382,21 @@ $(function(){
 	$(".labelBox").hide()
 	
 
-	$(".commentcontent").live("click", function(){
-		$(this).focus()
-		classList = $(this).parent().attr('class').split(' ');
-		labelKey = classList[1]            
-		$(".commentcontent.#"+labelKey).animate({"height": "85px", "width": "500px"}, "fast" );
-		$(".button_block.#"+labelKey).slideDown("fast");
-		return false;
-	});
+$(".commentcontent").live("click", function(){
+        
+        classList = $(this).parent().attr('class').split(' ');
+        labelKey = classList[1]
+        if (parent.userAgent =="chrome"){
+			$(".commentcontent.#"+labelKey).height(85)
+			$(".commentcontent.#"+labelKey).width(500)
+        }
+        else{
+	        $(this).focus()
+	        $(".commentcontent.#"+labelKey).animate({"height": "85px", "width": "500px"}, "fast" );
+	        $(".button_block.#"+labelKey).slideDown("fast");
+        }
+        return false;
+    });
 
     $("#close").live("click",function(){
         classList = $(this).parent().parent().attr('class').split(' ');

@@ -3,10 +3,14 @@ var labels
 var uniqueLabels   
 var menuStatus = 0;   
 var index = 0;
-                  
+var userAgent         
 
 $(function(){
-	
+
+	userAgent = navigator.userAgent.toString().toLowerCase();
+		if(userAgent.indexOf('chrome') != -1)
+			userAgent="chrome"
+				
 	$(".labelButton")
 	.button()
 	.next()
@@ -264,32 +268,66 @@ function toggleLabelShareStatusLocally(label_name, toShare){
 	
 }
 
+function getShareTarget(label_name){
+	
+	$('#shareText').html("Share the label \'"+ label_name +"\' with: ");
+    $("#popup_share").dialog({
+			width: 500,
+			modal: true,
+			buttons: {
+				'Share': function() { 
+    						var userName= $('#userName').val();
+    						sharedLabel = {
+    								   label_name:label_name,
+    								   user_name:userName
+    									}
+    						alert(sharedLabel.label_name)
+    						alert(sharedLabel.user_name)
+							$.ajax({
+								type: 'POST',
+								url: "/ShareLabel",
+								data: sharedLabel,
+								success: function(data, textStatus){
+									if (data <= 0){
+										alert(data)
+									}
+									else
+										alert("shared label")
+								}
+							});
+						$(this).dialog("close");},
+				"Cancel": function() { $(this).dialog("close"); }
+				},
+			close: function() {
+					}
+    });	
+}
 
 
 function shareTag(label_name){
 	/* get username to share label with */
 	
-	
+	getShareTarget(label_name);
 	
 	
 	/* update DB and local parameters */
 	$.get("/ShareLabel?Id="+label_name, function(data){	
 	});
 	
-	toggleLabelShareStatusLocally(label_name, true);
+	//toggleLabelShareStatusLocally(label_name, true);
 	
 	
 	/* update HTML in iFrame*/
-	recolorLabelsIniFrame(label_name)
+	//recolorLabelsIniFrame(label_name)
 	
 	/* remove old private label button in sidebar */
-	var label = getLabel(label_name);
-	label.remove();
-	
-	/* create new shared label button in sidebar */
-	uniqueLabel = $.grep(uniqueLabels, function(objValue){
-		return objValue.label_name == label_name});	
-	addLabelShared(label_name, uniqueLabel[0].number);
+//	var label = getLabel(label_name);
+//	label.remove();
+//	
+//	/* create new shared label button in sidebar */
+//	uniqueLabel = $.grep(uniqueLabels, function(objValue){
+//		return objValue.label_name == label_name});	
+//	addLabelShared(label_name, uniqueLabel[0].number);
 }
 
 
@@ -353,7 +391,7 @@ function getNumber(labelName, isShared){
 
 
 function showLabeledArticles(label_name){
-	$("#the_iframe").attr("src", '/ShowArticlesByLabel?Type=ShowLabel&Id='+label_name);	
+	$("#the_iframe").attr("src", '/ShowArticlesByLabel?&action_type=ShowLabel&Id='+label_name);
 }
 
 
