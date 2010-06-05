@@ -109,7 +109,6 @@ deleteLabelInstances = function(label_name){
 renameLabelInstances = function(old_label_name, new_label_name){
 	$(".fg-button").each(function(intIndex, objValue){
 		if ($(this).text() == old_label_name){
-//			alert($(this).text())
 			$(this).button('option', 'label', new_label_name);
 
 		}
@@ -118,6 +117,7 @@ renameLabelInstances = function(old_label_name, new_label_name){
 
 /* display a label that was just added to an article */
 function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
+	
 	label_name = uniqueLabelObject.label_name
 	
 	x= $("#"+labelArticleKey)
@@ -236,7 +236,6 @@ function existingLabelSelected(uniqueLabelObject, labelArticleKey){
 		
 		incrementUniqueLabelCount(label_name);
 		
-		
 		/* show label in HTML */
 		
 		displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
@@ -247,6 +246,10 @@ function incrementUniqueLabelCount(label_name){
 	$.each(parent.uniqueLabels, function(intIndex,objValue){
 		if (objValue.label_name == label_name){
 			objValue.number += 1;
+			if (objValue.is_shared)
+				parent.inc_shared(label_name);
+			else
+				parent.inc(label_name);
 			return false
 		}
 	});
@@ -256,6 +259,11 @@ function decrementUniqueLabelCount(label_name){
 	$.each(parent.uniqueLabels, function(intIndex,objValue){
 		if (objValue.label_name == label_name){
 			objValue.number -= 1;
+			if (objValue.is_shared){
+				parent.dec_shared(label_name);
+			}
+			else
+				parent.dec(label_name);
 			if (objValue.number == 0){
 				/* delete the label button from the left sidebar */
 				parent.deleteTag(label_name)
@@ -308,7 +316,7 @@ function removeLabelFromArticle(label_name, article_key){
 				alert("Error occured while deleting label from DB")
 			}
 		}
-	});	
+	});
 }
 
 function getUniqueLabel(label_name){
@@ -368,23 +376,12 @@ function iFrameHeightInit(){
 	iFrameHeight = jQuery("iframe",top.document).contents().find('body').attr('scrollHeight')
 }
 
-function Validate(){
-	alert("lalal");
-}
 
 $(function(){
 		
 	$(".labelBox").hide()
 	
-	$(".commentcontent").live("click", function(){
-        $(this).focus()
-        classList = $(this).parent().attr('class').split(' ');
-        labelKey = classList[1]
-        $(".commentcontent.#"+labelKey).animate({"height": "85px", "width": "500px"}, "fast" );
-        $(".button_block.#"+labelKey).slideDown("fast");
-        return false;
-    });
-  
+
 	$(".commentcontent").live("click", function(){
 		$(this).focus()
 		classList = $(this).parent().attr('class').split(' ');
@@ -497,17 +494,7 @@ $(function(){
 
     		delay: 0,
     		source: uniqueLabelsNames
-   			
-//    		source: function(request, response) {
-//    			
-//    		    response($.map(parent.uniqueLabels, function(item) {
-//    		    	return {
-//    		    		label: item.label_name,
-//    		    		//value: item.number
-//    		    	}
-//    		    }))
-//   			}
-    		
+
         });
 	    selectedLabelBox.focus();
 	    ac.enable();
