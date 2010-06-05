@@ -20,15 +20,18 @@ class PendingSharedLabel(db.Model):
 # RC = -7 == no connection to DB
         
 def get_single_pending(invited_user, pending_id):
-    query = db.GqlQuery("SELECT * FROM PendingSharedLabel WHERE invited_user = :1 "+
-                    "AND pending_id = :2 ", 
-                    invited_user, pending_id)
-    
-    num_results = query.count(10)
-    if (num_results > 1):
-        return -5 
-    if (num_results == 0):
-        return -4
+    try:
+        query = db.GqlQuery("SELECT * FROM PendingSharedLabel WHERE invited_user = :1 "+
+                        "AND pending_id = :2 ", 
+                        invited_user, pending_id)
+        
+        num_results = query.count(10)
+        if (num_results > 1):
+            return -5 
+        if (num_results == 0):
+            return -4
+    except Exception:
+        return -7
     return query.fetch(2)[0]
 
 def get_all_users_PendingSharedLabel(user):
