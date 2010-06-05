@@ -1,0 +1,74 @@
+{% extends "frameBase.html" %}
+
+
+{% block title %}
+	My Follows		
+{% endblock %}
+
+
+
+
+{% block customScripts %}
+ 	<script type="text/javascript" src="/static/pendings.js"></script>
+ {% endblock %}
+
+
+{% block contents %}
+
+
+<p id="popupText" style="display:none">Some text</p>
+		
+
+<CENTER><h2>Pending Collaboration Invintations:</h2></CENTER>
+
+
+{% if users.get_current_user %}	
+	<br/>
+	
+	<table  id="pending_list" >
+		<tr>
+			<td width=300px>Label name</td>
+			<td width=200px>Inviting user</td>
+			<td width=200px></td>
+		</tr>
+	
+	
+		{% for pending in MyPendings %}
+	
+		<tr id="pending_row" >
+			<td >
+				{{pending.label_name}}
+			</td>
+	
+			<td >
+				{{pending.inviting_user}}
+			</td>
+		
+			<td> 
+				<div id="label_name" value="{{pending.label_name}}"></div>
+				<div id = "actions" value="{{pending.Id}}" >
+					<input type="button"  class="preview" value="Preview"/>
+					<input type="button"  class="accept" value="Accept"/>						
+					<input type="button"  class="reject" value="Reject"/>
+				</div>	
+			</td>
+		</tr>	
+
+		{% endfor %}
+	</table>
+
+{% else %}
+
+	<br>
+	<br>
+	<br>
+	<CENTER><h3> Please log in to see your pending invitations.</h3></CENTER>
+	
+{% endif %}
+
+<form id="pendingActions">
+	<input type="hidden"  id="action_type" name="action_type" value =""/>
+	<input type="hidden"  id="pending_id" name="pending_id" value =""/>
+</form>		
+
+{% endblock %}

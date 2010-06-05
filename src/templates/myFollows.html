@@ -18,31 +18,39 @@
  
 
 {% block contents %}
+<CENTER><h2>My Follows:</h2></CENTER>
 
-<h2>Your Follows:</h2>
+{% if users.get_current_user %}
 
-<br/>
-<table  id="follows_list" >
+	<br/>
+	<table  id="follows_list" >
 
-	{% for follow in myFollows %}
-	<tr id="{{follow.follow_name}}">
-		<td width=500px>
-			{{follow.follow_name}}
-		</td>
-		<td width=100px>
-			<div value="{{follow.follow_name}}">
-				<input type="button" id="runSearch"  value="Run Search"/>
-			</div>	
-		</td>
-		<td>	
-			<div value="{{follow.follow_name}}">					
-				<input type="button" id="removeButton"  value="Remove"/>
-			</div>
-		</td>
-	</tr>	
+		{% for follow in myFollows %}
+		<tr id="{{follow.follow_name}}">
+			<td width=500px>
+				{{follow.follow_name}}
+			</td>
+			<td width=100px>
+				<div value="{{follow.follow_name}}">
+					<input type="button" id="runSearch"  value="Run Search"/>
+				</div>	
+			</td>
+			<td>	
+				<div value="{{follow.follow_name}}">					
+					<input type="button" id="removeButton"  value="Remove"/>
+				</div>
+			</td>
+		</tr>	
 
-	{% endfor %}
-</table>
+		{% endfor %}
+	</table>
+{% else %}
+	<br>
+	<br>
+	<br>
+	<CENTER><h3> Please log in to see your follows.</h3></CENTER>
+	
+{% endif %}	
 
 <form id="follow_to_remove">
 	<input type="hidden"  id="action_type" name="action_type" value =""/>
