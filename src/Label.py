@@ -162,7 +162,8 @@ def rename_label(user,old_label_name, new_label_name):
             label_object.put()
             return True
     except Exception:
-        False
+        return -7
+    
 
 # ASSUMPTIONS: in this function i assume the label_name is of a shared label 
 def duplicate_label_to_private(user, label_name):
@@ -200,13 +201,15 @@ def duplicate_label_to_private(user, label_name):
     
     
 def get_articles_list_with_label(user,label_name):
-    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 ", 
-                    user, label_name)
-    article_objects_list = []
-    for label_object in query:
-        article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
-     
+    try:
+        query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                        "AND label_name = :2 ", 
+                        user, label_name)
+        article_objects_list = []
+        for label_object in query:
+            article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
+    except Exception:
+        return -7
     return article_objects_list
  
 #####
