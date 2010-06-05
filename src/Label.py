@@ -307,13 +307,13 @@ def share_label_request(inviting_user, label_name, new_user_email, notify=True):
     invited_user = users.User(new_user_email)
     
     # append emails to lists of friends
-    inviting_user_ra_obj = RA_User.get_RA_User_obj(inviting_user)
-    invited_user_ra_obj = RA_User.get_RA_User_obj(invited_user)
-    if (invited_user.email() not in inviting_user_ra_obj.friends_emails):
-        inviting_user_ra_obj.friends_emails.append(invited_user.email())
-    if (inviting_user.email() not in invited_user_ra_obj.friends_emails):
-        invited_user_ra_obj.friends_emails.append(inviting_user.email())
-    
+#    inviting_user_ra_obj = RA_User.get_RA_User_obj(inviting_user)
+#    invited_user_ra_obj = RA_User.get_RA_User_obj(invited_user)
+#    if (invited_user.email() not in inviting_user_ra_obj.friends_emails):
+#        inviting_user_ra_obj.friends_emails.append(invited_user.email())
+#    if (inviting_user.email() not in invited_user_ra_obj.friends_emails):
+#        invited_user_ra_obj.friends_emails.append(inviting_user.email())
+#    
     # check if this label really exists
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
