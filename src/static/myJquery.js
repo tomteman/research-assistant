@@ -25,7 +25,7 @@ $(document).ready(function() {
         success:       showResponse,      // post-submit callback 
  		url:      '/Submit',              // override for form's 'action' attribute 
  		type:      "POST",
- 		dataType:  'json',   
+ 		dataType:  'json'   
     }; 
 	
     $('#newFollow').submit(function() { 
@@ -77,8 +77,14 @@ $(document).ready(function() {
  });
 
 function gotoSearch(responseText, statusText, xhr, $form)  {
+	
 	if (responseText == "true"){
 		location.href = '/Search?Type=FollowResults';
+	}
+	else{
+		$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
+		$('#popupText').dialog({ width: 400 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+
 	}
 	
 }
