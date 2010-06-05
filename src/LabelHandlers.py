@@ -118,7 +118,7 @@ class ShareLabel(webapp.RequestHandler):
         inviting_user = users.get_current_user()
         label_name = self.request.get('label_name')
         new_user_email = self.request.get('user_name')
-        res = Label.share_label_request( inviting_user , label_name, new_user_email)
-        self.response.out.write(res)            
+        res = Label.share_label_request(inviting_user , label_name, new_user_email, True)
+        self.response.out.write(simplejson.dumps(res)) 
 
         
