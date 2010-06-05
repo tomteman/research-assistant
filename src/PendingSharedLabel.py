@@ -89,10 +89,8 @@ def pending_share_preview_as_HTMLparser(invited_user, pending_id):
         return pending_obj
     
     article_objects_list = Label.get_articles_list_with_label(pending_obj.inviting_user, pending_obj.label_name)
-    if (article_objects_list == -3):
-        return -3
-    if (article_objects_list == -4):
-        return -6
+    if (article_objects_list == -7):
+        return -7
     
     html_parser = HTMLparser.HTMLparser(url=None, html=None)
     html_parser.results =  article_objects_list
