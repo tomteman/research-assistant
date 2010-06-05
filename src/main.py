@@ -308,6 +308,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/RemoveLabelDB',RemoveLabelDB)
                                       ,('/ShowArticlesByLabel',ShowArticlesByLabel)
                                       ,('/RenameLabelDB',RenameLabelDB)
+                                      ,('/ShareLabel',ShareLabel)
                                       ,('/GetAllLabels',GetAllLabels)],
                                       debug=True)
 
