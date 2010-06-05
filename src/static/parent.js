@@ -7,11 +7,11 @@ var userAgent
 
 function getCurrentUser()
 $.get("/getCurrentUser",function(data){ 
-	alert(data)
+	return data
 });
 
 $(function(){
-	checkIfUserLoggedIn()
+
 	userAgent = navigator.userAgent.toString().toLowerCase();
 		if(userAgent.indexOf('chrome') != -1)
 			userAgent="chrome"
