@@ -15,6 +15,7 @@ import JSONConvertors
 import HTMLparser
 import pickle
 from django.utils import simplejson
+import PendingSharedLabel
 
 
 class GetAllLabels(webapp.RequestHandler):
@@ -110,7 +111,7 @@ class ShareLabel(webapp.RequestHandler):
         new_user_email = "romalabunsky@gmail.com"
 
         Label.share_label_request(inviting_user, label_name, new_user_email)
-        res = Label.execute_label_sharing_after_approved(inviting_user, label_name, new_user_email)
+        res = PendingSharedLabel.acceptPendingSharedLabel(new_user_email, "test@example.com:romalabunsky:Roman")
                 
         self.response.out.write(res)        
         
