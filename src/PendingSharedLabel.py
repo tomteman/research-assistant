@@ -69,15 +69,15 @@ def acceptPendingSharedLabel(invited_user, pending_id):
     if (num_results == 0):
         return -4
     for pending_obj in query:
-        rc = Label.execute_label_sharing_after_approved(pending_obj.inviting_user,pending_obj.label_name,pending_obj.invited_user)
-        if (rc != True):
-            return rc
+        num = Label.execute_label_sharing_after_approved(pending_obj.inviting_user,pending_obj.label_name,pending_obj.invited_user)
+        if (num < 0):
+            return num
         try:
             pending_obj.delete()
         except Exception:
             return -7
-        
-    return 0
+
+    return num # return number of articles added on this label
     
 # RC = -3 == new_user already has this label
 # RC = -4 == no results where found  
