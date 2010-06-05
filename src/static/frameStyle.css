@@ -20,7 +20,6 @@ body {
 
 h1, h2, h3 {
 	margin: 0;
-	text-transform: uppercase;
 	font-family: Times New Roman, serif;
 	font-weight: normal;
 	
@@ -28,7 +27,7 @@ h1, h2, h3 {
 
 h1 { font-size: 44px; }
 
-h2 { font-size: 18px; }
+h2 { font-size: 24px; }
 
 h3 { }
 
@@ -101,35 +100,6 @@ hr { display: none; }
 	background: url(images/img03_a.jpg) no-repeat left top;
 }
 
-	/** LOGO */
-
-#logo {
-	width: 960px;
-	height: 120px;
-	margin: 0 auto;
-}
-
-#logo h1, #logo p {
-	margin: 0px;
-	line-height: normal;
-	font-weight: normal;
-	color: #FFFFFF;
-}
-
-#logo p {
-	text-transform: uppercase;
-	font-size: 10px;
-}
-
-#logo h1 {
-	padding-top: 50px;
-	font-size: 34px;
-}
-
-#logo a {
-	text-decoration: none;
-	color: #FFFFFF;
-}
 
 
 #description {
@@ -229,19 +199,31 @@ hr { display: none; }
 
 #followsList{
 	background-color: #EEE;
-	/*background: url(images/stripe.jpg) repeat-x left;
+	/*background: url(images/stripe.jpg) repeat-x left;*/
 	
 } 
-
-#removeButton{
-	float: right;
-	}
 
 
 #explanation{
 	display:none;
 	}
-	
+
+
+#backgroundPopup{  
+	 display:none;
+	position:fixed;  
+ 	_position:absolute; /* hack for internet explorer 6*/  
+ 	height:100%;
+	width:100%;  
+ 	top:0;  
+ 	left:0;  
+ 	background:#000000;  
+ 	border:1px solid #cecece;  
+ 	z-index:1;  
+ }
+
+ 
+ 
 #article {
 	padding: 56px 0;
 	margin: 0 0 5px 0px;

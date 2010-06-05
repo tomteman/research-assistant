@@ -107,9 +107,11 @@
 		</div></br>
 	<br>
 	{% endfor %}
-	<br><br><br><br><br><br><br><br><br>
-	<a href="/Search?Type=Back">Back</a>
-	<a href="/Search?Type=Next">Next</a>
+	{% if not showlabel %}
+		<br><br><br><br><br><br><br><br><br>
+		<a href="/Search?Type=Back">Back</a>
+		<a href="/Search?Type=Next">Next</a>
+	{% endif %}
 	
 {% endblock %}
 
