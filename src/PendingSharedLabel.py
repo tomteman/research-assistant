@@ -22,7 +22,7 @@ class PendingSharedLabel(db.Model):
 def get_single_pending(invited_user, pending_id):
     try:
         query = db.GqlQuery("SELECT * FROM PendingSharedLabel WHERE invited_user = :1 "+
-                        "AND pending_id = :2 ", 
+                        "AND Id = :2 ", 
                         invited_user, pending_id)
         
         num_results = query.count(10)
