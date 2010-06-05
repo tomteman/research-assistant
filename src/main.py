@@ -18,7 +18,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 #local imports
-from ShowPendings import ShowPendings
+#from ShowPendings import ShowPendings
 import LabelHandlers
 from LabelHandlers import *
 import JSONConvertors
@@ -36,6 +36,7 @@ from getHTML import getHTML
 from MyFollows import MyFollows
 import GlobalVariables
 from django.utils import simplejson
+from urllib2 import quote
 
 # Django settings configuration : currently for setting the templates directory
 settings._target = None
@@ -110,9 +111,10 @@ class Search(webapp.RequestHandler):
     def post(self):
 #        GlobalVariables.GLOBAL_searchParams
 #        GlobalVariables.GLOBAL_numOfResults
+
         if self.request.get('Type') == "Refine":
             GlobalVariables.GLOBAL_searchParams.author = self.request.get('author')
-            GlobalVariables.GLOBAL_searchParams.keywords = self.request.get('keywords')
+            GlobalVariables.GLOBAL_searchParams.keywords = quote(self.request.get('keywords'))
             keywords = GlobalVariables.GLOBAL_searchParams.keywords
 
         
@@ -135,12 +137,20 @@ class Search(webapp.RequestHandler):
                                    one_of_the_words = one_of_the_words, occurence=occurence, author=author, journal=journal,
                                    year_start=year_start, year_finish=year_finish  )
         
+        
         searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         #parserStruct = getResultsFromURL_OFFLINE(searchURL)
         parserStruct = getResultsFromURLwithProxy(searchURL)
         
         GLOBAL_numOfResults = parserStruct.get_numOfResults() 
         results = parserStruct.get_results()
+        if parserStruct.isRefinedSearchNoResultsFlag():
+            t = get_template('noResults.html')
+            c = Context()
+            c['refined_search_no_results'] = True
+            c['text'] = "Sorry, we couldn't find any results that match Your search"
+            self.response.out.write(t.render(c))
+            return
         if parserStruct.isNoResultsFlag():
             t = get_template('noResults.html')
             c = Context()
@@ -314,7 +324,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/UpdateArticleLabelDB',UpdateArticleLabelDB)
                                       ,('/RemoveLabelDB',RemoveLabelDB)
                                       ,('/ShowArticlesByLabel',ShowArticlesByLabel)
-                                      ,('/ShowPendings', ShowPendings)
+#                                      ,('/ShowPendings', ShowPendings)
                                       ,('/RenameLabelDB',RenameLabelDB)
                                       ,('/ShareLabel',ShareLabel)
                                       ,('/GetAllLabels',GetAllLabels)],

@@ -1,6 +1,11 @@
 
 
 <html>
+{% if refined_search_no_results %}
+<p>{{text}}</p>
+{% else %}
 <p>Did You Mean: <a href = "/Search?Id={{noResultsKeywords}}&Type=DidYouMean">{{noResultsHTML}} </a></p>
 
+
+{% endif %}
 </html>
