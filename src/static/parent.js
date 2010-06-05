@@ -286,12 +286,9 @@ function getShareTarget(label_name){
 								url: "/ShareLabel",
 								data: sharedLabel,
 								success: function(data, textStatus){
-								alert(data)
 									if (data <= 0){
 										alert(data)
 									}
-									else
-										alert("shared label")
 								}
 							});
 						$(this).dialog("close");},
