@@ -109,9 +109,11 @@ class ShareLabel(webapp.RequestHandler):
         inviting_user = users.get_current_user()
         label_name = self.request.get('Id')
         new_user_email = "romalabunsky@gmail.com"
-
+        user = users.User("romalabunsky@gmail.com")
+        
+        
         Label.share_label_request(inviting_user, label_name, new_user_email)
-        res = PendingSharedLabel.acceptPendingSharedLabel(new_user_email, "test@example.com:romalabunsky:Roman")
+        res = PendingSharedLabel.acceptPendingSharedLabel(user, "test@example.com:romalabunsky:Roman")
                 
         self.response.out.write(res)        
         
