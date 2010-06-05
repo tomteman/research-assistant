@@ -8,6 +8,7 @@ import JSONConvertors
 import HTMLparser
 import PendingSharedLabel
 import RA_User
+import string
 
 # RC = -2 == email address not valid
 # RC = -3 == new_user already has this label
@@ -117,12 +118,14 @@ def get_labels_dict_JSON(user):
         
         is_shared_dict[label.label_name] = label.is_shared
     
+    label_names_list = num_dict.keys()
+    label_names_list.sort(key=string.lower)
     final_list = []
-    for key, value in num_dict.items():
+    for labelname in label_names_list:
         d = {}
-        d['label_name'] = key
-        d['number'] = value
-        d['is_shared'] = is_shared_dict[key]
+        d['label_name'] = labelname
+        d['number'] = num_dict[labelname]
+        d['is_shared'] = is_shared_dict[labelname]
         final_list.append(d)
     
     return simplejson.dumps(final_list)
