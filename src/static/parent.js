@@ -5,7 +5,7 @@ var menuStatus = 0;
 var index = 0;
 var userAgent         
 
-function checkIfUserLoggedIn()
+function getCurrentUser()
 $.get("/getCurrentUser",function(data){ 
 	alert(data)
 });
