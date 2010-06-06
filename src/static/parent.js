@@ -92,7 +92,7 @@ function addLabel(labelName, number){
 	
 	newLabel.show();
 	newLabel.val(labelName);
-	labelButton.val(labelName + "("+number+")");
+	labelButton.val(labelName + " ("+number+")");
 	
 	labelButton.click( function() { showLabeledArticles(newLabel.attr("value")) } );
 	
@@ -116,7 +116,7 @@ function addLabelShared(labelName, number){
 	
 	newLabel.show();
 	newLabel.val(labelName);
-	labelButton.val(labelName + "("+number+")");
+	labelButton.val(labelName + " ("+number+")");
 	
 	
 	labelButton.click( function() { passLabelNameToiFrame(labelName);
@@ -289,6 +289,9 @@ function renameTag(label_name){
 	
 	$('#renameText').html("Rename label \'"+ label_name +"\' to");
     $("#popup_rename").dialog({
+    		open: function() {
+	      		$('#newName').focus(); 
+	    	},
 			width: 500,
 			modal: true,
 			buttons: {
@@ -403,6 +406,9 @@ function getShareTarget(label_name){
 	
 	$('#shareText').html("Share the label \'"+ label_name +"\' with <i>(e-mail address)</i>: ");
     $("#popup_share").dialog({
+    		open: function() {
+  				$('#userName').focus(); 
+			},
 			width: 500,
 			modal: true,
 			buttons: {
