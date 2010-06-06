@@ -144,7 +144,11 @@ function handleErrorCode(errorNumber){
 
 function generatePopUp(text){
 	$('#popupText').html(text+"<br/>");
-	$('#popupText').dialog({ width: 400 , buttons: { "OK": function() { $(this).dialog("close"); } }});
+	$('#popupText').dialog({ 
+        open: function() {
+        $(this).parents('.ui-dialog-buttonpane button:eq(0)').focus();
+      	},
+		width: 400 , buttons: { "OK": function() { $(this).dialog("close"); } }});
 }
 
 
@@ -214,11 +218,27 @@ function removeLabelFromLocalDBandHTML(label_name) {
 	
 		
 
-
 function duplicateLabel(label_name){
-	alert(label_name)	
+	label_name_to_duplicate = {
+			   label_name: label_name
+				};
+	$.ajax({
+		type: 'POST',
+		url: "/DuplicateSharedLabelToPrivate",
+		data: label_name_to_duplicate,
+		success: function(data, textStatus){
+			if (data <= 0){
+				handleErrorCode(data)
+			}
+			else{
+				str = "The shared label has been duplicated to a private one named: <b>";
+				str = str + data;
+				str = str +"</b>.<br>Please refresh your browser to see the changes.";
+				generatePopUp(str);
+			}
+		}
+	});	
 }
-
 
 function deleteTag(label_name){
 	$('#popupText').html("Are you sure you want to delete the label "+ label_name +" ? <br/>");
