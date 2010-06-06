@@ -385,6 +385,7 @@ function iFrameHeightInit(){
 $(function(){
 	
 	user = parent.getCurrentUser()
+	//$(".commentcontent").alphanumeric()
 	$(".labelBox").hide()
 	
 
@@ -436,11 +437,13 @@ $(function(){
     	});
 
     });
-	
+    $(".fg-button").live("mouseover",function(){ 
+    	$(this).tooltip();
+    });
 	$(".fg-button").livequery(function(){
 		/* open comment box */
 		$(this).button();
-		$(this).tooltip();
+		
 		$(this).click(function() {
 			classList = $(this).parent().parent().attr('class').split(' ');
 			labelKey = classList[1]
