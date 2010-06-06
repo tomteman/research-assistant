@@ -332,6 +332,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/getCurrentUser',getCurrentUser)
                                       ,('/ShareLabel',ShareLabel)
                                       ,('/GetAllLabels',GetAllLabels)
+                                      ,('/SearchInLabel',SearchInLabel)
                                       ,('/GetSharedLabelUsers',GetSharedLabelUsers)
                                       ,('/DuplicateSharedLabelToPrivate',DuplicateSharedLabelToPrivate)
                                       ,('/RemoveFromSharedLabelDB',RemoveFromSharedLabelDB)],

@@ -144,4 +144,27 @@ class DuplicateSharedLabelToPrivate(webapp.RequestHandler):
         res = Label.duplicate_label_to_private(user, label_name)
         self.response.out.write(res)
 
+class SearchInLabel(webapp.RequestHandler):
+    def post(self):
+        t = get_template('search.html')
+        c = Context()
+        user = users.get_current_user()
+        search_term = self.request.get('SearchTerm')
+        label_name = self.request.get('hidden_label_name')
+        
+        htmlParser = Label.search_in_labels_return_HTMLparser(user, label_name, search_term)
+        results = htmlParser.results
+        
+        my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
+        resultsJSON = my_html_parser_encoder.encode(htmlParser)
+        c['users'] = users
+        c['results'] = results
+        c['resultsJSON'] = resultsJSON
+        c['formAction'] = '/AddFollow'
+        c['showlabel'] = True
+        self.response.out.write(t.render(c))
+                 
+        
+        
+        
         
