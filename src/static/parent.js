@@ -138,16 +138,21 @@ function generatePopUp(text){
 
 
 function getLabelUserList(label_name){
+	user_list_for_label = {
+				   label_name: label_name
+					};
 	$.ajax({
+
 		type: 'POST',
 		url: "/GetSharedLabelUsers",
-		data: label_name,
+		data: user_list_for_label,
 		success: function(data, textStatus){
 			if (data <= 0){
 				handleErrorCode(data)
 			}
-			else
-				generatePopUp(data)
+			else{
+				generatePopUp("Users sharing this label: <br>" +data)
+			}
 		}
 	});
 }
@@ -338,7 +343,7 @@ function getShareTarget(label_name){
 								data: sharedLabel,
 								success: function(data, textStatus){
 									if (data <= 0){
-										alert(data)
+										handleErrorCode(data)
 									}
 								}
 							});
