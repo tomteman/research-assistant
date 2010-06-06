@@ -25,6 +25,12 @@
 {% if users.get_current_user %}	
 	<br/>
 	
+	
+	{% if not MyPendings %}
+	
+		 <CENTER> <h3>You have no label invitations. </h3> </CENTER> 
+	
+	{% else %}
 	<table  id="pending_list" >
 		<tr>
 			<td width=250px>Label name</td>
@@ -56,6 +62,8 @@
 
 		{% endfor %}
 	</table>
+	
+	{% endif %}
 
 {% else %}
 

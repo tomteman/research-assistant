@@ -24,9 +24,16 @@
 <br/>
 <CENTER><h2><b>My Follows:</b></h2></CENTER>
 
+
 {% if users.get_current_user %}
 
 	<br/>
+	{% if not myFollows %}
+	
+		 <CENTER> <h3>You have no follows. </h3> </CENTER> 
+	
+	{% else %}
+	
 	<table  id="follows_list" >
 
 		{% for follow in myFollows %}
@@ -48,6 +55,8 @@
 
 		{% endfor %}
 	</table>
+	
+	{% endif %}
 {% else %}
 	<br>
 	<br>
