@@ -352,11 +352,13 @@ hr { display: none; }
 
 
 .labelButtons{
+	text-align: left;
 	padding: 5px 0 0 0;
 	}
 	
 
 #dropDown{
+	
 	width: 155px;
 	border: 1px solid #79b7e7;
 	background: #d0e5f5
@@ -365,6 +367,17 @@ hr { display: none; }
 #dropDown a{
 	text-align: center;
 	}
+
+#dropDown_shared{
+	width: 155px;
+	border: 1px solid #79b7e7;
+	background: #FFE4E1;
+	}
+	
+#dropDown_shared a{
+	text-align: center;
+	}
+	
 
 
 #footer {
