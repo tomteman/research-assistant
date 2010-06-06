@@ -96,17 +96,13 @@ $(document).ready(function() {
 function gotoSearch(responseText, statusText, xhr, $form)  {
 	if (responseText == "true"){
 		location.href = '/Search?Type=FollowResults';
-	}
-	if (responseText == "1"){
-		var name = followRow.attr("id");
-		followRow.remove();
-		$('#popupText').html("Follow " + name+ " was deleted <br/>");
-		$('#popupText').dialog({ width: 600 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
-	}
-	else{
-		$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
-		$('#popupText').dialog({ width: 400 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
-
+	}else{
+		if (responseText == "1"){
+			followRow.remove();
+		}else{
+			$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
+			$('#popupText').dialog({ width: 400 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+		}
 	}
 }
 
