@@ -222,7 +222,9 @@ hr { display: none; }
  	z-index:1;  
  }
 
- 
+.AuthorYearPub{
+	color: #00C957
+	}
  
 #article {
 	padding: 56px 0;
