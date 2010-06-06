@@ -67,7 +67,7 @@
 
 
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
-	
+	<br> <br>	
 	{% for result in results %}
 		
 		<div id="{{result.get_key}}" class="article">
@@ -96,11 +96,11 @@
 		 	
 			
 			<form method="post" action={{formAction}}>
-				<input class="addLabel" type="button" value="Add Label" />
+				<input class="addLabel" type="button" value="TAG" />
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
-				<input class="addFollowButton" type="submit" value="Follow This Article" />
+				<input type="submit" value="addFollow" />
  
 			</form>
 			<input type="text" name="q" class="labelBox" id="query" />
