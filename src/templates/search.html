@@ -19,19 +19,18 @@
 
 {% if showlabelsearch %}
 
-<div id="SearchInLabel">
+	<div id="SearchInLabel">
+			<form method="post" target="frame" action="/SearchInLabel" >
+				<fieldset>
+					<input type="text" name="SearchTerm" id="search-text"/>
+					<input type="submit" id="search-submit" value="Search in labeled articles" /> <br/>
+					<input type="hidden" name="hidden_label_name" value={{hidden_label_name}} /> <br/>
+				</fieldset>
+			</form>
+		</div>
 
-					<form method="post" target="frame" action="/SearchInLabel" >
-						<fieldset>
-							<input type="text" name="SearchTerm" id="search-text" size="15"/>
-							<input type="submit" id="search-submit" value="Search" /> <br/>
-							<input type="hidden" name="hidden_label_name" value={{hidden_label_name}} /> <br/>
-						</fieldset>
-					</form>
-				</div>
-
-
-
+	<br>
+	<br>
 		
 	{% endif %}
 
@@ -118,7 +117,7 @@
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
-				<input class="addFollowButton ui-addfollow-button" type="submit" value="Follow This Article" />
+				<input class="addFollowButton ui-addfollow-button" type="submit" value="Add Follow" />
  
 			</form>
 			<input type="text" name="q" class="labelBox" id="query" maxlength="12" />

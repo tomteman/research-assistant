@@ -229,5 +229,54 @@ hr { display: none; }
 #article {
 	padding: 56px 0;
 	margin: 0 0 5px 0px;
-	
 	}
+	
+	
+#SearchInLabel {
+	float: center;
+	height: 50px;
+}
+
+#SearchInLabel form {
+	float: center;
+	margin: 0;
+	padding: 25px 20px 0 0;
+}
+
+#SearchInLabel fieldset {
+	width: 410px;
+	height: 28px;
+	background: #B4CDCD;
+		
+
+	border: none;
+}
+
+#SearchInLabel input {
+	
+	float: left;
+	font: 12px Georgia, "Times New Roman", Times, serif;
+	border: none;
+}
+
+#search-text {
+	-moz-border-radius: 100px;
+	-webkit-border-radius: 100px;
+	border: 1px solid #000000;
+	width: 250px;
+	height: 22px;
+	padding: 10px 0 0 4px;
+	background: #ECF9E4;
+	color: #000000;
+}
+
+#search-submit {
+	
+	height: 20px;
+    float: rigth;
+	margin: 4px 2px 4px 2px;
+	padding: 4px 5px 4px 5px;
+	background: #B4CDCD;
+	color: #FFFFFF;
+	}
+	
