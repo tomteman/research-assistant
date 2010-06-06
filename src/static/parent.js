@@ -14,8 +14,18 @@ function getCurrentUser(){
 
 $(function(){
 	userAgent = navigator.userAgent.toString().toLowerCase();
-		if(userAgent.indexOf('chrome') != -1)
-			userAgent="chrome"
+	if(userAgent.indexOf('chrome') != -1)
+		userAgent="chrome"
+			
+    $(".labelButton").live("mouseover",function(){ 
+    	$(this).tooltip();
+    });
+    
+    $(".labelButton_shared").live("mouseover",function(){ 
+    	$(this).tooltip();
+    });
+    
+		
 				
 	$(".labelButton")
 	.button()
