@@ -56,7 +56,7 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 	
 	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
 			"<div style=\"display: inline\">" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" title=\"Click to add a Comment\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
 				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
@@ -127,7 +127,7 @@ function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
 	
 	str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
 			"<div style=\"display: inline\">" +
-				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" input type=\"submit\">" + label_name + "</button>" +
+				"<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all \" title=\"Click to add a Comment\" input type=\"submit\">" + label_name + "</button>" +
 				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
@@ -440,6 +440,7 @@ $(function(){
 	$(".fg-button").livequery(function(){
 		/* open comment box */
 		$(this).button();
+		$(this).tooltip();
 		$(this).click(function() {
 			classList = $(this).parent().parent().attr('class').split(' ');
 			labelKey = classList[1]
