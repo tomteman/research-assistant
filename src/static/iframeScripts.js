@@ -1,12 +1,11 @@
-
+var followRow;
    
 $(document).ready(function() {   
 	
 	var form= $("#newFollow").html();
 	
-	 /* add hiehgt to iframe for label adders (autocomplete) */
-	 	
-	iFrameHeightInit();
+
+	
 	
 	$('#ch_citing').bind('click', function () {	
     	if ($(this).is(':checked')) {
@@ -59,17 +58,18 @@ $(document).ready(function() {
  		dataType:  'json'
     }; 
     
+    
      // Remove follow when button is clicked 
-    $('#removeButton').click(function() {
+    $('.removeButton').click(function() {
     	var id_name = $(this).parent().attr("value");
-    	$(this).parent().parent().remove();
+    	followRow = $(this).parent().parent().parent();
     	$("#action_type").val("remove");
     	$("#name_to_remove").val(id_name);
         $("#follow_to_remove").ajaxSubmit(options_follow); 
         return false; 
     });
     
-    $('#runSearch').click(function() {
+    $('.runSearch').click(function() {
     	var id_name = $(this).parent().attr("value");
     	$("#action_type").val("search");
     	$("#name_to_remove").val(id_name);
@@ -82,9 +82,17 @@ $(document).ready(function() {
  });
 ///////////////////////////////////////////////////////////////
 
+
+
 function gotoSearch(responseText, statusText, xhr, $form)  {
 	if (responseText == "true"){
 		location.href = '/Search?Type=FollowResults';
+	}
+	if (responseText == "1"){
+		var name = followRow.attr("id");
+		followRow.remove();
+		$('#popupText').html("Follow " + name+ " was deleted <br/>");
+		$('#popupText').dialog({ width: 600 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
 	}
 	else{
 		$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");

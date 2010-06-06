@@ -9,7 +9,6 @@
 
 {% block customScripts %}
  	<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"></script>
- 	<script type="text/javascript" src="/static/addFollow.js"></script>
  
  {% endblock %}
 
@@ -18,6 +17,10 @@
  
 
 {% block contents %}
+
+<p id="popupText" style="display:none">Some text</p>
+
+
 <CENTER><h2>My Follows:</h2></CENTER>
 
 {% if users.get_current_user %}
@@ -32,12 +35,12 @@
 			</td>
 			<td width=100px>
 				<div value="{{follow.follow_name}}">
-					<input type="button" id="runSearch"  value="Run Search"/>
+					<input type="button" class="runSearch"  value="Run Search"/>
 				</div>	
 			</td>
 			<td>	
 				<div value="{{follow.follow_name}}">					
-					<input type="button" id="removeButton"  value="Remove"/>
+					<input type="button" class="removeButton"  value="Remove"/>
 				</div>
 			</td>
 		</tr>	
