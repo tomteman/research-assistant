@@ -2,6 +2,7 @@ var resultsWithParams
 var iFrameHeight           
 var labelUniqueId = 0
 var uniqueLabelsNames = []
+var user
 
 function displayTagsOnResults(resultsJSON)
 {
@@ -378,7 +379,9 @@ function iFrameHeightInit(){
 
 
 $(function(){
-		
+	
+	user = parent.getCurrentUser()
+	
 	$(".labelBox").hide()
 	
 
@@ -476,9 +479,24 @@ $(function(){
 	});
 	$(".addFollowButton").livequery(function(){
 		$(this).button();
+		if (user == ""){
+			$(this).click(function(e){
+				e.preventDefault()
+				$('#popupText').html("This option is only available when logged in. <br/>");
+				$('#popupText').dialog({ width: 400 , position: 'top' , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+			})
+		}
 	});
 	$(".addLabel").livequery(function(){
 		$(this).button();
+		
+		if (user == ""){
+			$(this).click(function(e){
+				e.preventDefault()
+				$('#popupText').html("This option is only available when logged in. <br/>");
+				$('#popupText').dialog({ width: 400 , position: 'top' , buttons: { "Ok": function() { $(this).dialog("close"); } }});
+			})
+		}else{		
 		$(this).click(function() {	
 			var classList =$(this).parent().parent().closest("div").attr('class').split(' ');
 			var articleClassID = classList[1]
@@ -532,7 +550,8 @@ $(function(){
 		    			existingLabelSelected(uniqueLabelTest, labelArticleKey);			
 		    		}
 		    	});
-			});
+			})
+		};//end of else	
 		});
 });
 
