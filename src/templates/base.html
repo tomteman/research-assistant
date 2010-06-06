@@ -65,15 +65,15 @@
 	
 	<hr />	
 		<div id="wrapper">
-			<div id="wrapper-right">
+			<div id="toolbar">
 				
 				{% if users.get_current_user %}  	
 
-					loged in as <b> {{users.get_current_user.nickname}} </b> <br/>
-					<a href="{{logout}}"> log out</a>
-
+					<label id="toolbar_user"> {{users.get_current_user.nickname}}</label>| <a href="/About" target="frame"> About</a> | <a href="/Help" target="frame"> Help</a> | <a href="{{logout}}"> Sign out</a>
+				
 				{% else %}
-					<a href="{{login}}">log in</a>
+				 	<a href="/About" target="frame"> About</a> | <a href="/Help" target="frame"> Help</a> | <a href="{{login}}">Sign in</a>
+					
 				{% endif %}			
 			</div>	
 			
@@ -104,7 +104,7 @@
 				<ul>
 				<li><a href="/Index" target="frame" >Home</a></li>
 				<li><a href="/MyFollows" target="frame">My Follows</a></li>
-				<li><a href="/ShowPendings" class="first" target="frame"> Invitations</a></li>
+				<li><a href="/ShowPendings" class="first" target="frame"> Label Invitations</a></li>
 			
 	
 				</ul>
@@ -199,7 +199,8 @@
 	{% else %}
 		
 			<div id="labels_message" name="labels_message">
-				Please log in <br> to see your labels here
+			<br>
+				<img src="/static/images/ready.bmp">
 			</div>	
 		
 	{% endif %}	

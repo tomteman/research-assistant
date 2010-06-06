@@ -165,19 +165,12 @@ class Search(webapp.RequestHandler):
                 c['logout'] = users.create_logout_url(self.request.uri)
             else:
                 c['login'] = users.create_login_url(self.request.uri)
-        numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
-        numResults = parserStruct.get_numOfResults()
-        if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
-            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of " + str(numResults)
-        else:
-            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(numResults)
-        
         c['users'] = users
         c['resultsJSON'] = mockResults(parserStruct)
         c['results'] = results
         c['formAction'] = '/AddFollow'
         c['keyword'] = keywords
-        #c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
+        c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
         if parserStruct.didYouMeanFlag:
             c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
         self.response.out.write(t.render(c))        
@@ -262,10 +255,11 @@ class Search(webapp.RequestHandler):
         self.response.out.write(t.render(c))
         
         
-class DisplayTag(webapp.RequestHandler):
+        
+class Help(webapp.RequestHandler):
     @login_required  
     def get(self):
-        t = get_template('displayTag.html')
+        t = get_template('help.html')
         c = Context()
         if (users.get_current_user()):
             c['logout'] = users.create_logout_url(self.request.uri)
@@ -324,7 +318,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/Search',Search )
                                       ,('/AddFollow', AddFollow)
                                       ,('/FollowFormDone', FollowFormDone)
-                                      ,('/DisplayTag', DisplayTag)
+                                      ,('/Help', Help)
                                       ,('/About', About)
                                       ,('/Submit', Submit)
                                       ,('/FirstUpload', FirstUpload)
@@ -339,7 +333,6 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/getCurrentUser',getCurrentUser)
                                       ,('/ShareLabel',ShareLabel)
                                       ,('/GetAllLabels',GetAllLabels)
-                                      ,('/SearchInLabel',SearchInLabel)
                                       ,('/GetSharedLabelUsers',GetSharedLabelUsers)
                                       ,('/DuplicateSharedLabelToPrivate',DuplicateSharedLabelToPrivate)
                                       ,('/RemoveFromSharedLabelDB',RemoveFromSharedLabelDB)],
