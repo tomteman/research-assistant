@@ -385,7 +385,7 @@ function iFrameHeightInit(){
 $(function(){
 	
 	user = parent.getCurrentUser()
-	//$(".commentcontent").alphanumeric()
+	$(".labelBox").livequery(function(){$(this).alphanumeric({allow:"_ "})})
 	$(".labelBox").hide()
 	
 
