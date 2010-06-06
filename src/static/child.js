@@ -180,7 +180,7 @@ function addNewLabel(label_name, labelArticleKey){
 	   		is_shared: false			                
 		   };
 	
-	addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey)
+	
 	
 	/* convert labeled article to JSON */
 	index = indexOfArticleInResultsFromKey(labelArticleKey)
@@ -198,17 +198,21 @@ function addNewLabel(label_name, labelArticleKey){
 			if (data == -7){
 				alert("Error occured while uploading existing label to DB")
 			}
+			else{
+				addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey);
+				parent.uniqueLabels.push(uniqueLabelObject);
+				
+				/* show label in HTML */
+				
+				displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
+				
+				/* display new label tag on the left side bar */
+				parent.addLabel(uniqueLabelObject.label_name, 1)
+			}
 		}
 	});	
 			
-	parent.uniqueLabels.push(uniqueLabelObject);
 	
-	/* show label in HTML */
-	
-	displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
-	
-	/* display new label tag on the left side bar */
-	parent.addLabel(uniqueLabelObject.label_name, 1)
 }
 
 
@@ -216,9 +220,9 @@ function addNewLabel(label_name, labelArticleKey){
 /* This function is called when auto complete matches a result */
 function existingLabelSelected(uniqueLabelObject, labelArticleKey){
 	label_name = uniqueLabelObject.label_name
-	/* add label to labels */
+
 	if (!labelExistsInArticle(label_name, labelArticleKey)){
-		addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey)
+		
 		/* convert labeled article to JSON */
 		index = indexOfArticleInResultsFromKey(labelArticleKey)
 		var ArticleDataWithLabelName = []
@@ -235,16 +239,21 @@ function existingLabelSelected(uniqueLabelObject, labelArticleKey){
 				if (data == -7){
 					alert("Error occured while uploading existing label to DB")
 				}
+				else{
+					/* add label to labels */
+					addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey)
+					/* update number of labels in uniqueLabels */
+					
+					incrementUniqueLabelCount(label_name);
+					
+					/* show label in HTML */
+					
+					displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
+				}
 			}
 		});	
 		
-		/* update number of labels in uniqueLabels */
 		
-		incrementUniqueLabelCount(label_name);
-		
-		/* show label in HTML */
-		
-		displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
 	}
 }
 
@@ -305,10 +314,7 @@ function addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey){
 
 /* called when a user presses the X button on a label */
 function removeLabelFromArticle(label_name, article_key){
-	/* decrement label occurence in uniqueLabels (and remove it if reached 0) */
-	decrementUniqueLabelCount(label_name);
-	/* remove from global labels list */
-	removeLabelFromGlobalLabels(label_name, article_key);
+	
 	labelToRemoveFromDB = {
 			   label_name:label_name,
 			   article_key:article_key
@@ -320,6 +326,12 @@ function removeLabelFromArticle(label_name, article_key){
 		success: function(data, textStatus){
 			if (data == false){
 				alert("Error occured while deleting label from DB")
+			}
+			else{
+				/* decrement label occurence in uniqueLabels (and remove it if reached 0) */
+				decrementUniqueLabelCount(label_name);
+				/* remove from global labels list */
+				removeLabelFromGlobalLabels(label_name, article_key);
 			}
 		}
 	});
@@ -347,8 +359,7 @@ function findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name){
 
 function saveComment(commentContent, article_key, label_name){
 
-	labelIndex = findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name)
-	parent.labels[labelIndex].comment = commentContent
+
 	
 	commentToDB = {
 				   comment_content:commentContent,
@@ -358,9 +369,17 @@ function saveComment(commentContent, article_key, label_name){
 	$.ajax({
 		  type: 'POST',
 		  url: "/UpdateArticleLabelDB",
-		  data: commentToDB
-		 
-		});	
+		  data: commentToDB,
+		  success: function(data, textStatus){
+			if (data == -7){
+				alert("Error occured while uploading existing label to DB")
+			}
+			else{
+				labelIndex = findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name)
+				parent.labels[labelIndex].comment = commentContent
+			}
+		}
+	});	
 }
 
 

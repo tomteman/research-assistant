@@ -58,10 +58,8 @@ $(function(){
 	.parent()
 	.buttonset();
 	
-      getLabelsFromDB();
-      getUniqueLabelsFromDB();
-      
-
+     getLabelsFromDB();
+     getUniqueLabelsFromDB();
     	  
  });
 
