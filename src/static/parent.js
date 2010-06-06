@@ -17,6 +17,15 @@ $(function(){
 	if(userAgent.indexOf('chrome') != -1)
 		userAgent="chrome"
 			
+	$("#search-submit").click(function(event){
+		if ($("#search-text").val() == ""){
+			event.preventDefault()
+			event.bind('click')
+			}
+		});
+							
+	
+			
     $(".labelButton").live("mouseover",function(){ 
     	$(this).tooltip();
     });
