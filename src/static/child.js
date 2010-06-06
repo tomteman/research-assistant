@@ -382,7 +382,7 @@ $(function(){
 	$(".labelBox").hide()
 	
 
-$(".commentcontent").live("click", function(){
+	$(".commentcontent").live("click", function(){
         
         classList = $(this).parent().attr('class').split(' ');
         labelKey = classList[1]
@@ -398,29 +398,35 @@ $(".commentcontent").live("click", function(){
         return false;
     });
 
-    $("#close").live("click",function(){
-        classList = $(this).parent().parent().attr('class').split(' ');
-        labelKey = classList[1]
-        $(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
-        $(".button_block.#"+labelKey).slideUp("fast");
-        $(".commentcontent.#"+labelKey).blur()
-        $(".commentbox."+labelKey).hide()
-        iFrameHeightDecrement(100)
-        return false;
+    $("#close").livequery(function(){
+    	$(this).button();
+    	$(this).click(function(){
+	        classList = $(this).parent().parent().attr('class').split(' ');
+	        labelKey = classList[1]
+	        $(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
+	        $(".button_block.#"+labelKey).slideUp("fast");
+	        $(".commentcontent.#"+labelKey).blur()
+	        $(".commentbox."+labelKey).hide()
+	        iFrameHeightDecrement(100)
+	        return false;
+    	});
     });
 	
 
-    $("#save").live("click",function(){
-        classList = $(this).parent().parent().attr('class').split(' ');
-        labelKey = classList[1]
-        $(".commentcontent.#"+labelKey).blur()
-         $(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
-         $(".button_block.#"+labelKey).slideUp("fast");
-        commentContent = $(".commentcontent.#"+labelKey).val()
-        label_name = $(".fg-button."+labelKey).text()
-        article_key = $(this).parent().parent().parent().closest("div").attr("id");
-        saveComment(commentContent,article_key,label_name)
-         return false;
+    $("#save").livequery(function(){
+    	$(this).button();
+    	$(this).click(function(){
+	        classList = $(this).parent().parent().attr('class').split(' ');
+	        labelKey = classList[1]
+	        $(".commentcontent.#"+labelKey).blur()
+	        $(".commentcontent.#"+labelKey).animate({"height": "30px", "width": "200px"}, "fast" );
+	        $(".button_block.#"+labelKey).slideUp("fast");
+	        commentContent = $(".commentcontent.#"+labelKey).val()
+	        label_name = $(".fg-button."+labelKey).text()
+	        article_key = $(this).parent().parent().parent().closest("div").attr("id");
+	        saveComment(commentContent,article_key,label_name)
+	        return false;
+    	});
 
     });
 	
@@ -468,62 +474,67 @@ $(".commentcontent").live("click", function(){
 	$(".labelButton").livequery(function(){
 		$(this).buttonset();
 	});
-		
-	$(".addLabel").click(function(){
-		var classList =$(this).parent().parent().closest("div").attr('class').split(' ');
-		var articleClassID = classList[1]
-		var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
-		$(".labelBox").val("")
-	    selectedLabelBox = $(this).parent().next(".labelBox")
-	    selectedLabelBox.slideToggle(200)
-	    uniqueLabelsNames.length = 0;
-		$.each(parent.uniqueLabels, function(intIndex, objValue){
-			uniqueLabelsNames.push(objValue.label_name)
-		})
-    	var ac = selectedLabelBox.autocomplete({
-    		minLength: 1,
-            select: function(event, ui){ // Callback function, triggered if one of the suggested options is selected,
-    			uniqueLabelTest = getUniqueLabel(ui.item.label)
-    			existingLabelSelected(uniqueLabelTest, labelArticleKey);
-    			$(this).val("")
-    			$(this).hide()
-    			return false    			
-    			},
-
-    		open: function() {
-    			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
-    		},
-   			//close the drop down
-   			close: function() {
-   				$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-   			},
-
-
-    		delay: 0,
-    		source: uniqueLabelsNames
-
-        });
-	    selectedLabelBox.focus();
-	    ac.enable();
-	    /* handle "user pressed Enter key" event */
-	    $('.labelBox').keyup(function(e) {
-	    	if(e.keyCode == 13) {
-	    		label_name = $(this).val();
-	    		/* recognize which article is being labeled */
-	    		labelArticleKey = ($(this).parent().closest("div").attr("id"));
-	    		$(this).val("")
-    			$(this).hide()
-    			uniqueLabelTest = getUniqueLabel(label_name)
-    			/* if this is a new label */
-    			if (uniqueLabelTest == -1){
-    				addNewLabel(label_name, labelArticleKey)
-    			}
-	    		else
-	    			existingLabelSelected(uniqueLabelTest, labelArticleKey);			
-	    		}
-	    	});
-		});
+	$(".addFollowButton").livequery(function(){
+		$(this).button();
 	});
+	$(".addLabel").livequery(function(){
+		$(this).button();
+		$(this).click(function() {	
+			var classList =$(this).parent().parent().closest("div").attr('class').split(' ');
+			var articleClassID = classList[1]
+			var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
+			$(".labelBox").val("")
+		    selectedLabelBox = $(this).parent().next(".labelBox")
+		    selectedLabelBox.slideToggle(200)
+		    uniqueLabelsNames.length = 0;
+			$.each(parent.uniqueLabels, function(intIndex, objValue){
+				uniqueLabelsNames.push(objValue.label_name)
+			})
+	    	var ac = selectedLabelBox.autocomplete({
+	    		minLength: 1,
+	            select: function(event, ui){ // Callback function, triggered if one of the suggested options is selected,
+	    			uniqueLabelTest = getUniqueLabel(ui.item.label)
+	    			existingLabelSelected(uniqueLabelTest, labelArticleKey);
+	    			$(this).val("")
+	    			$(this).hide()
+	    			return false    			
+	    			},
+	
+	    		open: function() {
+	    			$(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+	    		},
+	   			//close the drop down
+	   			close: function() {
+	   				$(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+	   			},
+	
+	
+	    		delay: 0,
+	    		source: uniqueLabelsNames
+	
+	        });
+		    selectedLabelBox.focus();
+		    ac.enable();
+	    /* handle "user pressed Enter key" event */
+		    $('.labelBox').keyup(function(e) {
+		    	if(e.keyCode == 13) {
+		    		label_name = $(this).val();
+		    		/* recognize which article is being labeled */
+		    		labelArticleKey = ($(this).parent().closest("div").attr("id"));
+		    		$(this).val("")
+	    			$(this).hide()
+	    			uniqueLabelTest = getUniqueLabel(label_name)
+	    			/* if this is a new label */
+	    			if (uniqueLabelTest == -1){
+	    				addNewLabel(label_name, labelArticleKey)
+	    			}
+		    		else
+		    			existingLabelSelected(uniqueLabelTest, labelArticleKey);			
+		    		}
+		    	});
+			});
+		});
+});
 
 
 
