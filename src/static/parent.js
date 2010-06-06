@@ -14,7 +14,6 @@ function getCurrentUser(){
 };
 
 $(function(){
-	alert(getCurrentUser())
 	userAgent = navigator.userAgent.toString().toLowerCase();
 		if(userAgent.indexOf('chrome') != -1)
 			userAgent="chrome"
@@ -111,11 +110,56 @@ function addLabelShared(labelName, number){
 	menuItem.mouseover( function () {$(this).css("background", "#0078ae")  })
     menuItem.mouseout( function () {$(this).css("background", "#d0e5f5") })  
     
-    newLabel.find("#Delete").click( function() { change_menu_status( menuItem.parent()); deleteTag(newLabel.attr("value")); });
-	newLabel.find("#Rename").click( function() { change_menu_status(menuItem.parent()); renameTag(newLabel.attr("value"));  });
-	newLabel.find("#Share").click( function() { change_menu_status(menuItem.parent()); shareTag(newLabel.attr("value")); });
+    newLabel.find("#Share").click( function() { change_menu_status( menuItem.parent()); shareTag(newLabel.attr("value")); });
+	newLabel.find("#UserList").click( function() { change_menu_status(menuItem.parent()); getLabelUserList(newLabel.attr("value"));  });
+	newLabel.find("#RemoveMe").click( function() { change_menu_status(menuItem.parent()); removeMeFromLabel(newLabel.attr("value")); });
+	newLabel.find("#Duplicate").click( function() { change_menu_status(menuItem.parent()); duplicateLabel(newLabel.attr("value")); });
 	$("#labelList_shared").append(newLabel);	
 }
+
+function handleErrorCode(errorNumber){
+	if (errorNumber == -2)
+		generatePopUp ("The email address entered is not valid. Please try again.");
+	else if (errorNumber == -3)
+		generatePopUp ("The user you are trying to share this label with already has a shared label with the same name.<br>If your label is currently private - try to rename and then share.");
+	else if (errorNumber == -4 || errorNumber == -5)
+		generatePopUp("There were some problems retrieving the information.<br>Please try to refresh this page.");
+	else if (errorNumber == -6)
+		generatePopUp("Sorry, you cannot share a label with yourself... :)");
+	else if (errroNumber == -7)
+		generatePopUp("There are some problems connecting to the Data Base.<br>Please make sure you are connected to the internet.");
+	else generatePopUp("Unknown Error. Sorry.")
+}
+
+function generatePopUp(text){
+	$('#popupText').html(text+"<br/>");
+	$('#popupText').dialog({ width: 400 , buttons: { "OK": function() { $(this).dialog("close"); } }});
+}
+
+
+function getLabelUserList(label_name){
+	$.ajax({
+		type: 'POST',
+		url: "/GetSharedLabelUsers",
+		data: label_name,
+		success: function(data, textStatus){
+			if (data <= 0){
+				handleErrorCode(data)
+			}
+			else
+				generatePopUp(data)
+		}
+	});
+}
+
+function removeMeFromLabel(label_name){
+	alert(label_name)	
+}
+
+function duplicateLabel(label_name){
+	alert(label_name)	
+}
+
 
 function deleteTag(label_name){
 	$('#popupText').html("Are you sure you want to delete the label "+ label_name +" ? <br/>");

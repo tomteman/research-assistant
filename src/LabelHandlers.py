@@ -121,4 +121,15 @@ class ShareLabel(webapp.RequestHandler):
         res = Label.share_label_request(inviting_user , label_name, new_user_email, True)
         self.response.out.write(simplejson.dumps(res)) 
 
+
+class GetSharedLabelUsers(webapp.RequestHandler):
+    
+    def post(self):
+        label_name = self.request.get('label_name')
+        user = users.get_current_user()
+        res = Label.get_email_list_of_users_on_this_shared_label(user, label_name)
+        self.response.out.write(simplejson.dumps(res)) 
+
+
+
         

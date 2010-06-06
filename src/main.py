@@ -331,7 +331,8 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/RenameLabelDB',RenameLabelDB)
                                       ,('/getCurrentUser',getCurrentUser)
                                       ,('/ShareLabel',ShareLabel)
-                                      ,('/GetAllLabels',GetAllLabels)],
+                                      ,('/GetAllLabels',GetAllLabels)
+                                      ,('/GetSharedLabelUsers',GetSharedLabelUsers)],
                                       debug=True)
 
 def main():
