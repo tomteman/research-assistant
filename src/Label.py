@@ -46,41 +46,40 @@ def update_comment(user, label_name, article_key, comment_content):
 def add_label_to_article(label_name, user,list_of_articleData_objects):
     # check if label exists. 
     # if not, update the creator. if yes, take his name
-    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 ", 
-                    user, label_name)
-    
-    if (query.count(2) == 0):
-        # true when this is the first time a label for this user is called this way
-        is_new_label = True 
-    else:
-        is_new_label= False
-        label = query.fetch(1)[0]
-        creator = label.creator
-        users_list = label.users_list
-        is_shared = label.is_shared
- 
-    for article in list_of_articleData_objects:
-        new_label = Label()
-        new_label.label_name = label_name
-        new_label.comment = ""
-        new_label.serialized_article = pickle.dumps(article)
-        temp = str(article.get_article_title()) + str(article.get_HTML_abstract()) + str(article.get_HTML_author_year_pub()).lower()
-        new_label.article_abstract_title_author = str(temp[:500])
-        new_label.article_key = article.key
+    try:
+        query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                        "AND label_name = :2 ", 
+                        user, label_name)
         
-        if is_new_label:
-            new_label.users_list = [user]
-            new_label.creator = user
-            new_label.is_shared = False
-        else: 
-            new_label.users_list = users_list
-            new_label.is_shared = is_shared
-            new_label.creator = creator
-        try:
-            new_label.put()
-        except Exception:
-            return -7
+        if (query.count(2) == 0):
+            # true when this is the first time a label for this user is called this way
+            is_new_label = True 
+        else:
+            is_new_label= False
+            label = query.fetch(1)[0]
+            creator = label.creator
+            users_list = label.users_list
+            is_shared = label.is_shared
+     
+        for article in list_of_articleData_objects:
+            new_label = Label()
+            new_label.label_name = label_name
+            new_label.comment = ""
+            new_label.serialized_article = pickle.dumps(article)
+            temp = str(article.get_article_title()) + str(article.get_HTML_abstract()) + str(article.get_HTML_author_year_pub()).lower()
+            new_label.article_abstract_title_author = str(temp[:500])
+            new_label.article_key = article.key
+            
+            if is_new_label:
+                new_label.users_list = [user]
+                new_label.creator = user
+                new_label.is_shared = False
+            else: 
+                new_label.users_list = users_list
+                new_label.is_shared = is_shared
+                new_label.creator = creator
+    except Exception:
+        return -7
         
     return True
 
