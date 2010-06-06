@@ -170,7 +170,12 @@ function getLabelUserList(label_name){
 
 function removeMeFromLabel(label_name){
 	$('#popupText').html("Are you sure you want to remove yourself from the label "+ label_name +" ? <br/>");
-	$('#popupText').dialog({ width: 400 , buttons: { 		
+	$('#popupText').dialog({
+		open: function() {
+	      $(this).parents('.ui-dialog-buttonpane button:eq(1)').focus(); 
+	    },
+		
+		width: 400 , buttons: { 		
 		"No": function() { 
 			$(this).dialog("close"); },
 		"Yes": function() {
@@ -217,7 +222,12 @@ function duplicateLabel(label_name){
 
 function deleteTag(label_name){
 	$('#popupText').html("Are you sure you want to delete the label "+ label_name +" ? <br/>");
-	$('#popupText').dialog({ width: 400 , buttons: { 		
+	
+	$('#popupText').dialog({
+		 open: function() {
+	      $(this).parents('.ui-dialog-buttonpane button:eq(1)').focus(); 
+	    },
+			width: 400 , buttons: { 		
 		"No": function() { 
 			$(this).dialog("close"); },
 		"Yes": function() {
