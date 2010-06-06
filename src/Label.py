@@ -78,6 +78,8 @@ def add_label_to_article(label_name, user,list_of_articleData_objects):
                 new_label.users_list = users_list
                 new_label.is_shared = is_shared
                 new_label.creator = creator
+            new_label.put()
+            
     except Exception:
         return -7
         
