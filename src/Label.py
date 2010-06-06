@@ -28,16 +28,18 @@ class Label(db.Model):
     
 # returns False on failure
 def update_comment(user, label_name, article_key, comment_content):
-    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 " +
-                    "AND article_key = :3", 
-                    user, label_name, article_key)
-    # results = q.fetch(10)
-    # this is supposed to be only one result but who knows...
-    for label in query:
-        label.comment = str(comment_content)
-        label.put()
-        
+    try:
+        query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                        "AND label_name = :2 " +
+                        "AND article_key = :3", 
+                        user, label_name, article_key)
+        # results = q.fetch(10)
+        # this is supposed to be only one result but who knows...
+        for label in query:
+            label.comment = str(comment_content)
+            label.put()
+    except Exception:
+        return -7
     return True
     
 
@@ -301,14 +303,14 @@ def get_articlekey_labellist_dict_JSON(user):
 # RC = -6 ==  the user is trying to share some thing with himself
 # RC = -7 == problems connecting to db
 # creates a pending in the DB
-def share_label_request(inviting_user, label_name, new_user_email, notify=True):
+def share_label_request(inviting_user, label_name, invited_user_email, notify=True):
     # Varify new_user_email
-    if (inviting_user.email() == new_user_email):
+    if (inviting_user.email() == invited_user_email):
         return -6
     
-    if not mail.is_email_valid(new_user_email):
+    if not mail.is_email_valid(invited_user_email):
         return -2
-    invited_user = users.User(new_user_email)
+    invited_user = users.User(invited_user_email)
     
     # append emails to lists of friends
 #    inviting_user_ra_obj = RA_User.get_RA_User_obj(inviting_user)
@@ -318,7 +320,7 @@ def share_label_request(inviting_user, label_name, new_user_email, notify=True):
 #    if (inviting_user.email() not in invited_user_ra_obj.friends_emails):
 #        invited_user_ra_obj.friends_emails.append(inviting_user.email())
 #    
-    # check if this label really exists
+    # check if this label really exists at the inviting user
     query_inviting = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
                     inviting_user, label_name)
@@ -442,7 +444,7 @@ def get_emails_of_users_on_this_shared_label(user, label_name):
     try:
         query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2",  
-                    user, label_name)
+                     user, label_name)
     except Exception:
         return -7
     
