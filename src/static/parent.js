@@ -1,7 +1,6 @@
 var labels
 /* list of unique label names with number of occurences */
-var uniqueLabels   
-var menuStatus = 0;   
+var uniqueLabels    
 var index = 0;
 var userAgent         
 function getCurrentUser(){ 
@@ -128,6 +127,8 @@ function handleErrorCode(errorNumber){
 		generatePopUp("Sorry, you cannot share a label with yourself... :)");
 	else if (errroNumber == -7)
 		generatePopUp("There are some problems connecting to the Data Base.<br>Please make sure you are connected to the internet.");
+	else if (errorNumber == -8)
+		generatePopUp("There were some problems sending the mail notification to the invited user.<b>However, the label was shared successfully, <br>and the user will see it in his Invitations during his next visit to the site.")
 	else generatePopUp("Unknown Error. Sorry.")
 }
 
@@ -158,8 +159,46 @@ function getLabelUserList(label_name){
 }
 
 function removeMeFromLabel(label_name){
-	alert(label_name)	
+	$('#popupText').html("Are you sure you want to remove yourself from the label "+ label_name +" ? <br/>");
+	$('#popupText').dialog({ width: 400 , buttons: { 		
+		"No": function() { 
+			$(this).dialog("close"); },
+		"Yes": function() {
+				label_name_to_remove = {
+						   label_name: label_name
+							};
+				$.ajax({
+					type: 'POST',
+					url: "/RemoveFromSharedLabelDB",
+					data: label_name_to_remove,
+					success: function(data, textStatus){
+						if (data <= 0){
+							handleErrorCode(data)
+						}
+						else{
+							removeLabelFromLocalDBandHTML(label_name)
+						}
+					}
+				});
+			$(this).dialog("close"); 
+			}
+		}
+	});	
 }
+
+
+function removeLabelFromLocalDBandHTML(label_name) {
+	var label = getLabel(label_name);	
+	label.remove();
+	/* update local data (labels) */
+	uniqueLabels = $.grep(uniqueLabels, function (val) { return val.label_name != label_name; });
+	labels = $.grep(labels, function(val){return val.label_name != label_name})
+	/* delete labels from HTML */
+	deleteLabelsIniFrame(label_name)	
+}
+	
+		
+
 
 function duplicateLabel(label_name){
 	alert(label_name)	
@@ -186,21 +225,11 @@ function deleteTag(label_name){
 }
 
 function deleteResponse(responseText, statusText, xhr, $form)  {
-	if (responseText != ""){
-		var label = getLabel(responseText);								
-		label.remove();
-		
-		/* update local data (labels) */
-		uniqueLabels = $.grep(uniqueLabels, function (val) { return val.label_name != responseText; });
-		labels = $.grep(labels, function(val){return val.label_name != responseText})
-		
-		/* delete labels from HTML */
-		deleteLabelsIniFrame(responseText)				
+	if (responseText <= 0){
+		handleErrorCode(responseText)			
 	}
 	else{
-		$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
-		$('#popupText').dialog({ width: 400 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
-	
+		removeLabelFromLocalDBandHTML(responseText)
 	}
 	
 		
@@ -225,9 +254,7 @@ function renameTag(label_name){
 										    							});
 											$(this).dialog("close");
 										}else{
-											$('#popupText').html("Label with this name already exists <br/>");
-											$('#popupText').dialog({ width: 400 , zIndex: 3999, buttons: { "Ok": function() { $(this).dialog("close"); } }});
-											
+											generatePopUp("Label with this name already exists. <br>Please choose a different name.")
 										}					
     								},
 				"Cancel": function() { $(this).dialog("close"); }
@@ -271,9 +298,7 @@ function renameResponse(responseText, statusText, xhr, $form)  {
 
 		
 	}else{
-		$('#popupText').html("Sorry. DB currently unavailable. Please try again later. <br/>");
-		$('#popupText').dialog({ width: 400 , buttons: { "Ok": function() { $(this).dialog("close"); } }});
-	
+		generatePopUp("Sorry. DB currently unavailable. Please try again later.")	
 	}	
 }
 
@@ -344,6 +369,9 @@ function getShareTarget(label_name){
 								success: function(data, textStatus){
 									if (data <= 0){
 										handleErrorCode(data)
+									}
+									else{
+										generatePopUp("An email was sent to <b>" + user_name+"</b>, and the label will be shared pending his/her approval.")
 									}
 								}
 							});
@@ -456,15 +484,17 @@ function showLabeledArticles(label_name){
 
 
 function change_menu_status(div_menu){
-	if (menuStatus == 0){
-		div_menu.show();
-		menuStatus=1;
+    if (div_menu.val() == "0"){
+        div_menu.show();
+        div_menu.val("1")
 
-	}else{
-		div_menu.hide();
-		menuStatus=0;
-	}	
+    }else{
+        div_menu.hide();
+        div_menu.val("0")
+       
+    }   
 }
+
 
 
                          
