@@ -75,6 +75,10 @@ function renameLabelsIniFrame(old_label_name, new_label_name){
 	iframe.contentWindow.renameLabelInstances(old_label_name, new_label_name)
 }
 
+function passLabelNameToiFrame(label_name){
+	var iframe = document.getElementById("the_iframe");
+	iframe.contentWindow.appendLabelNameToSearch(label_name)
+}
 
 
 function addLabel(labelName, number){
@@ -112,7 +116,9 @@ function addLabelShared(labelName, number){
 	labelButton.val(labelName + "("+number+")");
 	
 	
-	labelButton.click( function() { showLabeledArticles(newLabel.attr("value")) } );
+	labelButton.click( function() { showLabeledArticles(newLabel.attr("value"));
+									passLabelNameToiFrame(labelName);
+									});
 	
 	newLabel.find("#menuButton_shared").click( function() {change_menu_status($(this).parent().parent().find("#dropDown_shared"));})
 	

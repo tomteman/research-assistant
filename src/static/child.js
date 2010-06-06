@@ -4,6 +4,10 @@ var labelUniqueId = 0
 var uniqueLabelsNames = []
 var user
 
+function appendLabelNameToSearch(label_name){
+	$("#hidden_label_name").val(label_name)
+}
+
 function displayTagsOnResults(resultsJSON)
 {
 	 resultsWithParams = eval("("+ resultsJSON+ ")");
