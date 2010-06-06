@@ -179,6 +179,7 @@ def rename_label(user,old_label_name, new_label_name):
 
 # ASSUMPTIONS: in this function i assume the label_name is of a shared label 
 def duplicate_label_to_private(user, label_name):
+    # check this label really exists
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
                     user, label_name)
@@ -188,13 +189,12 @@ def duplicate_label_to_private(user, label_name):
     # determine new label name (choose a name the user doesn't have)
     new_label_name = label_name + "_1"
     while (True):
-        query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+        temp_query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                         "AND label_name = :2 ", 
                         user, new_label_name)
-        if (query.count(2) == 0):
+        if (temp_query.count(2) == 0):
             break
         new_label_name = new_label_name + "_1"
-    
     for label in query:
         new_label = Label()
         new_label.users_list = [user]
