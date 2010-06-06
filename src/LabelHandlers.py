@@ -137,5 +137,11 @@ class RemoveFromSharedLabelDB(webapp.RequestHandler):
         res = Label.remove_user_from_shared_label(user, label_name)
         self.response.out.write(simplejson.dumps(res)) 
 
+class DuplicateSharedLabelToPrivate(webapp.RequestHandler):
+    def post(self):
+        label_name = self.request.get('label_name')
+        user = users.get_current_user()
+        res = Label.duplicate_label_to_private(user, label_name)
+        self.response.out.write(res)
 
         
