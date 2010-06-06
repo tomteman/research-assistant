@@ -65,11 +65,18 @@ $(document).ready(function() {
     $('.removeButton').click(function() {
     	var id_name = $(this).parent().attr("value");
     	followRow = $(this).parent().parent().parent();
-    	$("#action_type").val("remove");
-    	$("#name_to_remove").val(id_name);
-        $("#follow_to_remove").ajaxSubmit(options_follow); 
-        return false; 
-    });
+    	
+    	$('#popupText').html("Are you sure you want to delete follow: <br/>" + id_name);
+		$('#popupText').dialog({ width: 600 , buttons: {
+									"Cancel": function() { $(this).dialog("close");},
+									"Yes": function() {
+											$(this).dialog("close");
+											$("#action_type").val("remove");
+											$("#name_to_remove").val(id_name);
+											$("#follow_to_remove").ajaxSubmit(options_follow); 
+											 }
+								} });
+    	});
     
     $('.runSearch').click(function() {
     	var id_name = $(this).parent().attr("value");
