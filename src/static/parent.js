@@ -486,7 +486,7 @@ function inc(labelName){
 	var button = label.find(".labelButton");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, false);
-	button.val(labelName + "("+(currNumber+1)+")");
+	button.val(labelName + " ("+(currNumber+1)+")");
 }
 
 function inc_shared(labelName){
@@ -494,7 +494,7 @@ function inc_shared(labelName){
 	var button = label.find(".labelButton_shared");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, true);
-	button.val(labelName + "("+(currNumber+1)+")");
+	button.val(labelName + " ("+(currNumber+1)+")");
 }
 
 function dec(labelName){
@@ -502,7 +502,7 @@ function dec(labelName){
 	var button = label.find(".labelButton");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, false);
-	button.val(labelName + "("+(currNumber-1)+")");
+	button.val(labelName + " ("+(currNumber-1)+")");
 }
 
 function dec_shared(labelName){
@@ -510,7 +510,7 @@ function dec_shared(labelName){
 	var button = label.find(".labelButton_shared");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, true);
-	button.val(labelName + "("+(currNumber-1)+")");
+	button.val(labelName + " ("+(currNumber-1)+")");
 }
 
 
@@ -523,7 +523,7 @@ function getNumber(labelName, isShared){
 		var button = label.find(".labelButton");
 	var namePlusNumber = button.val();
 	var firstI = label.val().length;
-	number = namePlusNumber.substring(firstI+1,namePlusNumber.length );
+	number = namePlusNumber.substring(firstI+2,namePlusNumber.length );
 	return  parseInt(number);
 }
 
