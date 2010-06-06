@@ -108,40 +108,47 @@ def is_shared_label(user, label_name):
         
     
 def get_labels_dict_JSON(user):
-    q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1", user)
-    labels_list = q.fetch(1000)
-    num_dict = {}
-    is_shared_dict = {}
-    for label in labels_list:
-        if (num_dict.has_key(label.label_name)):
-            num_dict[label.label_name] += 1
-        else:
-            num_dict[label.label_name] = 1
+    try:
+        q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1", user)
+        labels_list = q.fetch(1000)
+        num_dict = {}
+        is_shared_dict = {}
+        for label in labels_list:
+            if (num_dict.has_key(label.label_name)):
+                num_dict[label.label_name] += 1
+            else:
+                num_dict[label.label_name] = 1
+            
+            is_shared_dict[label.label_name] = label.is_shared
         
-        is_shared_dict[label.label_name] = label.is_shared
+        label_names_list = num_dict.keys()
+        label_names_list.sort(key=string.lower)
+        final_list = []
+        for labelname in label_names_list:
+            d = {}
+            d['label_name'] = labelname
+            d['number'] = num_dict[labelname]
+            d['is_shared'] = is_shared_dict[labelname]
+            final_list.append(d)
+        
+        return simplejson.dumps(final_list)
+    except Exception:
+        return -7
     
-    label_names_list = num_dict.keys()
-    label_names_list.sort(key=string.lower)
-    final_list = []
-    for labelname in label_names_list:
-        d = {}
-        d['label_name'] = labelname
-        d['number'] = num_dict[labelname]
-        d['is_shared'] = is_shared_dict[labelname]
-        final_list.append(d)
-    
-    return simplejson.dumps(final_list)
     
     
     
          
 def remove_label_from_article(user, label_name,article_key):
-    q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 " +
-                    "AND article_key = :3", 
-                    user, label_name, article_key)
-    results = q.fetch(10)
-    db.delete(results)
+    try:
+        q = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                        "AND label_name = :2 " +
+                        "AND article_key = :3", 
+                        user, label_name, article_key)
+        results = q.fetch(10)
+        db.delete(results)
+    except Exception:
+        return -7
     
 def delete_label(user,label_name):
     try: 
@@ -150,10 +157,10 @@ def delete_label(user,label_name):
                         user, label_name)
         results = q.fetch(1000)
         db.delete(results)
-        return True
+        return 1
     
     except Exception:
-        return False
+        return -7
     
 # ASSUMPTIONS: in this function i assume the label_name is of a private label (NOT SHARED)    
 def rename_label(user,old_label_name, new_label_name):
@@ -351,8 +358,9 @@ def share_label_request(inviting_user, label_name, invited_user_email, notify=Tr
         return -7
     
     if notify:
-        notify_user_on_shared_label(inviting_user, invited_user, label_name, key)
-    return True
+        return notify_user_on_shared_label(inviting_user, invited_user, label_name, key)
+    
+    return 1
     
 # RC = -4 == no results where found for label_name and user
 def execute_label_sharing_after_approved(inviting_user,label_name, invited_user):
@@ -433,11 +441,16 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
     html_msg = html_msg + "<br>&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
     html_msg = html_msg + "</body></html>"
     plain_msg = "Hello Hello"
-    mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
-                  to=new_user.email(),
-                  subject=old_user.nickname() + " has shared a Research Assistant Label with you",
-                  body=plain_msg, 
-                  html=html_msg)
+    try: 
+        mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
+                      to=new_user.email(),
+                      subject=old_user.nickname() + " has shared a Research Assistant Label with you",
+                      body=plain_msg, 
+                      html=html_msg)
+    except Exception:
+        return -8
+    return  1
+        
 
 # ASSUMPTIONS: in this function i assume the label_name is of a shared label 
 def get_emails_of_users_on_this_shared_label(user, label_name):
