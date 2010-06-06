@@ -355,7 +355,7 @@ button.ui-button-icon-only { width: 2.4em; } /* button elements seem to need a l
 button.ui-button-icons-only { width: 3.7em; }
 button.ui-button-label {width: auto; height: 8%; font-size: 80%; vertical-align:center;}
 button.ui-button-label-x {height:  8%; font-size: 80%;vertical-align:center; text-align: center;}
-button.ui-button-shared {background: #0B610B; color: #FFFFFF;}
+button.ui-button-shared {background: #FFE4E1;}
 button.ui-button-private {background: #d0e5f5;}
 
 
