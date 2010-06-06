@@ -1,7 +1,9 @@
 var followRow;
+var iFrameHeight;
    
 $(document).ready(function() {   
-	
+	iFrameHeightInit();
+	iFrameHeightIncrement(500-iFrameHeight);
 	var form= $("#newFollow").html();
 	
 
@@ -183,3 +185,13 @@ function Close_Popup() {
 function stopShowingLoadingImage(){
 	$("#newFollow").html(form);
 };
+
+function iFrameHeightInit(){
+	iFrameHeight = jQuery("iframe",top.document).contents().find('body').attr('scrollHeight')
+}
+
+function iFrameHeightIncrement(value){
+	newHeight = iFrameHeight + value;
+	jQuery("iframe",top.document).height(newHeight);	
+	iFrameHeight = newHeight
+}
