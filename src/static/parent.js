@@ -85,11 +85,11 @@ function addLabel(labelName, number){
 	newLabel.val(labelName);
 	labelButton.val(labelName + "("+number+")");
 	
-	
 	labelButton.click( function() { showLabeledArticles(newLabel.attr("value")) } );
 	
-	newLabel.find("#menuButton").click( function() {change_menu_status($(this).parent().parent().find("#dropDown"));})
-	
+	div_menu.val("0");
+    newLabel.find("#menuButton").click( function() {change_menu_status(div_menu);})
+
 	menuItem.mouseover( function () {$(this).css("background", "#0078ae")  })
     menuItem.mouseout( function () {$(this).css("background", "#d0e5f5") })  
     
@@ -114,9 +114,9 @@ function addLabelShared(labelName, number){
 									showLabeledArticles(newLabel.attr("value"));
 									
 									});
-	
-	newLabel.find("#menuButton_shared").click( function() {change_menu_status($(this).parent().parent().find("#dropDown_shared"));})
-	
+	div_menu.val("0");
+    newLabel.find("#menuButton_shared").click( function() {change_menu_status(div_menu);})
+
 	menuItem.mouseover( function () {$(this).css("background", "#FFc1c1")  })
     menuItem.mouseout( function () {$(this).css("background", "#FFe4e1") })  
     
