@@ -20,14 +20,14 @@ body {
 
 h1, h2, h3 {
 	margin: 0;
-	font-family: Times New Roman, serif;
+	font-family: Ariel, Helvetica, sans-serif;
 	font-weight: normal;
 	
 }
 
-h1 { font-size: 44px; }
+h1 { font-size: 36px; }
 
-h2 { font-size: 24px; }
+h2 { font-size: 16px; }
 
 h3 { }
 
