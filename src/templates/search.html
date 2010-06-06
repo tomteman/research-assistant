@@ -17,6 +17,23 @@
 
 {% block contents %}
 
+{% if showlabel %}
+
+<div id="SearchInLabel">
+
+					<form method="post" target="frame" action="/SearchInLabel" >
+						<fieldset>
+							<input type="text" name="SearchTerm" id="search-text" size="15"/>
+							<input type="submit" id="search-submit" value="Search" /> <br/>
+						</fieldset>
+					</form>
+				</div>
+
+
+
+		
+	{% endif %}
+
 <div id="popupText" style="display:none">This is a popup window!</div>
 
 
