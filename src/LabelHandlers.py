@@ -130,6 +130,12 @@ class GetSharedLabelUsers(webapp.RequestHandler):
         res = Label.get_emails_of_users_on_this_shared_label(user, label_name)
         self.response.out.write(res) 
 
+class RemoveFromSharedLabelDB(webapp.RequestHandler):
+    def post(self):
+        label_name = self.request.get('label_name')
+        user = users.get_current_user()
+        res = Label.remove_user_from_shared_label(user, label_name)
+        self.response.out.write(simplejson.dumps(res)) 
 
 
         
