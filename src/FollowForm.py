@@ -19,10 +19,9 @@ class AddFollow(webapp.RequestHandler):
         bibTexData = bibTex.values()[0]
         
         if bibTexData.has_key('author'):
-                authors = bibTexData['author']
-
+            authors = bibTexData['author']
         else:
-            author = ""
+            authors = ""
       
         if bibTexData.has_key('title'):
             title = bibTexData['title'][1:len(bibTexData['title'])-1]
@@ -43,8 +42,7 @@ class AddFollow(webapp.RequestHandler):
         c['formDoneAction'] = '/FollowFormDone'
         c['followName'] = "Name Your Follow"
         c['articleName'] = title
-        c['articleAuthors'] = authors
-        c['many_authors'] = isinstance(bibTexData['author'], types.ListType )
+        c['many_authors'] = isinstance(authors, types.ListType )
         c['authors'] = authors
         c['articleJournal'] = journal
         c['keywords'] = keywords

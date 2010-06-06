@@ -104,15 +104,21 @@ function gotoSearch(responseText, statusText, xhr, $form)  {
 }
 
 function updateAuthors(){
-	var authors= "";
-	var all_authors = $('input[name=author_name]');
+	var ch_author = $('input[name=ch_author]').fieldValue();
+	if (ch_author != ""){
+		var authors= "";
+		var count = 0;
+		var all_authors = $('input[name=author_name]');
 		all_authors.each( function () {
+			count++;
 			var author_name=$(this).fieldValue();
 			if (author_name != "") 
 			authors = authors + " "+ author_name;	
-	});	 
-	
- 	$('#ch_author').val(authors);
+		});	 
+		if (count != 0){
+			$('#ch_author').val(authors);
+		}
+	}
 }
 
 function validate(formData, jqForm, options) { 
