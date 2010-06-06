@@ -296,12 +296,16 @@ def get_articlekey_labellist_dict_JSON(user):
 ##########3 Sharing Labels:
 
 # RC = -2 == email address not valid
-# RC = -3 == new_user already has this label
-# RC = -4 == no results where found for label_name and user 
+# RC = -3 == new_user already has this label, notify inviting user that the invited user has a shared label of the same name
+# RC = -4 == no results where found for label_name and user
+# RC = -6 ==  the user is trying to share some thing with himself
 # RC = -7 == problems connecting to db
 # creates a pending in the DB
 def share_label_request(inviting_user, label_name, new_user_email, notify=True):
     # Varify new_user_email
+    if (inviting_user.email() == new_user_email):
+        return -6
+    
     if not mail.is_email_valid(new_user_email):
         return -2
     invited_user = users.User(new_user_email)
@@ -315,18 +319,22 @@ def share_label_request(inviting_user, label_name, new_user_email, notify=True):
 #        invited_user_ra_obj.friends_emails.append(inviting_user.email())
 #    
     # check if this label really exists
-    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+    query_inviting = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2 ", 
                     inviting_user, label_name)
     
-    num_results = query.count(10)
+    num_results = query_inviting.count(10)
     if (num_results == 0):
         return -4
     
-    # check if the invited user already has a label with the same name    
-    one_label_object = query.fetch(2)[0]
-    if ((invited_user in one_label_object.users_list) and (one_label_object.is_shared == True)):
-            return -3 
+    # check if the invited user already has a label with the same name that is shared
+    query_invited = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 ", 
+                    invited_user, label_name)    
+    if (query_invited.count(1) != 0):
+        one_label_object = query_invited.fetch(2)[0]
+        if ((invited_user in one_label_object.users_list) and (one_label_object.is_shared == True)):
+                return -3 
     
     # create pending in DB and notify the invited user
     pending_obj = PendingSharedLabel.PendingSharedLabel()
@@ -430,7 +438,7 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
                   html=html_msg)
 
 # ASSUMPTIONS: in this function i assume the label_name is of a shared label 
-def get_email_list_of_users_on_this_shared_label(user, label_name):
+def get_emails_of_users_on_this_shared_label(user, label_name):
     try:
         query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
                     "AND label_name = :2",  
@@ -441,11 +449,11 @@ def get_email_list_of_users_on_this_shared_label(user, label_name):
     if (query.count(2) == 0):
         return -4
     label = query.fetch(2)[0]
-    emails_list = []
+    emails_str = ""
     for user_obj in label.users_list:
-        emails_list.append(user_obj.email())
+        emails_str = emails_str + str(user_obj.email()) + "<br>"
     
-    return emails_list  
+    return emails_str  
 
 # ASSUMPTIONS: in this function i assume the label_name is of a shared label 
 def remove_user_from_shared_label(user, label_name):
