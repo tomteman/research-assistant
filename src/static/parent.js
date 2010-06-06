@@ -4,14 +4,17 @@ var uniqueLabels
 var menuStatus = 0;   
 var index = 0;
 var userAgent         
-
-function getCurrentUser()
-$.get("/getCurrentUser",function(data){ 
-	return data
-});
+function getCurrentUser(){ 
+	var user = $.ajax({
+		  url: "/getCurrentUser",
+		  type: "GET",
+		  async: false
+		}).responseText
+		return user
+};
 
 $(function(){
-
+	alert(getCurrentUser())
 	userAgent = navigator.userAgent.toString().toLowerCase();
 		if(userAgent.indexOf('chrome') != -1)
 			userAgent="chrome"

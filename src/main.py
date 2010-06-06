@@ -286,9 +286,9 @@ class About(webapp.RequestHandler):
 
 class getCurrentUser(webapp.RequestHandler):
     def get(self):
-        user = users.GetCurrentUser()
-        self.response.out.write(user.email())
-
+        user = users.get_current_user()
+        if user:
+            self.response.out.write(user.email())
 
 
 
