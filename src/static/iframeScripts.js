@@ -172,7 +172,7 @@ function showResponse(responseText, statusText, xhr, $form)  {
 	}
 	
 	if (responseText == "0"){
-   		$('#popupText').html("Search with current configuration returned no results.<br/> Do you want to continue?");
+   		$('#popupText').html("No articles published this year answer your search parameters criteria.<br/>Would you like to add this follow anyway?");
    		$('#popup_content').dialog({ width: 600  });
 	}
 	if  (!(responseText == "1000" || responseText == "0" || responseText == "-1")){
