@@ -361,7 +361,7 @@ function toggleLabelShareStatusLocally(label_name, toShare){
 
 function getShareTarget(label_name){
 	
-	$('#shareText').html("Share the label \'"+ label_name +"\' with: ");
+	$('#shareText').html("Share the label \'"+ label_name +"\' with <i>(e-mail address)</i>: ");
     $("#popup_share").dialog({
 			width: 500,
 			modal: true,
