@@ -356,7 +356,32 @@ hr { display: none; }
 	padding: 5px 0 0 0;
 	}
 	
+#labelButton{
+	width:125px; 
+	background: #d0e5f5; 
+	text-align: left;
+	}
+	
+#menuButton{
+	background: #d0e5f5; 
+	color: #FFFFFF;
+	}
+	
+.labelButtons_shared{
+	padding: 5px 0 0 0;
+	}
 
+#labelButton_shared{
+	width:125px; 
+	background: #FFE4E1; 
+	text-align: left;
+	}
+
+#menuButton_shared{
+	background: #FFE4E1; 
+	color: #FFFFFF;
+	}
+	
 #dropDown{
 	
 	width: 155px;
