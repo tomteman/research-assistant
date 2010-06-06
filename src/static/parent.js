@@ -356,6 +356,23 @@ function getShareTarget(label_name){
 }
 
 
+function replacePrivateLabelUIWithShared(label_name){
+	toggleLabelShareStatusLocally(label_name, true);
+	
+	
+	/* update HTML in iFrame*/
+	recolorLabelsIniFrame(label_name)
+	
+	/* remove old private label button in sidebar */
+	var label = getLabel(label_name);
+	label.remove();
+	
+	/* create new shared label button in sidebar */
+	uniqueLabel = $.grep(uniqueLabels, function(objValue){
+		return objValue.label_name == label_name});	
+	addLabelShared(label_name, uniqueLabel[0].number);
+}
+
 function shareTag(label_name){
 	/* get username to share label with */
 	
@@ -366,20 +383,7 @@ function shareTag(label_name){
 	$.get("/ShareLabel?Id="+label_name, function(data){	
 	});
 	
-	//toggleLabelShareStatusLocally(label_name, true);
 	
-	
-	/* update HTML in iFrame*/
-	//recolorLabelsIniFrame(label_name)
-	
-	/* remove old private label button in sidebar */
-//	var label = getLabel(label_name);
-//	label.remove();
-//	
-//	/* create new shared label button in sidebar */
-//	uniqueLabel = $.grep(uniqueLabels, function(objValue){
-//		return objValue.label_name == label_name});	
-//	addLabelShared(label_name, uniqueLabel[0].number);
 }
 
 
