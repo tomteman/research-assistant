@@ -77,13 +77,13 @@ function pendingResponse(responseText, statusText, xhr, $form)  {
    if (responseText == "0" || parseInt(responseText) > "0"){
 	   if (last_action == "accept"){
 		   parent.addLabelShared(new_label, responseText);
-		   $('#popupText').html("label was added <br/>");
+		   cur_row.remove() 
+		   
 	   }
 	   if (last_action == "reject"){
-		   $('#popupText').html("inventation was rejected <br/>");
+		   cur_row.remove()  
 	   }
-	   cur_row.remove()
-	   $('#popupText').dialog({ width: 400 , zIndex: 3999, buttons: { "Ok": function() { $(this).dialog("close"); } }});
+	     
 	}
    
 	
