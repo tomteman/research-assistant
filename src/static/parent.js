@@ -107,8 +107,8 @@ function addLabelShared(labelName, number){
 	
 	newLabel.find("#menuButton_shared").click( function() {change_menu_status($(this).parent().parent().find("#dropDown_shared"));})
 	
-	menuItem.mouseover( function () {$(this).css("background", "#0078ae")  })
-    menuItem.mouseout( function () {$(this).css("background", "#d0e5f5") })  
+	menuItem.mouseover( function () {$(this).css("background", "#FFc1c1")  })
+    menuItem.mouseout( function () {$(this).css("background", "#FFe4e1") })  
     
     newLabel.find("#Share").click( function() { change_menu_status( menuItem.parent()); shareTag(newLabel.attr("value")); });
 	newLabel.find("#UserList").click( function() { change_menu_status(menuItem.parent()); getLabelUserList(newLabel.attr("value"));  });
