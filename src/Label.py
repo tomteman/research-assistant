@@ -40,7 +40,7 @@ def update_comment(user, label_name, article_key, comment_content):
             label.put()
     except Exception:
         return -7
-    return True
+    return 1
     
 
 def add_label_to_article(label_name, user,list_of_articleData_objects):
@@ -468,13 +468,34 @@ def remove_user_from_shared_label(user, label_name):
     if (query.count(1) == 0):
         return -4
     
-    for label in query:
-        label.users_list.remove(user)
-        try:
-            label.put()
-        except Exception:
-            return -7
-    return 0    
+    # check in case this is the last user on this label
+    label = query.fetch(2)[0]
+    if (len(label.users_list) == 1): # last user on this Label. 
+        for label in query:
+            try:
+                label.remove()
+            except Exception:
+                return -7
+    # this is not the last user, but after remove, there is only one more user 
+    # so this will no longer be a shared label
+    elif (len(label.users_list) == 2): 
+        for label in query:
+            label.users_list.remove(user)
+            label.is_shared = False
+            try:
+                label.put()
+            except Exception:
+                return -7
+    # this is not the last user, and after removing him there are still more users.
+    # so this stays shared
+    else: 
+        for label in query:
+            label.users_list.remove(user)
+            try:
+                label.put()
+            except Exception:
+                return -7
+    return 1    
     
 #####################################
 ######### SEARCH IN LABEL ###########
