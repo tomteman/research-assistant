@@ -17,7 +17,7 @@
 
 {% block contents %}
 
-<div id="popupcontent">This is a popup window!</div>
+<div id="popupText" style="display:none">This is a popup window!</div>
 
 
 
@@ -67,7 +67,7 @@
 
 
 {% comment %} Cycle through the results, get all articleData and display it {% endcomment  %}	
-	<br> <br>	
+	<br/><br/>
 	{% for result in results %}
 		
 		<div id="{{result.get_key}}" class="article">
@@ -96,11 +96,11 @@
 		 	
 			
 			<form method="post" action={{formAction}}>
-				<input class="addLabel" type="button" value="TAG" />
+				<input class="addLabel" type="button" value="Add Label" />
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
-				<input type="submit" value="addFollow" />
+				<input class="addFollowButton" type="submit" value="Follow This Article" />
  
 			</form>
 			<input type="text" name="q" class="labelBox" id="query" />
