@@ -195,8 +195,8 @@ function addNewLabel(label_name, labelArticleKey){
 		url: "/UpdateLabelDB",
 		data: articleJSON,
 		success: function(data, textStatus){
-			if (data == -7){
-				alert("Error occured while uploading existing label to DB")
+			if (data <= 0){
+				parent.generatePopUp(data)
 			}
 			else{
 				addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey);
@@ -237,7 +237,7 @@ function existingLabelSelected(uniqueLabelObject, labelArticleKey){
 			data: articleJSON,
 			success: function(data, textStatus){
 				if (data == -7){
-					alert("Error occured while uploading existing label to DB")
+					parent.generatePopUp(data)
 				}
 				else{
 					/* add label to labels */
