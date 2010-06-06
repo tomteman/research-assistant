@@ -9,7 +9,6 @@
 
 
 {% block customScripts %}
-	<script type="text/javascript" src="/static/iframeScripts.js"></script> 
  	<script type="text/javascript" src="/static/pendings.js"></script>
  {% endblock %}
 
@@ -23,7 +22,7 @@
 <CENTER><h2>Pending Collaboration Invintations:</h2></CENTER>
 
 
-	
+{% if users.get_current_user %}	
 	<br/>
 	
 	<table  id="pending_list" >
@@ -58,7 +57,14 @@
 		{% endfor %}
 	</table>
 
+{% else %}
 
+	<br>
+	<br>
+	<br>
+	<CENTER><h3> Please log in to see your pending invitations.</h3></CENTER>
+	
+{% endif %}
 
 <form id="pendingActions">
 	<input type="hidden"  id="action_type" name="action_type" value =""/>
