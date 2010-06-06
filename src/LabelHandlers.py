@@ -103,6 +103,7 @@ class ShowArticlesByLabel(webapp.RequestHandler):
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
         resultsJSON = my_html_parser_encoder.encode(htmlParser)
         c['users'] = users
+        c['hidden_label_name'] = label_name
         c['results'] = results
         c['resultsJSON'] = resultsJSON
         c['formAction'] = '/AddFollow'
@@ -151,10 +152,9 @@ class SearchInLabel(webapp.RequestHandler):
         user = users.get_current_user()
         search_term = self.request.get('SearchTerm')
         label_name = self.request.get('hidden_label_name')
-        
+        #print label_name
         htmlParser = Label.search_in_labels_return_HTMLparser(user, label_name, search_term)
         results = htmlParser.results
-        
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
         resultsJSON = my_html_parser_encoder.encode(htmlParser)
         c['users'] = users
