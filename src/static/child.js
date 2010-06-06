@@ -60,6 +60,7 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 				"<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
 			"</div>" +
 		"</div>"
+		
 	$(x).prepend(str)
 	
 	/* check is label is shared or private and color it appropriately */
@@ -72,7 +73,8 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
 		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
 	}
 	
-	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
+	str = "<span class=\"comment_name L" + labelUniqueId + "\"></span>" + 
+			"<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
 					"<input type=\"submit\" id=\"save\" value=\" Save \"/>" +
@@ -130,6 +132,7 @@ function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
 			"</div>" +
 		"</div>"
 	$(x).prepend(str)
+	
 	if (uniqueLabelObject.is_shared){
 		$(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
 		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
@@ -139,7 +142,8 @@ function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
 		$(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
 	}
 	
-	str = "<div class=\"commentbox L" + labelUniqueId + "\">" +
+	str = "<span class=\"comment_name L" + labelUniqueId + "\"></span>" +
+			"<div class=\"commentbox L" + labelUniqueId + "\">" +
 				"<textarea class=\"commentcontent\" id=\"L" + labelUniqueId + "\"></textarea>" +
 				"<div class=\"button_block\" id=\"L" + labelUniqueId +"\">" +
 					"<input type=\"submit\" id=\"save\" value=\" Save \"/>" +
@@ -381,7 +385,6 @@ function iFrameHeightInit(){
 $(function(){
 	
 	user = parent.getCurrentUser()
-	
 	$(".labelBox").hide()
 	
 
@@ -410,6 +413,7 @@ $(function(){
 	        $(".button_block.#"+labelKey).slideUp("fast");
 	        $(".commentcontent.#"+labelKey).blur()
 	        $(".commentbox."+labelKey).hide()
+	        $(".comment_name."+labelKey).hide()
 	        iFrameHeightDecrement(100)
 	        return false;
     	});
@@ -444,7 +448,9 @@ $(function(){
 			labelIndex = findLabelIndexInGlobalLabelsByKeyAndName(article_key,label_name)
 			comment = parent.labels[labelIndex].comment
 			$(".commentbox."+labelKey+" .commentcontent").val(comment)
-		
+			$(".comment_name."+labelKey).html("<br/><b>"+ label_name + "</b>    comment:")
+			$(".comment_name."+labelKey).show()
+			//$(".button_block.#"+labelKey).position().right(100)
 			$(".commentbox."+labelKey).show()
 			iFrameHeightIncrement(100)
 			/* update DB and globals*/
@@ -468,6 +474,7 @@ $(function(){
 		/* look for an open comment box and close it */
 			$(".commentbox."+labelKey).hide()
 			$(".commentcontent.#"+labelKey).hide()
+			$(".comment_name."+labelKey).hide()
 		/* remove tag from HTML */
 			$(this).prev().remove();
 			$(this).remove();
