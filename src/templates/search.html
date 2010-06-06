@@ -17,7 +17,7 @@
 
 {% block contents %}
 
-{% if showlabel %}
+{% if showlabelsearch %}
 
 <div id="SearchInLabel">
 
@@ -114,11 +114,11 @@
 		 	
 			
 			<form method="post" action={{formAction}}>
-				<input class="addLabel" type="button" value="Add Label" />
+				<input class="addLabel ui-addlabel-button" type="button" value="Add Label" />
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
-				<input class="addFollowButton" type="submit" value="Follow This Article" />
+				<input class="addFollowButton ui-addfollow-button" type="submit" value="Follow This Article" />
  
 			</form>
 			<input type="text" name="q" class="labelBox" id="query" maxlength="12" />
