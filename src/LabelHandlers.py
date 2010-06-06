@@ -155,6 +155,9 @@ class SearchInLabel(webapp.RequestHandler):
         label_name = self.request.get('hidden_label_name')
         htmlParser = Label.search_in_labels_return_HTMLparser(user, label_name, search_term)
         results = htmlParser.results
+        if len(results) == 0:
+            self.response.out.write("No results found")
+            return
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
         resultsJSON = my_html_parser_encoder.encode(htmlParser)
         c['users'] = users
