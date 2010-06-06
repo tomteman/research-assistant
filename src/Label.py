@@ -290,7 +290,7 @@ def get_label_object_list_for_user_JSON(user):
         labellist_JSON.append(my_label_encoder.default(label))
     
     return simplejson.dumps(labellist_JSON)
-     
+
 def get_articlekey_labellist_dict_JSON(user):
     query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 ", user)
     
