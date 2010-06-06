@@ -9,6 +9,7 @@
 
 {% block customScripts %}
  	<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"></script>
+ 	<script type="text/javascript" src="/static/iframeScripts.js"></script>
  {% endblock %}
 
 
@@ -31,7 +32,7 @@
 		<h3> Notify me on new article </h3>
 		<table>		
 			<tr>
-				<td>
+				<td width=150px>
 					<input  id="ch_citing"  name="ch_citing" type="checkbox" value="1"/
 					<label class="choice" name="citesTitle" >Citing </label>
 					<input name="citesTitle" type="hidden" value = "{{articleName}}">											
