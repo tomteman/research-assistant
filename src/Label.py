@@ -207,9 +207,9 @@ def duplicate_label_to_private(user, label_name):
         new_label.article_abstract_title_author = label.article_abstract_title_author
         try:
             new_label.put()
-            return new_label_name
         except Exception:
             return -7
+    return new_label_name
     
     
     
