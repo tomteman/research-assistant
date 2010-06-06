@@ -76,7 +76,7 @@ function pendingResponse(responseText, statusText, xhr, $form)  {
 
    if (responseText == "0" || parseInt(responseText) > "0"){
 	   if (last_action == "accept"){
-		   parent.addLabel(new_label, responseText);
+		   parent.addLabelShared(new_label, responseText);
 		   $('#popupText').html("label was added <br/>");
 	   }
 	   if (last_action == "reject"){
