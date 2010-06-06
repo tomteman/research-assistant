@@ -119,8 +119,7 @@ function addLabelShared(labelName, number){
 	labelButton.val(labelName + " ("+number+")");
 	
 	
-	labelButton.click( function() { passLabelNameToiFrame(labelName);
-									showLabeledArticles(newLabel.attr("value"));
+	labelButton.click( function() { showLabeledArticles(newLabel.attr("value"));
 									
 									});
 	div_menu.val("0");
