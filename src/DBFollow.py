@@ -83,24 +83,21 @@ class DBFollow(db.Model):
         try:
             self.num_of_new_articles_added_last_update = num_new_articles
         except Exception:
-            from Tkinter import *
-            root = Tk()
-            root.title('Message')
-            Message(root, text=str(num_new_articles), bg='royalblue', fg='ivory', relief=GROOVE).pack(padx=10, pady=10)
-            root.mainloop()
-            
+            pass
+        
         self.total_num_of_articles += num_new_articles
 
         # Update the user on changes, and update the DB
         if (num_new_articles != 0):
             # TODO: add here try and catch on the email sending, and only afterwards update follow and add to DB
-            email_message = self.create_email_message(diff_list, new_resultsList, diff_list)
+            rc = self.create_email_message(diff_list, new_resultsList, diff_list)
+            if (rc):
             
-            # Add the new articles to the saved dictionary
-            for key in diff_list:
-                self.pastResultsKeysList.append(key)
-                
-            self.num_of_meaningful_updates += 1
+                # Add the new articles to the saved dictionary
+                for key in diff_list:
+                    self.pastResultsKeysList.append(key)
+                    
+                self.num_of_meaningful_updates += 1
         
         # In any case, update the Follow in DB
         self.time_last_updated = datetime.datetime.now()
@@ -115,12 +112,14 @@ class DBFollow(db.Model):
     
     def create_email_message(self, diff_list, all_resultsList, diff_keys_list):
         html_msg = "<html><body>"
-        plain_msg = ""
         plain_msg = "Hello Dear Lea Stolowicz,\n" #self.user.nickname() + "!\n"
         html_msg = html_msg + "<b>Hello Dear " + self.user.nickname() + "</b><br>"
         #plain_msg = ""
         plain_msg = plain_msg + "There is a new update on your follow named: \n" + self.follow_name + "\n"
-        html_msg = html_msg + "There are " + str(len(diff_list)) + " new articles on your follow&trade; named: <br><b>" + self.follow_name + "</b><br><br><br>"
+        if (len(diff_list) == 1):
+            html_msg = html_msg + "There is a new article on your follow&trade; named: <br><b>" + self.follow_name + "</b><br><br><br>"
+        else:
+            html_msg = html_msg + "There are " + str(len(diff_list)) + " new articles on your follow&trade; named: <br><b>" + self.follow_name + "</b><br><br><br>"
         if (len(diff_list) > 50):
             html_msg = html_msg + "Presented are the first 50 of them: <br><br><br>"
             
@@ -160,19 +159,23 @@ class DBFollow(db.Model):
         
         
         html_msg = html_msg + "</body></html>"
-        mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
-                      to=self.user.email(),
-                      subject="You Have a new Scholar Update!",
-                      body=plain_msg, 
-                      html=html_msg)
+        try: 
+            mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
+                          to=self.user.email(),
+                          subject="You Have a new Scholar Update!",
+                          body=plain_msg, 
+                          html=html_msg)
+        except Exception:
+            return False
         ## Sending another mail specifically to Lea.
         mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                       to="lea.stolo@gmail.com",
                       subject="Research Assistant Update for your follow: " + str(self.follow_name[:20]),
                       body=plain_msg, 
                       html=html_msg)
+        
         #print plain_msg
-        return plain_msg
+        return True
 
 ##############################################################
 ##############################################################
