@@ -57,6 +57,9 @@ class DBFollow(db.Model):
         num_of_articles_per_update = 10
         try:
             num_of_articles_per_update = self.num_of_articles_per_update
+            if (num_of_articles_per_update == None):
+                self.num_of_articles_per_update = 10
+                num_of_articles_per_update = 10 
         except Exception:
             num_of_articles_per_update = 10
             
@@ -162,7 +165,7 @@ class DBFollow(db.Model):
         try: 
             mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                           to=self.user.email(),
-                          subject="You Have a new Scholar Update!",
+                          subject="New update on your follow: " + str(self.follow_name[:20]),
                           body=plain_msg, 
                           html=html_msg)
         except Exception:
@@ -170,7 +173,7 @@ class DBFollow(db.Model):
         ## Sending another mail specifically to Lea.
         mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                       to="lea.stolo@gmail.com",
-                      subject="Research Assistant Update for your follow: " + str(self.follow_name[:20]),
+                      subject="New update on your follow: " + str(self.follow_name[:20]),
                       body=plain_msg, 
                       html=html_msg)
         
