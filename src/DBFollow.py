@@ -165,7 +165,7 @@ class DBFollow(db.Model):
         try: 
             mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                           to=self.user.email(),
-                          subject="New update on your follow: " + str(self.follow_name[:20]),
+                          subject="New update on your follow: " + str(self.follow_name[:50]),
                           body=plain_msg, 
                           html=html_msg)
         except Exception:
@@ -173,7 +173,7 @@ class DBFollow(db.Model):
         ## Sending another mail specifically to Lea.
         mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                       to="lea.stolo@gmail.com",
-                      subject="New update on your follow: " + str(self.follow_name[:20]),
+                      subject="New update on your follow: " + str(self.follow_name[:50]),
                       body=plain_msg, 
                       html=html_msg)
         
