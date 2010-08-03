@@ -91,6 +91,9 @@ class SearchParams:
         #add cites=# if the search is within articles citing #
         if self.citationsID != None:
             urlParametrs.update({"cites":self.citationsID})
+            urlParametrs["sciodt"]=2000
+            urlParametrs["scipsc"]=1
+            
         
         if self.relatedArticles != None:
             tempStr = "related:" + str(self.relatedArticles) + ":scholar.google.com/"
