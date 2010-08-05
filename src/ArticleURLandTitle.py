@@ -3,7 +3,7 @@ Created on Apr 30, 2010
 
 @author: tomteman
 '''
-
+'''boo'''
 class ArticleURLandTitle:
     '''
     classdocs
