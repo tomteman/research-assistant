@@ -25,6 +25,12 @@
   		<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"> </script>
   		<script type="text/javascript" src="/static/jquery.form.js"> </script>
   		<script src="/static/jquery.livequery.js" type="text/javascript"></script>
+  		
+  		<script src="/static/jquery.cycle.all.min.js" type="text/javascript"></script>
+      	<script src="/static/rotatingBanner.js" type="text/javascript"></script>
+      	<link rel="stylesheet" type="text/css" media="screen" href="/static/rotatingBanner.css" />
+  		
+  		
         <script language="JavaScript">
 
          google.load("jquery", "1.4.2");
@@ -111,8 +117,30 @@
 			<!-- end #menu -->
 		
 		</div>
+
+		
 		<!-- end #header -->
 		<!-- end #header-wrapper -->
+		
+		{% comment %} rotating banner start {% endcomment %}
+		
+        <center>
+
+        <div class="slideshow1">
+            <a href="http://www.ynet.co.il"><img src="/static/images/banner1_height_200px_width_1000px.jpg" width="1000" height="200" /></a>
+           	<a href="http://www.ynet.co.il"><img src="/static/images/banner2_height_200px_width_1000px.jpg" width="1000" height="200" /></a>
+            <a href="http://www.ynet.co.il"><img src="/static/images/banner3_height_200px_width_1000px.jpg" width="1000" height="200" /></a>
+        </div>
+        
+        
+
+		
+		<button id="closeBannerButton" class="fg-button-x closeBannerButton ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all" input type="submit" OnClick="javascript:hideBanner();">Close X</button>
+		</center>
+		{% comment %}<input type="button" value="close" class="closeBannerButton" OnClick="javascript:hideBanner();">{% endcomment %}		
+		{% comment %} rotating banner finish {% endcomment %}
+		
+		
 		
 		<div id="page">
 		<div id="page-bgtop">
