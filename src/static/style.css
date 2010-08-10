@@ -363,13 +363,22 @@ hr { display: none; }
 	}
 	
 #labelButton{
-	width:125px; 
-	background: #d0e5f5; 
+	
+	width:125px;
+	background: #d0e5f5;
 	text-align: left;
+	
+	color:#000000;
+	padding-top:6px;
+	padding-bottom:6px;
+	padding-right:0px;
+	padding-left:0px;
+	font-size: 12px;
+	font-weight: 100;
 	}
 	
 #menuButton{
-	background: #d0e5f5; 
+	background: #d0e5f5;
 	color: #FFFFFF;
 	}
 	
@@ -379,13 +388,22 @@ hr { display: none; }
 
 #labelButton_shared{
 	width:125px; 
-	background: #FFE4E1; 
-	text-align: left;
+	background: #FFE4E1;
+	text-align: left; 
+	
+	color:#000000;
+	padding-top:6px;
+	padding-bottom:6px;
+	padding-right:0px;
+	padding-left:0px;
+	font-size: 12px;
+	font-weight: 100;
 	}
 
 #menuButton_shared{
 	background: #FFE4E1; 
 	color: #FFFFFF;
+	
 	}
 	
 #dropDown{
