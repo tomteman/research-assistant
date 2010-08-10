@@ -15,25 +15,36 @@ class AddFollow(webapp.RequestHandler):
     def post(self):
        
         bibTexKey = self.request.get('bibTexKey')
-        bibTex = parseBibTexItems(bibTexKey)
-        bibTexData = bibTex.values()[0]
+        title = self.request.get('Title')
+        author_year_pub = self.request.get("AuthorYearPub")
         
-        if bibTexData.has_key('author'):
-            authors = bibTexData['author']
+        unvalid_bibtex = 0
+        try:
+            bibTex = parseBibTexItems(bibTexKey)
+            bibTexData = bibTex.values()[0]
+        except Exception:
+            unvalid_bibtex = 1
+        
+        author_year_pub = get_author_year_pub_from_HTML(author_year_pub)
+        
+        if ((not unvalid_bibtex) and bibTexData.has_key('author')):
+            try:
+                authors = bibTexData['author']
+            except Exception: 
+                authors = author_year_pub[0]     
         else:
-            authors = ""
+            authors = author_year_pub[0]
       
-        if bibTexData.has_key('title'):
-            title = bibTexData['title'][1:len(bibTexData['title'])-1]
+        
+        if ((not unvalid_bibtex) and bibTexData.has_key('journal')):
+            try:
+                journal = bibTexData['journal']
+            except Exception: 
+                journal = author_year_pub[1]     
+        else:
+            journal = author_year_pub[1]
+      
             
-        else: 
-            title = ""
-        
-        if bibTexData.has_key('journal'):
-            journal = bibTexData['journal']
-        else: 
-            journal = ""
-        
         keywords = self.request.get('SearchTerm')
         numCitations = self.request.get('CitesID')
         t = get_template('addFollow.html')
@@ -54,5 +65,33 @@ class AddFollow(webapp.RequestHandler):
         c['users'] = users
         
         self.response.out.write(t.render(c))   
+        
+        
+   
+def get_author_year_pub_from_HTML(author_year_pub):
+        author_year_pub = author_year_pub.split('-')
+        authors = author_year_pub[0]
+        authors_lst = authors.split(",")
+        for author in authors_lst:
+            if (author.find("...") != -1): 
+                authors_lst.remove(author)
+            
+        pub_year = author_year_pub[1].split(",")
+        pub = None
+        year = None
+        if len(pub_year) == 1:
+            year = pub_year[0]
+            try:
+                year = int(year)
+            except Exception:
+                year = None      
+            
+            if len(pub_year) == 2:
+                pub = pub_year[0]
+                year = pub_year[1]     
+                if (pub.find("...") != -1 ):
+                    pub = None        
+            
+        return [authors, pub, year]   
         
         
