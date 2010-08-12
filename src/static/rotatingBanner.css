@@ -2,3 +2,8 @@ img
 {
 	border-style: none;
 }
+
+#closeBannerButton
+{
+	margin: 0 -950px 0px 2px;	
+}

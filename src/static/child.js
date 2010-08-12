@@ -50,7 +50,7 @@ function articleKeyInLabelList(key, articleNumber){
     });
     return labelListIndexes;
 }
-
+/* display label on article when first loading a page */
 function displayLabelOnArticle(articleNumber,labelListIndex){
     articleKey = resultsWithParams.results[articleNumber].key;
     x= $("#"+articleKey)
@@ -58,6 +58,7 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
     str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + articleKey + "\">" +
             "<div style=\"display: inline\">" +
                 "<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all\" title=\"Click to add a Comment\" input type=\"submit\">" + parent.labels[labelListIndex].label_name + "</button>" +
+                "<img id=\"labelComment\" class=\"fg-button-comment L" + labelUniqueId +" ui-button-label-comment\" src=\"static/images/Comment-icon-private-false.jpg\" alt=\"comment status\" align=\"bottom\" />" +
                 "<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId +" ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
             "</div>" +
         "</div>"
@@ -66,10 +67,24 @@ function displayLabelOnArticle(articleNumber,labelListIndex){
     
     /* check is label is shared or private and color it appropriately */
     if (parent.labels[labelListIndex].is_shared){
+    	/* check if label has comment and choose comment icon accordingly */
+    	if (parent.labels[labelListIndex].comment == ""){
+    		$(".fg-button-comment.L"+ labelUniqueId +"\"").attr("src","static/images/Comment-icon-shared-false.jpg");
+    	}
+    	else{
+    		$(".fg-button-comment.L"+ labelUniqueId +"\"").attr("src","static/images/Comment-icon-shared-true.jpg");
+    	}
         $(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
         $(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
     }
-    else{                     
+    else{
+    	/* check if label has comment and choose comment icon accordingly */
+    	if (parent.labels[labelListIndex].comment == ""){
+    		$(".fg-button-comment.L"+ labelUniqueId +"\"").attr("src","static/images/Comment-icon-private-false.jpg");
+    	}
+    	else{
+    		$(".fg-button-comment.L"+ labelUniqueId +"\"").attr("src","static/images/Comment-icon-private-true.jpg");
+    	}
         $(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
         $(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
     }
@@ -95,8 +110,14 @@ recolorLabelInstances = function(label_name){
         if ($(this).text() == label_name){
             $(this).removeClass("ui-button-private")
             $(this).addClass("ui-button-shared");
-            $(this).next().removeClass("ui-button-private")
-            $(this).next().addClass("ui-button-shared");        
+            /* if the comment icon was private true switch it to shared true*/
+            if ($(this).next().attr("src") == "static/images/Comment-icon-private-true.jpg")
+            	$(this).next().attr("src","static/images/Comment-icon-shared-true.jpg");
+            /* if the comment icon was private false switch it to shared false*/
+            if ($(this).next().attr("src") == "static/images/Comment-icon-private-false.jpg")
+            	$(this).next().attr("src","static/images/Comment-icon-shared-false.jpg");
+            $(this).next().next().removeClass("ui-button-private")
+            $(this).next().next().addClass("ui-button-shared");        
         }
     });
 }
@@ -104,6 +125,7 @@ recolorLabelInstances = function(label_name){
 deleteLabelInstances = function(label_name){
     $(".fg-button").each(function(intIndex, objValue){
         if ($(this).text() == label_name){
+        	$(this).next().next().remove();
             $(this).next().remove();
             $(this).remove();
         }
@@ -129,6 +151,7 @@ function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
     str = "<div style=\"display: inline\" class=\"labelButton L" + labelUniqueId + " " + labelArticleKey + "\">" +
             "<div style=\"display: inline\">" +
                 "<button id=\"labelname\" class=\"fg-button L" + labelUniqueId +" ui-button ui-button-label ui-widget ui-state-default ui-corner-all \" title=\"Click to add a Comment\" input type=\"submit\">" + label_name + "</button>" +
+                "<img id=\"labelComment\" class=\"fg-button-comment L" + labelUniqueId +" ui-button-label-comment\" src=\"static/images/Comment-icon-private-false.jpg\" alt=\"comment status\" align=\"bottom\" />" +
                 "<button id=\"closelabel\" class=\"fg-button-x L" + labelUniqueId + " ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all\" input type=\"submit\">Delete this label</button>" +
             "</div>" +
         "</div>"
@@ -137,10 +160,12 @@ function displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject){
     if (uniqueLabelObject.is_shared){
         $(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
         $(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-shared");
+        $(".fg-button-comment.L"+ labelUniqueId +"\"").attr("src","static/images/Comment-icon-shared-false.jpg");
     }
     else{
         $(".fg-button.L"+ labelUniqueId +"\"").addClass("ui-button-private");
         $(".fg-button-x.L"+ labelUniqueId +"\"").addClass("ui-button-private");
+        $(".fg-button-comment.L"+ labelUniqueId +"\"").attr("src","static/images/Comment-icon-private-false.jpg");
     }
     
     str = "<span class=\"comment_name L" + labelUniqueId + "\"></span>" +
@@ -281,7 +306,7 @@ function decrementUniqueLabelCount(label_name){
                 parent.dec(label_name);
             if (objValue.number == 0){
                 /* delete the label button from the left sidebar */
-                parent.deleteTag(label_name)
+                parent.deleteTag(label_name, false)
                 /* remove the uniqueLabelObject from the uniqueLabel list */
                 parent.uniqueLabels = $.grep(parent.uniqueLabels, function(val){return val.number!=0;});
             }
@@ -376,7 +401,7 @@ function saveComment(commentContent, article_key, label_name){
             }
             else{
                 labelIndex = findLabelIndexInGlobalLabelsByKeyAndName(article_key, label_name)
-                parent.labels[labelIndex].comment = commentContent
+                parent.labels[labelIndex].comment = commentContent          
             }
         }
     });    
@@ -454,7 +479,21 @@ $(function(){
             commentContent = $(".commentcontent.#"+labelKey).val()
             label_name = $(".fg-button."+labelKey).text()
             article_key = $(this).parent().parent().parent().closest("div").attr("id");
-            saveComment(commentContent,article_key,label_name)
+            saveComment(commentContent,article_key,label_name);
+            /* change comment icon */
+            if (commentContent == ""){
+            	if (parent.labels[findLabelIndexInGlobalLabelsByKeyAndName(article_key,label_name)].is_shared)
+            		$(".fg-button-comment."+ labelKey +"\"").attr("src","static/images/Comment-icon-shared-false.jpg");
+            	else $(".fg-button-comment."+ labelKey +"\"").attr("src","static/images/Comment-icon-private-false.jpg");
+            }
+            else{
+            	if (parent.labels[findLabelIndexInGlobalLabelsByKeyAndName(article_key,label_name)].is_shared){
+            		$(".fg-button-comment."+ labelKey +"\"").attr("src","static/images/Comment-icon-shared-true.jpg");
+            	}
+            	else {
+            		$(".fg-button-comment."+ labelKey +"\"").attr("src","static/images/Comment-icon-private-true.jpg");
+            	}
+            }
             return false;
         });
 
@@ -462,6 +501,9 @@ $(function(){
     $(".fg-button").live("mouseover",function(){ 
         $(this).tooltip();
     });
+    
+
+    
     $(".fg-button").livequery(function(){
         /* open comment box */
         $(this).button();
@@ -495,21 +537,27 @@ $(function(){
             classList = $(this).parent().parent().attr('class').split(' ');
             labelKey = classList[1]
             article_key = classList[2];
-            label_name = $(this).prev().text();
+            label_name = $(this).prev().prev().text();
             removeLabelFromArticle(label_name, article_key)
         /* look for an open comment box and close it */
             $(".commentbox."+labelKey).hide()
             $(".commentcontent.#"+labelKey).hide()
             $(".comment_name."+labelKey).hide()
         /* remove tag from HTML */
+            $(this).prev().prev().remove();
             $(this).prev().remove();
             $(this).remove();
         });
     });
     
+    
+    
     $(".labelButton").livequery(function(){
         $(this).buttonset();
+        
     });
+    
+    
     $(".addFollowButton").livequery(function(){
         $(this).button();
         if (user == ""){

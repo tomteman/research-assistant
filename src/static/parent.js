@@ -100,7 +100,7 @@ function addLabel(labelName, number){
 	menuItem.mouseover( function () {$(this).css("background", "#0078ae")  })
     menuItem.mouseout( function () {$(this).css("background", "#d0e5f5") })  
     
-    newLabel.find("#Delete").click( function() { change_menu_status( menuItem.parent()); deleteTag(newLabel.attr("value")); });
+    newLabel.find("#Delete").click( function() { change_menu_status( menuItem.parent()); deleteTag(newLabel.attr("value"), true); });
 	newLabel.find("#Rename").click( function() { change_menu_status(menuItem.parent()); renameTag(newLabel.attr("value"));  });
 	newLabel.find("#Share").click( function() { change_menu_status(menuItem.parent()); shareTag(newLabel.attr("value")); });
 	$("#labelList").append(newLabel);	
@@ -247,26 +247,40 @@ function duplicateLabel(label_name){
 	});	
 }
 
-function deleteTag(label_name){
-	$('#popupText').html("Are you sure you want to delete the label "+ label_name +" ? <br/>");
+function deleteTag(label_name, ask_user_flag){
+	if (ask_user_flag == true)
+	{
+		$('#popupText').html("Are you sure you want to delete the label "+ label_name +" ? <br/>");
 	
-	$('#popupText').dialog({
-		 open: function() {
-	      $(this).parents('.ui-dialog-buttonpane button:eq(1)').focus(); 
-	    },
+		$('#popupText').dialog({
+			open: function() {
+			$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus(); 
+	    	},
 			width: 400 , buttons: { 		
-		"No": function() { 
-			$(this).dialog("close"); },
-		"Yes": function() {
-			$("#labelName").find("#label_name").val(label_name);
-			$("#labelName").ajaxSubmit({ success:       deleteResponse,    	// post-submit callback 
+	    		"No": function() { 
+	    		$(this).dialog("close"); 
+	    		},
+	    		"Yes": function() {
+	    			$("#labelName").find("#label_name").val(label_name);
+	    			$("#labelName").ajaxSubmit({ success:       deleteResponse,    	// post-submit callback 
 		 								 url:      '/RemoveLabelDB',         // override for form's 'action' attribute 
 		 								 type:      "GET",
 		 								 dataType:  'json'  
 		    							});	
-			$(this).dialog("close"); }
+	    			$(this).dialog("close"); }
 		}
-	});
+		});
+	}
+	else
+	{
+		$("#labelName").find("#label_name").val(label_name);
+		$("#labelName").ajaxSubmit({ success:       deleteResponse,    	// post-submit callback 
+								 url:      '/RemoveLabelDB',         // override for form's 'action' attribute 
+								 type:      "GET",
+								 dataType:  'json'  
+							});	
+	}
+	
 	
 	
 }
