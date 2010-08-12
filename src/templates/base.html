@@ -108,9 +108,13 @@
 			<div id="menu">
 				<ul>
 				<li><a href="/Index" target="frame" >Home</a></li>
-				<li><a href="/MyFollows" target="frame" id="myFollows">My Follows({{ num_follows }})</a></li>
-				<li><a href="/ShowPendings" class="first" target="frame" id="myPendings"> Label Invitations({{ num_pendings }})</a></li>
-			
+				{% if users.get_current_user %} 
+					<li><a href="/MyFollows" target="frame" id="myFollows">My Follows({{ num_follows }})</a></li>
+					<li><a href="/ShowPendings" class="first" target="frame" id="myPendings"> Label Invitations({{ num_pendings }})</a></li>
+				{% else %}
+					<li><a href="/MyFollows" target="frame" id="myFollows">My Follows</a></li>
+					<li><a href="/ShowPendings" class="first" target="frame" id="myPendings"> Label Invitations</a></li>
+				{% endif %}
 	
 				</ul>
 			</div>

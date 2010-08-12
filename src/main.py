@@ -37,6 +37,7 @@ from MyFollows import MyFollows
 import GlobalVariables
 from django.utils import simplejson
 from urllib2 import quote
+import DBFollow
 
 # Django settings configuration : currently for setting the templates directory
 settings._target = None
@@ -64,10 +65,21 @@ class MainPage(webapp.RequestHandler):
             page = "/" + page;
         else:
             page = "/Index"   
-        if (users.get_current_user()):
+        user = users.get_current_user()    
+        if (user):
             c['logout'] = users.create_logout_url(self.request.uri)
+            follows = DBFollow.get_all_users_dbfollows(user)
+            myPendings = PendingSharedLabel.get_all_users_PendingSharedLabel(user)
+            num_follows = len(follows)
+            num_pendings = len(myPendings)
+            
         else:
             c['login'] = users.create_login_url(self.request.uri)
+            num_follows = 0
+            num_pendings = 0
+
+        c['num_pendings'] = num_pendings        
+        c['num_follows'] = num_follows
         c['users'] = users
         c['currPage'] = page
         
@@ -85,10 +97,14 @@ class Index(webapp.RequestHandler):
     def get(self):
         t = get_template('index.html')
         c = Context()
+        
         if (users.get_current_user()):
             c['logout'] = users.create_logout_url(self.request.uri)
+            
         else:
             c['login'] = users.create_login_url(self.request.uri)
+       
+           
         c['users'] = users
 #       show it to the world!!!
         self.response.out.write(t.render(c))
