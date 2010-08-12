@@ -360,6 +360,7 @@ hr { display: none; }
 .labelButtons{
 	text-align: left;
 	padding: 5px 0 0 0;
+
 	}
 	
 #labelButton{
@@ -368,6 +369,7 @@ hr { display: none; }
 	background: #d0e5f5;
 	text-align: left;
 	
+	white-space: normal;
 	color:#000000;
 	padding-top:6px;
 	padding-bottom:6px;
