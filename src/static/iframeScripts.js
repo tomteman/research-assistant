@@ -73,6 +73,7 @@ $(document).ready(function() {
 											$(this).dialog("close");
 											$("#action_type").val("remove");
 											$("#name_to_remove").val(id_name);
+											parent.updateNumber("myFollows", 0)
 											$("#follow_to_remove").ajaxSubmit(options_follow); 
 											 }
 								} });
@@ -90,6 +91,8 @@ $(document).ready(function() {
     
  });
 ///////////////////////////////////////////////////////////////
+
+
 
 
 
@@ -176,6 +179,7 @@ function showResponse(responseText, statusText, xhr, $form)  {
    		$('#popup_content').dialog({ width: 600  });
 	}
 	if  (!(responseText == "1000" || responseText == "0" || responseText == "-1")){
+		parent.updateNumber("myFollows", 1);
 		location.href = '/FollowFormDone';
    		
 	}      

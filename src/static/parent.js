@@ -26,7 +26,7 @@ $(function(){
 		});
 							
 	
-			
+				
     $(".labelButton").live("mouseover",function(){ 
     	$(this).tooltip();
     });
@@ -596,3 +596,28 @@ function getUniqueLabelsFromDB(){
 		printLabels();
 	});
 }
+
+/*
+ * updates number of My follows/ Pending Invitations (the number in parentheses)
+ * hrefName = "myFollows"/"myPendings"
+ * increase = 1 to increase the number, 0 to decrease
+ * 
+ */
+function updateNumber(hrefName, increase){
+	
+	var hrefFullName = $("#"+hrefName).text();
+	var bracket_index = hrefFullName.indexOf("(")
+	sNumber = hrefFullName.substring(bracket_index+1, hrefFullName.length-1 )
+	number = parseInt(sNumber);
+	if (increase) {
+		number += 1;
+	}else{
+		number -= 1;
+	}
+	
+	hrefFullName = hrefFullName.substring(0, bracket_index+1).concat(number.toString()+")")
+	$("#"+hrefName).text(hrefFullName);		
+}
+
+
+
