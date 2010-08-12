@@ -82,6 +82,7 @@ function pendingResponse(responseText, statusText, xhr, $form)  {
 		   
 	   }
 	   if (last_action == "reject"){
+		   parent.updateNumber("myPendings", 0)
 		   cur_row.remove()  
 	   }
 	     
