@@ -2,7 +2,8 @@ var labels
 /* list of unique label names with number of occurences */
 var uniqueLabels    
 var index = 0;
-var userAgent         
+var userAgent
+maxLabelLength = 22;
 function getCurrentUser(){ 
 	var user = $.ajax({
 		  url: "/getCurrentUser",
@@ -66,6 +67,11 @@ $(function(){
 
 /////////////////////////////////////////////////////////////////////////
 
+function shortenLabelName(labelName){
+	if(labelName.length>14)
+		return (labelName.slice(0,10)+"...")
+	else return labelName
+}
 
 function recolorLabelsIniFrame(label_name){
 	var iframe = document.getElementById("the_iframe");
@@ -90,6 +96,8 @@ function addLabel(labelName, number){
 	
 	newLabel.show();
 	newLabel.val(labelName);
+	labelButton.attr("title",labelName)
+	labelName = shortenLabelName(labelName);
 	labelButton.val(labelName + " ("+number+")");
 	
 	labelButton.click( function() { showLabeledArticles(newLabel.attr("value")) } );
@@ -114,6 +122,8 @@ function addLabelShared(labelName, number){
 	
 	newLabel.show();
 	newLabel.val(labelName);
+	labelButton.attr("title",labelName)
+	labelName = shortenLabelName(labelName);
 	labelButton.val(labelName + " ("+number+")");
 	
 	
@@ -342,8 +352,10 @@ function renameResponse(responseText, statusText, xhr, $form)  {
 		var number = getNumber(old_name);
 		label.val(new_name);
 		var button = label.find(".labelButton");
-		button.val(new_name + "("+ number+")");
-	
+		name_to_display = new_name
+		button.attr("title",name_to_display)
+		name_to_display = shortenLabelName(name_to_display);
+		button.val(name_to_display + "("+ number+")");
 		
 		$.each(uniqueLabels, function (intIndex, objValue) {
 			if (objValue.label_name == old_name){
@@ -498,6 +510,7 @@ function inc(labelName){
 	var button = label.find(".labelButton");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, false);
+	labelName = shortenLabelName(labelName)
 	button.val(labelName + " ("+(currNumber+1)+")");
 }
 
@@ -506,6 +519,7 @@ function inc_shared(labelName){
 	var button = label.find(".labelButton_shared");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, true);
+	labelName = shortenLabelName(labelName)
 	button.val(labelName + " ("+(currNumber+1)+")");
 }
 
@@ -514,6 +528,7 @@ function dec(labelName){
 	var button = label.find(".labelButton");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, false);
+	labelName = shortenLabelName(labelName)
 	button.val(labelName + " ("+(currNumber-1)+")");
 }
 
@@ -522,6 +537,7 @@ function dec_shared(labelName){
 	var button = label.find(".labelButton_shared");
 	var namePlusNumber = button.val();
 	var currNumber = getNumber(labelName, true);
+	labelName = shortenLabelName(labelName)
 	button.val(labelName + " ("+(currNumber-1)+")");
 }
 
@@ -534,8 +550,9 @@ function getNumber(labelName, isShared){
 	else
 		var button = label.find(".labelButton");
 	var namePlusNumber = button.val();
-	var firstI = label.val().length;
-	number = namePlusNumber.substring(firstI+2,namePlusNumber.length );
+	
+	var firstI= namePlusNumber.indexOf("(");
+	number = namePlusNumber.substring(firstI+1,namePlusNumber.length-1 );
 	return  parseInt(number);
 }
 
