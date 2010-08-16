@@ -54,9 +54,20 @@ class getHTML:
         urllib2.install_opener(opener)
 
         # use it
-        request = urllib2.Request(self.url, headers=HEADERS)
-        response = urllib2.urlopen(request)
-        html = response.read()
-        html.decode('ascii', 'ignore')
-        self.html = html
+        try:
+            #request = urllib2.Request(self.url, headers=HEADERS)
+            request = urllib2.Request("http://ynet.co.il/dfsdfsdf.dkfjds", headers=HEADERS)
+            response = urllib2.urlopen(request)
+            html = response.read()
+            html.decode('ascii', 'ignore')
+            self.html = html
+        except urllib2.HTTPError, e:
+            self.html = e.getcode()
+            
+                
+
+        
+        
+        
+        
         

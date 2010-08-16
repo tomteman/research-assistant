@@ -38,6 +38,7 @@ import GlobalVariables
 from django.utils import simplejson
 from urllib2 import quote
 import DBFollow
+from test.pystone import TRUE
 
 # Django settings configuration : currently for setting the templates directory
 settings._target = None
@@ -47,6 +48,24 @@ settings.configure(DEBUG=True, TEMPLATE_DEBUG=True,TEMPLATE_DIRS=[ROOT_PATH+'/te
 def removeComma(str):
     p = re.compile(r',')
     return p.sub('',str)
+def isErrorWhatError(parserStruct):
+    error404 = "<HTML><BODY>Not Found</BODY></HTML>"
+    error403 = "<HTML><BODY>Forbidden!!!! Access Denied!!!</BODY></HTML>"
+    error503 = "<HTML><BODY>Service Unavailable, try again later</BODY></HTML>"
+    error = "<HTML><BODY>General error, call tech support</BODY></HTML>"
+    if type(parserStruct) == int:
+        if parserStruct == 404:
+            return error404
+        elif parserStruct == 403:
+            return error403
+        elif parserStruct == 503:
+            return error503
+        else:
+            return error
+    else: 
+        return 0
+        
+                             
 
 class MainPage(webapp.RequestHandler):
 #create the main page for the application.
@@ -157,47 +176,50 @@ class Search(webapp.RequestHandler):
         searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         #parserStruct = getResultsFromURL_OFFLINE(searchURL)
         parserStruct = getResultsFromURLwithProxy(searchURL)
-        
-        GLOBAL_numOfResults = parserStruct.get_numOfResults() 
-        results = parserStruct.get_results()
-        if parserStruct.isRefinedSearchNoResultsFlag():
-            t = get_template('noResults.html')
-            c = Context()
-            c['refined_search_no_results'] = True
-            c['text'] = "Sorry, we couldn't find any results that match Your search"
-            self.response.out.write(t.render(c))
-            return
-        if parserStruct.isNoResultsFlag():
-            t = get_template('noResults.html')
-            c = Context()
-            c['noResultsKeywords'] = parserStruct.didYouMeanKeywords
-            c['noResultsHTML'] = parserStruct.didYouMeanHTML
-            self.response.out.write(t.render(c))
-            return
-        else:
-            t = get_template('search.html')
-            c = Context()
-            if (users.get_current_user()):
-                c['logout'] = users.create_logout_url(self.request.uri)
+        errorMsg = isErrorWhatError(parserStruct)
+        if not errorMsg: 
+            GLOBAL_numOfResults = parserStruct.get_numOfResults() 
+            results = parserStruct.get_results()
+            if parserStruct.isRefinedSearchNoResultsFlag():
+                t = get_template('noResults.html')
+                c = Context()
+                c['refined_search_no_results'] = True
+                c['text'] = "Sorry, we couldn't find any results that match Your search"
+                self.response.out.write(t.render(c))
+                return
+            if parserStruct.isNoResultsFlag():
+                t = get_template('noResults.html')
+                c = Context()
+                c['noResultsKeywords'] = parserStruct.didYouMeanKeywords
+                c['noResultsHTML'] = parserStruct.didYouMeanHTML
+                self.response.out.write(t.render(c))
+                return
             else:
-                c['login'] = users.create_login_url(self.request.uri)
-        numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
-        numResults = parserStruct.get_numOfResults()
-        if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
-            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of " + str(numResults)
+                t = get_template('search.html')
+                c = Context()
+                if (users.get_current_user()):
+                    c['logout'] = users.create_logout_url(self.request.uri)
+                else:
+                    c['login'] = users.create_login_url(self.request.uri)
+            numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
+            numResults = parserStruct.get_numOfResults()
+            if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
+                c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of " + str(numResults)
+            else:
+                c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(numResults)
+            
+            c['users'] = users
+            c['resultsJSON'] = mockResults(parserStruct)
+            c['results'] = results
+            c['formAction'] = '/AddFollow'
+            c['keyword'] = keywords
+            #c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
+            if parserStruct.didYouMeanFlag:
+                c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
+            self.response.out.write(t.render(c))
         else:
-            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(numResults)
-        
-        c['users'] = users
-        c['resultsJSON'] = mockResults(parserStruct)
-        c['results'] = results
-        c['formAction'] = '/AddFollow'
-        c['keyword'] = keywords
-        #c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
-        if parserStruct.didYouMeanFlag:
-            c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
-        self.response.out.write(t.render(c))        
-#get function for handling links on the search page(citedby, related articles, etc.)    
+            self.response.out.write(errorMsg)
+    #get function for handling links on the search page(citedby, related articles, etc.)    
     def get(self):
 #        GlobalVariables.GLOBAL_searchParams
 #        GlobalVariables.GLOBAL_numOfResults
@@ -255,28 +277,31 @@ class Search(webapp.RequestHandler):
             searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
         
         #parserStruct = getResultsFromURL_OFFLINE(searchURL) 
-        parserStruct = getResultsFromURLwithProxy(searchURL) 
-        results = parserStruct.get_results()
-        
-        numResults = parserStruct.get_numOfResults()
-        #numResultsDec =int(removeComma(parserStruct.get_numOfResults()))
-        numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
+        parserStruct = getResultsFromURLwithProxy(searchURL)
+        errorMsg = isErrorWhatError(parserStruct)
+        if not errorMsg:
+            results = parserStruct.get_results()
             
-        if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
-            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of "
+            numResults = parserStruct.get_numOfResults()
+            #numResultsDec =int(removeComma(parserStruct.get_numOfResults()))
+            numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
+                
+            if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
+                c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of "
+            else:
+                c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of "
+            if parserStruct.didYouMeanFlag:
+                c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
+                
+            c['users'] = users
+            c['results'] = results
+            c['resultsJSON'] = mockResults(parserStruct)      
+            c['numOfResults']+= str(numResults)
+            c['formAction'] = '/AddFollow'
+            c['keyword'] = (GlobalVariables.GLOBAL_searchParams).keywords
+            self.response.out.write(t.render(c))
         else:
-            c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of "
-        if parserStruct.didYouMeanFlag:
-            c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
-            
-        c['users'] = users
-        c['results'] = results
-        c['resultsJSON'] = mockResults(parserStruct)      
-        c['numOfResults']+= str(numResults)
-        c['formAction'] = '/AddFollow'
-        c['keyword'] = (GlobalVariables.GLOBAL_searchParams).keywords
-        self.response.out.write(t.render(c))
-        
+            self.response.out.write(errorMsg)
         
         
 class Help(webapp.RequestHandler):

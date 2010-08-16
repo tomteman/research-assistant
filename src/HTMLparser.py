@@ -476,6 +476,8 @@ def getResultsFromURLwithProxy(url):
     #newHTML.getHTMLfromURLwithProxy("206.224.254.10", 80)
     
     # parse the results
+    if type(newHTML.html) == int:
+        return newHTML.html
     newHTMLdata = HTMLparser(url,newHTML.get_html())
     newHTMLdata.parseHTML()
     
