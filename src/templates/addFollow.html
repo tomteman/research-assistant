@@ -59,15 +59,22 @@
 					  	{% if many_authors %}
 						  	
 						  	<div name="authors">
-						  		{% for author in authors %}	
-   							   		<input name="author_name" type="checkbox" checked="checked" value="{{author}}" />
-										<label class="choice">{{author}}</label> <br/>
+						  		{% for author in authors %}
+						  			{% ifequal author "others" %}
+									
+									{% else %}
+   							   			<input name="author_name" type="checkbox" checked="checked" value="{{author}}" />
+											<label class="choice">{{author}}</label> <br/>
+									{% endifequal %}
 								{% endfor %}
+								<input name="ch_author_input" type="checkbox"  />
+								<input id="author_input" name="author_input" type="text" style= "width:227px" value="" />
 														
 							</div>
 							
 						{% else %}
-							<label class="choice" id="one_author_name" name="one_author_name" value="{{authors}}">{{authors}}</label>
+							
+							<input id="author_name" name="author_name" type="text" style= "width:250px" value="{{authors}}">
 						{% endif %}
 								
 				</td>

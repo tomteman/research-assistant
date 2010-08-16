@@ -111,6 +111,8 @@ function gotoSearch(responseText, statusText, xhr, $form)  {
 
 function updateAuthors(){
 	var ch_author = $('input[name=ch_author]').fieldValue();
+	var ch_author_input = $('input[name=ch_author_input]').fieldValue();
+	var author_input = $('input[name=author_input]').fieldValue();
 	if (ch_author != ""){
 		var authors= "";
 		var count = 0;
@@ -121,6 +123,8 @@ function updateAuthors(){
 			if (author_name != "") 
 			authors = authors + " "+ author_name;	
 		});	 
+		if (ch_author_input && author_input != "")
+			authors = authors + " "+ author_input;
 		if (count != 0){
 			$('#ch_author').val(authors);
 		}

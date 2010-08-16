@@ -33,7 +33,7 @@ class AddFollow(webapp.RequestHandler):
             except Exception: 
                 authors = author_year_pub[0]     
         else:
-            authors = author_year_pub[0]
+            authors = author_year_pub[0] if author_year_pub[0] else ""
       
         
         if ((not unvalid_bibtex) and bibTexData.has_key('journal')):
@@ -42,7 +42,8 @@ class AddFollow(webapp.RequestHandler):
             except Exception: 
                 journal = author_year_pub[1]     
         else:
-            journal = author_year_pub[1]
+            journal = author_year_pub[1] if author_year_pub[1] else ""    
+                
       
             
         keywords = self.request.get('SearchTerm')
