@@ -55,8 +55,7 @@ class getHTML:
 
         # use it
         try:
-            #request = urllib2.Request(self.url, headers=HEADERS)
-            request = urllib2.Request("http://ynet.co.il/dfsdfsdf.dkfjds", headers=HEADERS)
+            request = urllib2.Request(self.url, headers=HEADERS)
             response = urllib2.urlopen(request)
             html = response.read()
             html.decode('ascii', 'ignore')
