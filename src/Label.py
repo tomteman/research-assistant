@@ -9,6 +9,7 @@ import HTMLparser
 import PendingSharedLabel
 import RA_User
 import string
+import urllib
 
 # RC = -2 == email address not valid
 # RC = -3 == new_user already has this label
@@ -65,9 +66,13 @@ def add_label_to_article(label_name, user,list_of_articleData_objects):
             new_label = Label()
             new_label.label_name = label_name
             new_label.comment = ""
-            new_label.serialized_article = pickle.dumps(article)
-            temp = str(article.get_article_title()) + str(article.get_HTML_abstract()) + str(article.get_HTML_author_year_pub()).lower()
-            new_label.article_abstract_title_author = str(temp[:500])
+
+            new_label.serialized_article = unicode(pickle.dumps(article))
+            temp = (unicode(article.get_article_title()) + " " + 
+                    unicode(article.get_HTML_abstract()) + " " + 
+                    unicode(article.get_HTML_author_year_pub())).lower()
+                    
+            new_label.article_abstract_title_author = temp[:500]
             new_label.article_key = article.key
             
             if is_new_label:
@@ -82,6 +87,7 @@ def add_label_to_article(label_name, user,list_of_articleData_objects):
             
     except Exception:
         return -7
+
         
     return True
 
@@ -232,6 +238,8 @@ def get_articles_list_with_label(user,label_name):
 ####
 def get_articles_list_with_label_as_HTMLParser_JSON(user, label_name):
     article_objects_list = get_articles_list_with_label(user, label_name)
+    if (article_objects_list == -7):
+        return -7
     
     html_parser = HTMLparser.HTMLparser(url=None, html=None)
     html_parser.results =  article_objects_list
