@@ -148,14 +148,24 @@ class Search(webapp.RequestHandler):
 #        GlobalVariables.GLOBAL_numOfResults
 
         if self.request.get('Type') == "Refine":
-            GlobalVariables.GLOBAL_searchParams.author = self.request.get('author')
-            GlobalVariables.GLOBAL_searchParams.keywords = quote(self.request.get('keywords'))
-            keywords = GlobalVariables.GLOBAL_searchParams.keywords
+            try:
+                GlobalVariables.GLOBAL_searchParams.author = quote(self.request.get('author'))
+                GlobalVariables.GLOBAL_searchParams.keywords = quote(self.request.get('keywords'))
+                keywords = GlobalVariables.GLOBAL_searchParams.keywords
+            except Exception:
+                self.response.out.write(GlobalVariables.Global_nonEnglishResponse+GlobalVariables.Global_sorryPic)
+                return     
 
         
         elif (self.request.arguments().count('SearchTerm')):
             keywords = self.request.get('SearchTerm')
-            GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords)
+            try:
+                GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords)
+            except Exception:
+                self.response.out.write(GlobalVariables.Global_nonEnglishResponse+GlobalVariables.Global_sorryPic)
+                return
+
+                    
         else:
             ###Advanced search###
             
@@ -168,9 +178,14 @@ class Search(webapp.RequestHandler):
             journal = self.request.get('journal')
             year_start = self.request.get('year_start')
             year_finish = self.request.get('year_finish')
-            GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords, exact_phrase = exact_phrase, without_the_words=without_the_words,
+            try:
+                GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = keywords, exact_phrase = exact_phrase, without_the_words=without_the_words,
                                    one_of_the_words = one_of_the_words, occurence=occurence, author=author, journal=journal,
                                    year_start=year_start, year_finish=year_finish  )
+                
+            except Exception:
+                self.response.out.write(GlobalVariables.Global_nonEnglishResponse+GlobalVariables.Global_sorryPic)
+                return    
         
         
         searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
@@ -236,7 +251,6 @@ class Search(webapp.RequestHandler):
             searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             
         elif self.request.get('Type')=='CitedBy':
-
             GlobalVariables.GLOBAL_searchParams = SearchParams()
             (GlobalVariables.GLOBAL_searchParams).citationsID = self.request.get('Id')
             searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
