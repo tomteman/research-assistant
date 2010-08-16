@@ -432,7 +432,7 @@ $(function(){
     user = parent.getCurrentUser()
     $(".labelBox").livequery(function(){$(this).alphanumeric({allow:"_ "})})
     $(".labelBox").hide()
-    
+    window.location='#TOP'
 
     $(".commentcontent").live("click", function(){
         

@@ -193,7 +193,7 @@ class Search(webapp.RequestHandler):
         parserStruct = getResultsFromURLwithProxy(searchURL)
         errorMsg = isErrorWhatError(parserStruct)
         if not errorMsg: 
-            GLOBAL_numOfResults = parserStruct.get_numOfResults() 
+            GlobalVariables.GLOBAL_numOfResults = parserStruct.get_numOfResults() 
             results = parserStruct.get_results()
             if parserStruct.isRefinedSearchNoResultsFlag():
                 t = get_template('noResults.html')
@@ -205,8 +205,12 @@ class Search(webapp.RequestHandler):
             if parserStruct.isNoResultsFlag():
                 t = get_template('noResults.html')
                 c = Context()
-                c['noResultsKeywords'] = parserStruct.didYouMeanKeywords
-                c['noResultsHTML'] = parserStruct.didYouMeanHTML
+                if parserStruct.didYouMeanFlag:
+                    c['hasDidYouMean'] = 1
+                    c['noResultsKeywords'] = parserStruct.didYouMeanKeywords
+                    c['noResultsHTML'] = parserStruct.didYouMeanHTML
+                else:
+                    c['hasDidYouMean'] = 0
                 self.response.out.write(t.render(c))
                 return
             else:
@@ -243,8 +247,8 @@ class Search(webapp.RequestHandler):
         
 
         if self.request.get('Type')=='DidYouMean':
-            searchParams = SearchParams(keywords = self.request.get('Id'))
-            searchURL = searchParams.constructURL()
+            GlobalVariables.GLOBAL_searchParams = SearchParams(keywords = self.request.get('Id'))
+            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
 
         elif self.request.get('Type')=='FollowResults':
             (GlobalVariables.GLOBAL_searchParams).updateStartFrom(0)
@@ -279,12 +283,19 @@ class Search(webapp.RequestHandler):
             return
         
         elif self.request.get('Type')=='Next':
-            (GlobalVariables.GLOBAL_searchParams).updateStartFrom((GlobalVariables.GLOBAL_searchParams).start_from+10)
-            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
+            if (GlobalVariables.GLOBAL_numOfResults > GlobalVariables.GLOBAL_searchParams.start_from):
+                new_start_from = (GlobalVariables.GLOBAL_searchParams).start_from + 10
+                (GlobalVariables.GLOBAL_searchParams).updateStartFrom(new_start_from)
+                searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
+            else:
+                searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             
         elif self.request.get('Type')=='Back':
-            (GlobalVariables.GLOBAL_searchParams).updateStartFrom((GlobalVariables.GLOBAL_searchParams).start_from-10)
-            searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
+            if (0 <= GlobalVariables.GLOBAL_searchParams.start_from):
+                (GlobalVariables.GLOBAL_searchParams).updateStartFrom((GlobalVariables.GLOBAL_searchParams).start_from-10)
+                searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
+            else:
+                searchURL = (GlobalVariables.GLOBAL_searchParams).constructURL()
             
         
         else:
