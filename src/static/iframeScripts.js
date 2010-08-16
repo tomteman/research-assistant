@@ -1,13 +1,18 @@
 var followRow;
 var iFrameHeight;
    
+var options2 = { 
+        success:       showResponse,    	// post-submit callback 
+ 		url:      '/FirstUpload',         // override for form's 'action' attribute 
+ 		type:      "POST",
+ 		dataType:  'json'  
+    };
+
 $(document).ready(function() {   
 	iFrameHeightInit();
 	iFrameHeightIncrement(500-iFrameHeight);
 	var form= $("#newFollow").html();
-	
 
-	
 	
 	$('#ch_citing').bind('click', function () {	
     	if ($(this).is(':checked')) {
@@ -37,20 +42,6 @@ $(document).ready(function() {
     	$(this).ajaxSubmit(options1  ); 
         return false; 
     }); 
-    
-    ///////////////////First Upload
-    var options2 = { 
-        success:       showResponse,    	// post-submit callback 
- 		url:      '/FirstUpload',         // override for form's 'action' attribute 
- 		type:      "POST",
- 		dataType:  'json'  
-    }; 
-    
-    // bind to the form's submit event 
-    $('#butUpload').click(function() { 
-        $('#newFollow').ajaxSubmit(options2); 
-        return false; 
-    });
     
     //////////////////////remove follow
     var options_follow = { 
@@ -175,12 +166,34 @@ function showResponse(responseText, statusText, xhr, $form)  {
 
    if (responseText == "1000"){
    		$('#popupText').html("Search with current configuration returned more than 1000 results.<br/> There is a chance that we won't be able to bring you new updates.<br/> Do you want to continue?");
-   		$('#popup_content').dialog({ width: 600 });
+   		$('#popupText').dialog({ width: 600 , buttons: {
+   										"Cancel": function() { 
+   													stopShowingLoadingImage();
+   													$(this).dialog("close");
+   													},
+   										"Yes": function() {
+   												$(this).dialog("close");
+   												showLoadingImage();
+   												$('#newFollow').ajaxSubmit(options2); 
+   												}
+   		} });
+
 	}
 	
 	if (responseText == "0"){
    		$('#popupText').html("No articles published this year answer your search parameters criteria.<br/>Would you like to add this follow anyway?");
-   		$('#popup_content').dialog({ width: 600  });
+   		$('#popupText').dialog({ width: 600 , buttons: {
+				"Cancel": function() { 
+   							stopShowingLoadingImage();
+   							$(this).dialog("close");
+							},
+				"Yes": function() {
+						$(this).dialog("close");
+						showLoadingImage();
+						$('#newFollow').ajaxSubmit(options2); 
+						}
+   		} });
+
 	}
 	if  (!(responseText == "1000" || responseText == "0" || responseText == "-1")){
 		parent.updateNumber("myFollows", 1);
@@ -192,11 +205,6 @@ function showResponse(responseText, statusText, xhr, $form)  {
 
 function showLoadingImage(){
     $("#newFollow").html('<CENTER><img  src="/static/images/ajax-loader.gif" /></CENTER>');
-};
-
-function Close_Popup() {
-	stopShowingLoadingImage();
-	$('#popup_content').dialog("close");
 };
 
 function stopShowingLoadingImage(){
