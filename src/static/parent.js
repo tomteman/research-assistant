@@ -105,8 +105,9 @@ function addLabel(labelName, number){
 	div_menu.val("0");
     newLabel.find("#menuButton").click( function(event) {
     	change_menu_status(div_menu);
-		$('body').one("click", function(){
-			change_menu_status(div_menu);
+		$('body').click(function(){
+			if (div_menu.val() != "0")
+				change_menu_status(div_menu);
 		})
 
 		event.stopPropagation();
@@ -141,8 +142,9 @@ function addLabelShared(labelName, number){
 	div_menu.val("0");
     newLabel.find("#menuButton_shared").click( function(event) {
     	change_menu_status(div_menu);
-		$('body').one("click", function(){
-			change_menu_status(div_menu);
+		$('body').click(function(){
+			if (div_menu.val() != "0")
+				change_menu_status(div_menu);
 		})
 
 		event.stopPropagation();
