@@ -103,8 +103,16 @@ function addLabel(labelName, number){
 	labelButton.click( function() { showLabeledArticles(newLabel.attr("value")) } );
 	
 	div_menu.val("0");
-    newLabel.find("#menuButton").click( function() {change_menu_status(div_menu);})
+    newLabel.find("#menuButton").click( function(event) {
+    	change_menu_status(div_menu);
+		$('body').one("click", function(){
+			change_menu_status(div_menu);
+		})
 
+		event.stopPropagation();
+    })
+    
+    
 	menuItem.mouseover( function () {$(this).css("background", "#0078ae")  })
     menuItem.mouseout( function () {$(this).css("background", "#d0e5f5") })  
     
@@ -131,8 +139,15 @@ function addLabelShared(labelName, number){
 									
 									});
 	div_menu.val("0");
-    newLabel.find("#menuButton_shared").click( function() {change_menu_status(div_menu);})
+    newLabel.find("#menuButton_shared").click( function(event) {
+    	change_menu_status(div_menu);
+		$('body').one("click", function(){
+			change_menu_status(div_menu);
+		})
 
+		event.stopPropagation();
+    })
+    
 	menuItem.mouseover( function () {$(this).css("background", "#FFc1c1")  })
     menuItem.mouseout( function () {$(this).css("background", "#FFe4e1") })  
     
