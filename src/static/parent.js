@@ -61,7 +61,8 @@ $(function(){
 	
      getLabelsFromDB();
      getUniqueLabelsFromDB();
-    	  
+    	
+     $('.showBannerButton').hide()
  });
 
 
