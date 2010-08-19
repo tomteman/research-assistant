@@ -79,7 +79,7 @@ function pendingResponse(responseText, statusText, xhr, $form)  {
 		   parent.addLabelShared(new_label, responseText);
 		   cur_row.remove() 
 		   parent.updateNumber("myPendings", 0)
-		   
+		   parent.window.location = "/";
 	   }
 	   if (last_action == "reject"){
 		   parent.updateNumber("myPendings", 0)

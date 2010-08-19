@@ -266,10 +266,7 @@ function duplicateLabel(label_name){
 				handleErrorCode(data)
 			}
 			else{
-				str = "The shared label has been duplicated to a private one named: <b>";
-				str = str + data;
-				str = str +"</b>.<br>Please refresh your browser to see the changes.";
-				generatePopUp(str);
+				window.location = "/";
 			}
 		}
 	});	
