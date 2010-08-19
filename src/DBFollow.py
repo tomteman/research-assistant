@@ -138,18 +138,23 @@ class DBFollow(db.Model):
             if (count < 50):
                 count +=1
                 article = tmp_dict[key]
-                plain_msg = plain_msg + "\n" + unicode(article.get_article_title(), "utf-8") + "\n\n"
+                #plain_msg = plain_msg + "\n" + unicode(article.get_article_title(), "utf-8") + "\n\n"
+                plain_msg = plain_msg + "\n" + unicode(article.get_article_title(), errors='ignore') + "\n\n"
                 if (len(article.get_article_url()) > 0):
                     plain_msg = plain_msg + article.get_article_url() + "\n\n"
                 plain_msg = plain_msg + "\t\t****************************************\n\n"
                 
                 if (len(article.get_article_url()) > 0):
-                    html_msg = html_msg + "<a href =\"" + article.get_article_url() +""""<font color="6633cc">""" + unicode(article.get_article_title(), "utf-8") + "</font></a><br>"
+                    #html_msg = html_msg + "<a href =\"" + article.get_article_url() +""""<font color="6633cc">""" + unicode(article.get_article_title(), "utf-8") + "</font></a><br>"
+                    html_msg = html_msg + "<a href =\"" + article.get_article_url() +""""<font color="6633cc">""" + unicode(article.get_article_title(), errors='ignore') + "</font></a><br>"
                 else: 
-                    html_msg = html_msg + """<b><font color="#6633cc">""" + unicode(article.get_article_title(), "utf-8") + "</b></font><br>"
-                html_msg = html_msg + """<font color="#00cc66">""" + unicode(article.get_HTML_author_year_pub(), "utf-8") + "</font>"
+                    html_msg = html_msg + """<b><font color="#6633cc">""" + unicode(article.get_article_title(), errors='ignore') + "</b></font><br>"
+                    #html_msg = html_msg + """<b><font color="#6633cc">""" + unicode(article.get_article_title(), "utf-8") + "</b></font><br>"
+                #html_msg = html_msg + """<font color="#00cc66">""" + unicode(article.get_HTML_author_year_pub(), "utf-8") + "</font>"
+                html_msg = html_msg + """<font color="#00cc66">""" + unicode(article.get_HTML_author_year_pub(), errors='ignore') + "</font>"
                 #html_msg = html_msg + unicode(article.get_HTML_abstract(),errors='replace') + "<br>"
-                html_msg = html_msg + unicode(article.get_HTML_abstract(),"utf-8") + "<br>"
+                #html_msg = html_msg + unicode(article.get_HTML_abstract(),"utf-8") + "<br>"
+                html_msg = html_msg + unicode(article.get_HTML_abstract(), errors='ignore') + "<br>"
                 
                 html_msg = html_msg + """<hr size="3" width="100%" align="left" color="009999"></hr><br>"""
         
