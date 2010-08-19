@@ -10,7 +10,7 @@ var options2 = {
 
 $(document).ready(function() {   
 	iFrameHeightInit();
-	iFrameHeightIncrement(500-iFrameHeight);
+	iFrameHeightIncrement(700-iFrameHeight);
 	var form= $("#newFollow").html();
 
 	
