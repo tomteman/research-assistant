@@ -89,7 +89,7 @@
 		
 		<div id="{{result.get_key}}" class="article">
 		
-		<lable id="article_headers" >
+		<big>
 			{% for HTML_url in result.HTML_urlList %}
 				{% if HTML_url.get_has_link %}
 					<a href= {{HTML_url.get_article_url}} target=_blank> {{HTML_url.get_article_title}} </a>&nbsp;
@@ -99,7 +99,7 @@
 					 {{HTML_url.get_article_title}}
 				{% endif %}
 			{% endfor %}
-		</lable>
+		</big>
 		<br/>		
 		<span class = "AuthorYearPub">	
 			{{result.get_HTML_author_year_pub}}
