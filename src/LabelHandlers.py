@@ -94,8 +94,8 @@ class ShowArticlesByLabel(webapp.RequestHandler):
             htmlParser = Label.get_articles_list_with_label_as_HTMLParser(user, label_name)
             
         elif self.request.get('action_type') == "ShowPending":
-            pending_id = self.request.get('pending_id')
-            htmlParser = PendingSharedLabel.pending_share_preview_as_HTMLparser(user, pending_id)
+            label_name = self.request.get('pending_id')
+            htmlParser = PendingSharedLabel.pending_share_preview_as_HTMLparser(user, label_name)
             if (htmlParser == -7):
                 self.response.out.write(htmlParser)
                 return     

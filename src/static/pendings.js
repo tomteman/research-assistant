@@ -35,7 +35,6 @@ $(document).ready(function() {
     
     $('.preview').click(function() {
     	var pending_id = $(this).parent().attr("value");
-    	new_label = $(this).parent().parent().find("#label_name").attr("value");
     	$("#action_type").val("ShowPending");
     	$("#pending_id").val(pending_id);
         $("#pendingActions").ajaxSubmit({success:       previewResponse,      // post-submit callback 
@@ -57,7 +56,11 @@ function previewResponse(responseText, statusText, xhr, $form)  {
         $('#popupText').html("Sorry, an error ocured. Please try again later. <br/>");
         $('#popupText').dialog({ width: 600 , zIndex: 3999, buttons: { "Ok": function() { $(this).dialog("close"); } }});
     }
-	else document.body.innerHTML=responseText;
+	else {
+	
+		$('#the_iframe', window.parent.document).attr("height", responseText.length/25) 
+		document.body.innerHTML=responseText;
+	}
     	
 }
 
