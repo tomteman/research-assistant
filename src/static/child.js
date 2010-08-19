@@ -220,8 +220,8 @@ function addNewLabel(label_name, labelArticleKey){
         url: "/UpdateLabelDB",
         data: articleJSON,
         success: function(data, textStatus){
-            if (data == -7){
-                parent.generatePopUp(data)
+            if (data != "true"){
+                parent.generatePopUp("We're sorry, an error has occured:"+"<br/>"+data)
             }
             else{
                 addLabelToGlobalLabels(uniqueLabelObject, labelArticleKey);
