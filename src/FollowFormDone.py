@@ -118,10 +118,11 @@ class FollowFormDone(webapp.RequestHandler):
         self.response.out.write(t.render(c))     
        
     def post(self):
+
         if (GlobalVariables.GLOBAL_current_follow.send_first_status_email_by_request()):
-            self.response.out.write(0)
+            self.response.out.write(simplejson.dumps(0))
         else:
-            self.response.out.write(-1)    
+            self.response.out.write(simplejson.dumps(-1))    
         
         
         
