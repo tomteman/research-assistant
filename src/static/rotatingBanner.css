@@ -5,5 +5,10 @@ img
 
 #closeBannerButton
 {
-	margin: 0 -950px 0px 2px;	
+	margin: 0 -938px 0px 2px;	
+}
+
+#showBannerButton
+{
+	margin: 0 -932px 0px 2px;	
 }

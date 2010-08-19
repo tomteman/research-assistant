@@ -8,7 +8,18 @@
 			pause:         	1,     // true to enable "pause on hover" 
 	});
 
+	
+	
+	/* when user clicks to hide the banner */
 	function hideBanner(){
 		$('.slideshow1').hide()
 		$('.closeBannerButton').hide()
+		$('.showBannerButton').show()
+	}
+	
+	/* when user clicks to show the banner */
+	function showBanner(){
+		$('.slideshow1').show()
+		$('.closeBannerButton').show()
+		$('.showBannerButton').hide()
 	}
