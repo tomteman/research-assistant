@@ -3,7 +3,7 @@ var iFrameHeight
 var labelUniqueId = 0
 var uniqueLabelsNames = []
 var user
-
+var newLabelFlag = true;
 
 function displayTagsOnResults(resultsJSON)
 {
@@ -270,7 +270,6 @@ function existingLabelSelected(uniqueLabelObject, labelArticleKey){
                     /* update number of labels in uniqueLabels */
                     
                     incrementUniqueLabelCount(label_name);
-                    
                     /* show label in HTML */
                     
                     displayLabelOnArticleByKey(labelArticleKey,uniqueLabelObject)
@@ -289,7 +288,7 @@ function incrementUniqueLabelCount(label_name){
             if (objValue.is_shared)
                 parent.inc_shared(label_name);
             else
-                parent.inc(label_name);
+                parent.inc(label_name);            	
             return false
         }
     });
@@ -595,6 +594,7 @@ $(function(){
                     uniqueLabelTest = getUniqueLabel(ui.item.label)
                     existingLabelSelected(uniqueLabelTest, labelArticleKey);
                     $(this).val("")
+                    $(this).close
                     $(this).hide()
                     return false                
                     },
@@ -602,10 +602,11 @@ $(function(){
                 open: function() {
                     $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
                 },
-                   //close the drop down
-                   close: function() {
-                       $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
-                   },
+                //close the drop down
+                close: function() {
+                    $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+                },
+                
     
     
                 delay: 0,
@@ -616,24 +617,36 @@ $(function(){
             ac.enable();
         /* handle "user pressed Enter key" event */
             $('.labelBox').keyup(function(e) {
+            	
                 if(e.keyCode == 13) {
-                    label_name = $(this).val();
-                    /* recognize which article is being labeled */
-                    labelArticleKey = ($(this).parent().closest("div").attr("id"));
-                    $(this).val("")
-                    $(this).hide()
-                    uniqueLabelTest = getUniqueLabel(label_name)
-                    /* if this is a new label */
-                    if (uniqueLabelTest == -1){
-                        addNewLabel(label_name, labelArticleKey)
-                    }
-                    else
-                        existingLabelSelected(uniqueLabelTest, labelArticleKey);            
-                    }
-                });
-            })
+                	if (newLabelFlag == true){
+                		newLabelFlag = false;
+                	
+	                    label_name = $(this).val();
+	                    /* recognize which article is being labeled */
+	                    labelArticleKey = ($(this).attr("name"));
+	                    $(this).close
+	                    $(this).hide()
+	                    uniqueLabelTest = getUniqueLabel(label_name)
+	                    
+	                    /* if this is a new label */
+	                    if (uniqueLabelTest == -1){
+	                        addNewLabel(label_name, labelArticleKey);
+	                    }
+	                    else{
+	                        existingLabelSelected(uniqueLabelTest, labelArticleKey);            	
+	                    }
+	                    ac.disable()
+                	}               	
+                }
+            	ac.enable()
+            });
+            
+            newLabelFlag = true;
+          });
+        
         };//end of else    
-        });
+      }); //end of (".addLabel").livequery
 });
 
 
