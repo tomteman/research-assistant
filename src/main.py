@@ -224,7 +224,9 @@ class Search(webapp.RequestHandler):
             numResults = parserStruct.get_numOfResults()
             if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
                 c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of " + str(numResults)
+                c['notLast']=None
             else:
+                c['notLast']="1"
                 c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(numResults)
             
             c['users'] = users
@@ -232,6 +234,8 @@ class Search(webapp.RequestHandler):
             c['results'] = results
             c['formAction'] = '/AddFollow'
             c['keyword'] = keywords
+            
+                    
             #c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
             if parserStruct.didYouMeanFlag:
                 c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
@@ -312,8 +316,10 @@ class Search(webapp.RequestHandler):
             numResultsDec =int(str(parserStruct.get_numOfResults()).replace(",","")  )
                 
             if ((numResultsDec - (GlobalVariables.GLOBAL_searchParams).start_from)< (GlobalVariables.GLOBAL_searchParams).num_of_results):
+                c['notLast']=None
                 c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str(numResults) + " of "
             else:
+                c['notLast']="1"
                 c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of "
             if parserStruct.didYouMeanFlag:
                 c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
@@ -324,6 +330,8 @@ class Search(webapp.RequestHandler):
             c['numOfResults']+= str(numResults)
             c['formAction'] = '/AddFollow'
             c['keyword'] = (GlobalVariables.GLOBAL_searchParams).keywords
+            
+                   
             self.response.out.write(t.render(c))
         else:
             self.response.out.write(errorMsg)
