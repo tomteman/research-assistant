@@ -238,7 +238,7 @@ class Search(webapp.RequestHandler):
                     
             #c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of " + str(GLOBAL_numOfResults)
             if parserStruct.didYouMeanFlag:
-                c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
+                c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean onclick=\"updateTerm(\'"""+ parserStruct.didYouMeanKeywords +"""\')\">""" + parserStruct.didYouMeanHTML + """</a>"""
             self.response.out.write(t.render(c))
         else:
             self.response.out.write(errorMsg)
@@ -322,7 +322,7 @@ class Search(webapp.RequestHandler):
                 c['notLast']="1"
                 c['numOfResults'] =  """Displaying results """ + str((GlobalVariables.GLOBAL_searchParams).start_from) + """ - """ + str((GlobalVariables.GLOBAL_searchParams).start_from + (GlobalVariables.GLOBAL_searchParams).num_of_results) + " of "
             if parserStruct.didYouMeanFlag:
-                c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean>""" + parserStruct.didYouMeanHTML + """</a>"""
+                c['didYouMean'] = """Did You Mean: <a href = /Search?Id=""" + parserStruct.didYouMeanKeywords + """&Type=DidYouMean onclick=\"updateTerm(\'"""+ parserStruct.didYouMeanKeywords +"""\')\">""" + parserStruct.didYouMeanHTML + """</a>"""
                 
             c['users'] = users
             c['results'] = results

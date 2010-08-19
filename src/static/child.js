@@ -635,3 +635,11 @@ $(function(){
         };//end of else    
         });
 });
+
+
+function updateTerm(searchTerm){
+	
+	($('#search-text', window.parent.document)).attr("value", searchTerm);
+
+}
+
