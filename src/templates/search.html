@@ -88,15 +88,18 @@
 	{% for result in results %}
 		
 		<div id="{{result.get_key}}" class="article">
-		{% for HTML_url in result.HTML_urlList %}
-			{% if HTML_url.get_has_link %}
-				<a href= {{HTML_url.get_article_url}} target=_blank> {{HTML_url.get_article_title}} </a>&nbsp;
+		
+		<lable id="article_headers" >
+			{% for HTML_url in result.HTML_urlList %}
+				{% if HTML_url.get_has_link %}
+					<a href= {{HTML_url.get_article_url}} target=_blank> {{HTML_url.get_article_title}} </a>&nbsp;
 					
-			{% else %}
+				{% else %}
 			
-				 {{HTML_url.get_article_title}}
-			{% endif %}
-		{% endfor %}
+					 {{HTML_url.get_article_title}}
+				{% endif %}
+			{% endfor %}
+		</lable>
 		<br/>		
 		<span class = "AuthorYearPub">	
 			{{result.get_HTML_author_year_pub}}
