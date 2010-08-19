@@ -80,11 +80,29 @@ $(document).ready(function() {
  //////////////////////////////////////////////////   
     
     
+    
  });
 ///////////////////////////////////////////////////////////////
 
+function sendMail(){
+	$("#empty_form").ajaxSubmit({success:       sendMailResponse,      // post-submit callback 
+		 url:      '/FollowFormDone',              // override for form's 'action' attribute 
+		 type:      "POST",
+		 dataType:  'html'  
+	}); 
+	
+}
 
-
+function sendMailResponse(responseText, statusText, xhr, $form)  {
+	$("#follow_created").hide();
+	if (responseText != "0"){ 
+		$("#sendingError").show();
+	}
+	else{
+		$("#emailWasSend").show();
+	}
+}
+	 
 
 
 function gotoSearch(responseText, statusText, xhr, $form)  {

@@ -1,10 +1,36 @@
 {% extends "frameBase.html" %}
 
+{% block customScripts %}
+ 	<script type="text/javascript" src="/static/jquery-ui-1.8.1.custom.min.js"></script>
+ 	<script type="text/javascript" src="/static/iframeScripts.js"></script>
+ {% endblock %}
+ 
+ 
 {% block contents %}
-	<CENTER><H2>Follow created.</H2>
-	<br>
-	<H2>You will start receiving updates by mail.</H2>
-	<br>
-	<h3><a href="/Search?Type=FollowResults"> Click to see current results on your query</a> </h3> </CENTER>  
+	<div id="follow_created">
+		<CENTER><H2>Follow created.</H2>
+		<br>
+		<H2>You will start receiving updates by mail.</H2>
+		<br>
+		<h3><a href="/Search?Type=FollowResults"> Click to see current results on your query</a> </h3> 
+		<br/>
+		<form id="empty_form">
+			<button type="button" name="send_email" onclick="sendMail()"> Click to get current results by email </button> </CENTER>
+		</form>	
+	</div>
+	
+	<div id="emailWasSend" style="display: none;">
+		<br/>
+		<CENTER><h2>Email with current results on your query was send</h2></CENTER>		
+	</div>	
+	
+	<div id="sendingError" style="display: none;">
+		<br/>
+		<CENTER><h2>Sorry, email was not send due to DB error.</h2></CENTER>		
+	</div>	
+	
+	
+	
+	
 		
 {% endblock %}

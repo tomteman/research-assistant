@@ -115,4 +115,16 @@ class FollowFormDone(webapp.RequestHandler):
             c['login'] = users.create_login_url(self.request.uri)
         c['users'] = users
 
-        self.response.out.write(t.render(c))        
+        self.response.out.write(t.render(c))     
+       
+    def post(self):
+        if (GlobalVariables.GLOBAL_current_follow.send_first_status_email_by_request()):
+            self.response.out.write(0)
+        else:
+            self.response.out.write(-1)    
+        
+        
+        
+        
+        
+               
