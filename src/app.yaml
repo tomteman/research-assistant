@@ -17,6 +17,10 @@ handlers:
   script: FollowCron.py
   login: admin
 
+- url: /update_ra_user_table_cron
+  script: CronUpdateRAUser.py
+  login: admin
+
 - url: /.*
   script: main.py
   

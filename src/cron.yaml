@@ -1,4 +1,9 @@
 cron:
+
 - description: update one follow from DB
   url: /followcron
-  schedule: every 15 minutes
+  schedule: every 10 minutes
+
+- description: update one follow from DB
+  url: /update_ra_user_table_cron
+  schedule: every day 00:00
