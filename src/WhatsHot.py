@@ -9,7 +9,7 @@ from django.template import Template,Context
 from django.conf import settings
 from django.template.loader import get_template
 import PendingSharedLabel
-from Suggestions import get_list_of_suggested_article_ordered
+from Suggestions import get_list_of_suggested_article_ordered_by_rank
 import Label
 import JSONConvertors
 import HTMLparser
@@ -31,7 +31,7 @@ class ShowHot(webapp.RequestHandler):
         c = Context()
         user = users.get_current_user()
         
-        htmlParser = get_list_of_suggested_article_ordered(user)
+        htmlParser = get_list_of_suggested_article_ordered_by_rank(user)
         results = htmlParser.results
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
         resultsJSON = my_html_parser_encoder.encode(htmlParser)
