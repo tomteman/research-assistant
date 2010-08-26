@@ -226,4 +226,8 @@ def get_list_of_suggested_article_ordered(user_name):
     html_parser.numOfResults = len(final_articles_list)
     return html_parser
 
+def get_num_of_suggestions_for_user(user_name):
+    query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1", user_name)
+    return query.count()
+    
 
