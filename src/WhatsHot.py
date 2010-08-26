@@ -28,9 +28,11 @@ class ShowHot(webapp.RequestHandler):
         
         htmlParser = get_list_of_suggested_article_ordered(user)
         results = htmlParser.results
-        
+        my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
+        resultsJSON = my_html_parser_encoder.encode(htmlParser)
         c['users'] = users
         c['results'] = results
+        c['resultsJSON'] = resultsJSON
         c['formAction'] = '/AddFollow'
         c['showlabel'] = True
         self.response.out.write(t.render(c))
