@@ -198,6 +198,12 @@ def get_serialized_article(article_key, subset_of_users):
 def get_users_article_sets_dict():
     pass
 
+def sort_list_of_suggestions_by_rank(list_of_suggestions):
+    return sorted(list_of_suggestions, key=lambda sugg: sugg.rank, reverse=True)
+
+def sort_list_of_suggestions_by_date(list_of_suggestions):
+    return sorted(list_of_suggestions, key=lambda sugg: sugg.date_created, reverse=True)
+    
 # return the articles in the following order:
 # created last week first -ordered within by rank
 # after that all the rest - ordered by rank
@@ -205,8 +211,7 @@ def get_users_article_sets_dict():
 def get_list_of_suggested_article_ordered(user_name):
     suggestions_list = []
     final_articles_list = []
-    query = db.GqlQuery("SELECT * FROM Suggestion WHERE users_list = :1 ORDER BY date_created , rank", 
-                        user_name)
+    query = db.GqlQuery("SELECT * FROM Suggestion WHERE users_list = :1", user_name)
         # results = q.fetch(10)
         # this is supposed to be only one result but who knows...
     for sugg in query:
