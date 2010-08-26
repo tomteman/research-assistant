@@ -3,6 +3,7 @@ from google.appengine.ext import db
 import RA_User
 from google.appengine.api import users 
 import pickle
+import HTMLparser
 
 ###############
 # once a day a cron will run the function generate_users_sets_dict
@@ -215,6 +216,9 @@ def get_list_of_suggested_article_ordered(user_name):
     for sugg in suggestions_list:
         final_articles_list.append(pickle.loads(str(sugg.suggested_serialized_article)))
     
-    return final_articles_list
+    html_parser = HTMLparser.HTMLparser(url=None, html=None)
+    html_parser.results =  final_articles_list
+    html_parser.numOfResults = len(final_articles_list)
+    return html_parser
 
 
