@@ -7,10 +7,45 @@
 	Research Assistant - search			
 {% endblock %}
 {% block customScripts %}
-<script type="text/javascript"> 
+<script type="text/javascript">
 	$(function(){
 		displayTagsOnResults('{{resultsJSON}}');
 	});
+
+	{% if suggestFlag %}
+
+$(function(){
+	$(".removeSuggested").show()
+})
+
+$(function(){
+	 $(".addLabel").livequery(function(){
+         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
+         alert(labelArticleKey)
+		
+		 suggestedToRemove = {
+			Id:labelArticleKey,
+             }
+         $.ajax({
+             type: 'POST',
+             url: "/removeSuggestedFromDB",
+             data: suggestedToRemove,
+             success: function(data, textStatus){
+               if (data == -7){
+                   alert("Error occured while removing suggested article from DB")
+               }
+               else{
+					alert("hiding html")
+					$("#labelArticleKey").html().hide()
+            	   
+               }
+           }
+       });    
+         
+	});
+});
+	{% endif %}
+	
 </script>	       	 
 	       	 
 {% endblock %}
@@ -117,6 +152,7 @@
 			
 			<form method="post" action={{formAction}}>
 				<input class="addLabel ui-addlabel-button" type="button" value="Add Label" />
+				<input type="hidden" class="removeSuggested" type="button" value="X" />
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>

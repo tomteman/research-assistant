@@ -18,7 +18,12 @@ from django.utils import simplejson
 import PendingSharedLabel
 
 
-
+class RemoveSuggested(webapp.RequestHandler):
+    def get(self):
+        user= users.get_current_user()
+        
+        
+        
 class ShowHot(webapp.RequestHandler):
 
     def get(self):
@@ -30,6 +35,7 @@ class ShowHot(webapp.RequestHandler):
         results = htmlParser.results
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
         resultsJSON = my_html_parser_encoder.encode(htmlParser)
+        c['suggestFlag'] = 1
         c['users'] = users
         c['results'] = results
         c['resultsJSON'] = resultsJSON

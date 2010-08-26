@@ -21,6 +21,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from ShowPendings import ShowPendings
 import LabelHandlers
 from WhatsHot import ShowHot
+from WhatsHot import RemoveSuggested
 from LabelHandlers import *
 import JSONConvertors
 from FollowForm import AddFollow
@@ -419,7 +420,9 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/GetSharedLabelUsers',GetSharedLabelUsers)
                                       ,('/DuplicateSharedLabelToPrivate',DuplicateSharedLabelToPrivate)
                                       ,('/RemoveFromSharedLabelDB',RemoveFromSharedLabelDB)
-                                      ,('/ShowHot',ShowHot)],
+                                      ,('/ShowHot',ShowHot)
+                                      ,('/RemoveSuggested',RemoveSuggested)
+                                      ],
                                       debug=True)
 
 def main():
