@@ -10,6 +10,8 @@ from django.conf import settings
 from django.template.loader import get_template
 import PendingSharedLabel
 from Suggestions import get_list_of_suggested_article_ordered_by_rank
+from Suggestions import get_list_of_suggested_article_ordered_by_date
+from Suggestions import remove_suggestion
 import Label
 import JSONConvertors
 import HTMLparser
@@ -21,6 +23,9 @@ import PendingSharedLabel
 class RemoveSuggested(webapp.RequestHandler):
     def get(self):
         user= users.get_current_user()
+        Id = self.request.get('Id')
+        res =remove_suggestion(user, Id)
+        self.response.out.write(res) 
         
         
         

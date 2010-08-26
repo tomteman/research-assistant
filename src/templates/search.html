@@ -9,19 +9,39 @@
 {% block customScripts %}
 <script type="text/javascript">
 	$(function(){
+		$(".removeSuggested").hide();
 		displayTagsOnResults('{{resultsJSON}}');
 	});
 
 	{% if suggestFlag %}
 
 $(function(){
-	$(".removeSuggested").show()
-})
-
-$(function(){
+	 $(".removeSuggested").show();
+	 $(".removeSuggested").livequery(function(){
+         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
+		
+		 suggestedToRemove = {
+			Id:labelArticleKey,
+             }
+         $.ajax({
+             type: 'POST',
+             url: "/removeSuggestedFromDB",
+             data: suggestedToRemove,
+             success: function(data, textStatus){
+               if (data == -7){
+                   alert("Error occured while removing suggested article from DB")
+               }
+               else{
+					alert("hiding html")
+					$("#labelArticleKey").html().hide()
+            	   
+               }
+           }
+       });    
+         
+	});
 	 $(".addLabel").livequery(function(){
          var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
-         alert(labelArticleKey)
 		
 		 suggestedToRemove = {
 			Id:labelArticleKey,
@@ -152,13 +172,13 @@ $(function(){
 			
 			<form method="post" action={{formAction}}>
 				<input class="addLabel ui-addlabel-button" type="button" value="Add Label" />
-				<input type="hidden" class="removeSuggested" type="button" value="X" />
 				<input type="hidden" name="bibTexKey" value ="{{result.get_key}}"/>
 				<input type="hidden" name="SearchTerm" value ="{{keyword}}"/>
 				<input type="hidden" name="CitesID" value ="{{result.citationsID}}"/>
 				<input type="hidden" name="Title" value ="{{result.get_article_title}}"/>
 				<input type="hidden" name="AuthorYearPub" value ="{{result.get_HTML_author_year_pub}}"/>
 				<input class="addFollowButton ui-addfollow-button" type="submit" value="Add Follow" />
+				<input class="removeSuggested ui-addlabel-button" type="button" value="Remove" />
  
 			</form>
 			<input type="text" name="{{result.get_key}}" class="labelBox" id="query" />
