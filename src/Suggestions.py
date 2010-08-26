@@ -222,7 +222,7 @@ def get_list_of_suggested_article_ordered(user_name):
         final_articles_list.append(pickle.loads(str(sugg.suggested_serialized_article)))
     
     html_parser = HTMLparser.HTMLparser(url=None, html=None)
-    html_parser.results =  final_articles_list
+    html_parser.results =  sort_list_of_suggestions_by_rank(final_articles_list)
     html_parser.numOfResults = len(final_articles_list)
     return html_parser
 
