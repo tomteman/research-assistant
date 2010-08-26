@@ -613,7 +613,7 @@ function getUniqueLabelsFromDB(){
 }
 
 /*
- * updates number of My follows/ Pending Invitations (the number in parentheses)
+ * updates number of My follows/ Pending/Suggestions Invitations (the number in parentheses)
  * hrefName = "myFollows"/"myPendings"
  * increase = 1 to increase the number, 0 to decrease
  * 

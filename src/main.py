@@ -41,6 +41,7 @@ from django.utils import simplejson
 from urllib2 import quote
 import DBFollow
 from test.pystone import TRUE
+from Suggestions import *
 
 # Django settings configuration : currently for setting the templates directory
 settings._target = None
@@ -91,6 +92,7 @@ class MainPage(webapp.RequestHandler):
             c['logout'] = users.create_logout_url(self.request.uri)
             follows = DBFollow.get_all_users_dbfollows(user)
             myPendings = PendingSharedLabel.get_all_users_PendingSharedLabel(user)
+            num_suggestions = get_num_of_suggestions_for_user(user)
             num_follows = len(follows)
             num_pendings = len(myPendings)
             
@@ -98,9 +100,11 @@ class MainPage(webapp.RequestHandler):
             c['login'] = users.create_login_url(self.request.uri)
             num_follows = 0
             num_pendings = 0
+            num_suggestions = 0
 
         c['num_pendings'] = num_pendings        
         c['num_follows'] = num_follows
+        c['num_suggestions'] = num_suggestions
         c['users'] = users
         c['currPage'] = page
         
