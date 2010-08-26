@@ -15,3 +15,9 @@ indexes:
   - name: content
   - name: date
     direction: desc
+
+- kind: Suggestion
+  properties:
+  - name: users_list
+  - name: date_created
+  - name: rank
