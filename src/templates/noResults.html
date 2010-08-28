@@ -1,18 +1,17 @@
 
 
 <html>
+<body>
 {% if refined_search_no_results %}
 <p>{{text}}</p>
 {% else %}
 
 {% if hasDidYouMean %}
 <p>Did You Mean: <a href = "/Search?Id={{noResultsKeywords}}&Type=DidYouMean">{{noResultsHTML}} </a></p>
-
 {% else %}
-
 {% if noSuggestions %}
 
-<p>"No Suggestions"</p>
+<p>No Suggestions</p>
 
 {% else %}
 
@@ -21,4 +20,5 @@
 {% endif %}
 {% endif %}
 {% endif %}
+</body>
 </html>

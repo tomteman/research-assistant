@@ -40,8 +40,8 @@ class ShowHot(webapp.RequestHandler):
         user = users.get_current_user()
         
         htmlParser = get_list_of_suggested_article_ordered_by_rank(user)
-        numOfSuggestions = get_num_of_suggestions_for_user
-        if(numOfSuggestions == 0):
+        numOfSuggestions = get_num_of_suggestions_for_user(user)
+        if (numOfSuggestions == 0):
             t = get_template('noResults.html')
             c['noSuggestions'] = 1
 

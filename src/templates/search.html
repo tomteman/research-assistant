@@ -30,11 +30,11 @@
 		             data: suggestedToRemove,
 		             success: function(data, textStatus){
 		               if (data != "True"){
-		                   alert("Wer'e sorry, an error has occured : " + data)
+		                   alert("We're sorry, an error has occured : " + data)
 		               }
-		               else{			               
-							$("#labelArticleKey").html().hide();
-							parent.updateNumber(mySuggestions,0);		            	   
+		               else{
+							$("#" + labelArticleKey).hide();
+							parent.updateNumber("mySuggestions",0);
 		               }
 		           }
 		       	});
@@ -52,11 +52,11 @@
 		             data: suggestedToRemove,
 		             success: function(data, textStatus){
 		               if (data != "True"){
-		                   alert("Wer'e sorry, an error has occured : " + data)
+		                   alert("We're sorry, an error has occured : " + data)
 		               }
-		               else{			               
-							$("#labelArticleKey").html().hide();
-							parent.updateNumber(mySuggestions,0);		            	   
+		               else{		
+			               
+							parent.updateNumber("mySuggestions",0);		            	   
 		               }
 		           }
 		       	});
