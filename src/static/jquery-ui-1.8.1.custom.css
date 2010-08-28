@@ -358,6 +358,7 @@ button.ui-button-label {width: auto; height: 8%; font-size: 80%; vertical-align:
 button.ui-button-label-x {height:  8%; font-size: 80%;vertical-align:center; text-align: center;}
 button.ui-button-shared {background: #FFE4E1;}
 button.ui-button-private {background: #d0e5f5;}
+.ui-nothanks-button {width: auto; height: 8%; font-size: 80%; background: #F75D59;}
 .ui-addlabel-button {width: auto; height: 8%; font-size: 80%; background: #FFFFFF;}
 .ui-addfollow-button {width: auto; height: 8%; font-size: 80%; background: #FFFFFF;}
 .close-button{width: auto; height: 8%; font-size: 80%; background: #FFFFFF;}
