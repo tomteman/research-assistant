@@ -9,8 +9,16 @@
 <p>Did You Mean: <a href = "/Search?Id={{noResultsKeywords}}&Type=DidYouMean">{{noResultsHTML}} </a></p>
 
 {% else %}
+
+{% if noSuggestions %}
+
+<p>"No Suggestions"</p>
+
+{% else %}
+
 <p>No results and no suggestions, try a different search</p>
 
+{% endif %}
 {% endif %}
 {% endif %}
 </html>
