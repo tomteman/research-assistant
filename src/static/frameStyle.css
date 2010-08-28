@@ -280,4 +280,13 @@ hr { display: none; }
 	color: #FFFFFF;
 	}
 	
+.small_letters{
+	font-size:90%;
+	line-height:120%;
+	}	
+	
+#explanations{
+	font-size:120%
+}
+		
 

@@ -8,50 +8,68 @@
 
  
 {% endblock %}
-{% comment %} A replaceable block for putting different content on different pages {% endcomment  %}
+
 
 {% block contents %}
-<table border="0" height = 100% width = 100% cellpadding="10" >
-<TR>
-<Td ROWSPAN="9" valign="top">
-Welcome to Research Assistant - your personalized Google Scholar.<br><br> 
-When you carry out a search with Research Assistant, the results displayed are extracted from <a href="http://scholar.google.com" target="_blank">Google Scholar</a>.<br><br>
-Research Assistant offers you the ability to manage your research as you conduct searches, <br>
-by allowing you to add labels and comments to articles, share them with colleagues, or create an automated alert service ("Follow") for a specific author/article/journal/etc.<br><br>
-For further assistance click on the images to your right or on the banner above.<br><br>
-Want to start using Research Assistant? please sign in using your Gmail account (don't have an account? create one <a href="http://mail.google.com/mail/signup" target="_blank">here</a>).<br><br><br><br>
+<br>
+<h2><b>Welcome to Research Assistant - your personalized Google Scholar.</b></h2>
+
+<div id="explanations" >
+<br>
+This site allows you to keep track of your academic reading and research, and cooperate with colleagues.
+<br/> 
+<ul>
+	<li><b>Search for articles</b> (just as you would search in Google Scholar*)</li>
+	<li style="line-height:150%;"><b>Add labels and comments to articles</b> - select a name for the label ( "TODO", "for Department Seminar", "Nice" etc...) and add comments to remember your thoughts.</li>
+	<li style="line-height:150%;"><b>Work with colleagues</b> - working on a paper together? Share all articles belonging to a label in one click. As your colleagues add articles to the label - you will see them as well.</li>
+	<li style="line-height:150%;"><b>Stay updated via email</b> - easily create an automated alert service ("Follow") for a specific author/article/journal/etc.</li>
+</ul>
+
 
 <br>
+Get started by signing in using your Gmail account (don't have an account? create one <a href="http://mail.google.com/mail/signup" target="_blank">here</a>).
+<br>
+<br>
+For further assistance click on the images below for video instructions, or on the banner above.
+</div>
+
+<br>   
+<h2><b>Videos:</b></h2>
+
+
+<table>
+	<tr >
+		<td style="width:20%">Label an article:
+		<br>
+		<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=01m28s" target = "_blank"><img src="static/images/banner1thumb.jpg" height = "80" width = "110" ></img> </a></td>
+		  
+		<td style="width:20%">Save comments: 
+		<br>
+		<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=02m06s" target = "_blank"><img src="static/images/banner4thumb.jpg" height = "80" width = "110" ></img> </a></td>
+		
+		<td style="width:20%">Follow new articles:
+		<br>
+		<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=03m33s" target = "_blank"><img src="static/images/banner2thumb.jpg" height = "80" width = "110" ></img> </a></td>
+		
+		<td style="width:20%">Share your labels:
+		<br>
+		<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=02m47s" target = "_blank"><img src="static/images/banner3thumb.jpg" height = "80" width = "110"></img> </a></td>
+		
+		
+	</tr>
+	
+</table>
+<br>
+<br>
+<br>
+<p class="small_letters">
+	When you carry out a search with Research Assistant, the results displayed are extracted from Google Scholar.<br/> 
+	Research Assistant is a non-profit website and was created as part of a Google workshop project in Tel-Aviv University, Israel.<br/>
+    If you have any questions/comments, please contact us at : researchassistant(at)gmail(dot)com
+ </p>
+
 <br>
 <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fresearch-assistant.appspot.com%2F&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;font=lucida+grande&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
 
-   
-</Td>
-<tr>
-<th >Videos</th>
-</tr>
-<Td width = "120">Label an article<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=01m28s" target = "_blank"><img src="static/images/banner1thumb.jpg" height = "80" width = "110" align = "right"></img> </a></Td>
-</TR>
-<tr>
-<th align = "right"></th>
-</tr>
-<TR>
-<TD >Save comments<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=02m06s" target = "_blank"><img src="static/images/banner4thumb.jpg" height = "80" width = "110" align = "right"></img> </a></TD>
-</TR>
-<tr>
-<th align = "right"></th>
-</tr>
-<TR>
-<TD >Follow new articles<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=03m33s" target = "_blank"><img src="static/images/banner2thumb.jpg" height = "80" width = "110" align = "right"></img> </a></TD>
-</TR>
-<tr>
-<th align = "right"></th>
-</tr>
-<TR>
-<Td>Share your labels<a href="http://www.youtube.com/watch?v=7T3AP6k4NZs#t=02m47s" target = "_blank"><img src="static/images/banner3thumb.jpg" height = "80" width = "110" align = "right"></img> </a></TD>
-</TR>
-
-
-</table> 		
 		
 {% endblock %}
