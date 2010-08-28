@@ -28,8 +28,8 @@ $(function(){
              url: "/removeSuggestedFromDB",
              data: suggestedToRemove,
              success: function(data, textStatus){
-               if (data == -7){
-                   alert("Error occured while removing suggested article from DB")
+               if (data != "true"){
+                   alert("Error : " + data)
                }
                else{
 					alert("hiding html")
