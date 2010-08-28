@@ -128,23 +128,26 @@
 		
 		{% comment %} rotating banner start {% endcomment %}
 		
-        <center>
-
+	
+		<div class="slideshow1Wrapper">
+		<center>
         <div class="slideshow1">
             <a href="/Help#banner1" target="frame"><img src="/static/images/banner1_height_170px_width_1000px.jpg" width="1000" height="170" /></a>
            	<a href="/Help#banner2" target="frame"><img src="/static/images/banner2_height_170px_width_1000px.jpg" width="1000" height="170" /></a>
             <a href="/Help#banner3" target="frame"><img src="/static/images/banner3_height_170px_width_1000px.jpg" width="1000" height="170" /></a>
             <a href="/Help#banner4" target="frame"><img src="/static/images/banner4_height_170px_width_1000px.jpg" width="1000" height="170" /></a>
         </div>
+        </center>
+        </div>
         
         
 
-		
+		<center>
 		<button id="closeBannerButton" class="fg-button-x closeBannerButton ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all" input type="submit" OnClick="javascript:hideBanner();">Hide Intro X</button>
-		<button id="showBannerButton" class="fg-button-x showBannerButton ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all" input type="submit" OnClick="javascript:showBanner();">Show Intro +</button>
+		<button id="showBannerButton" class="fg-button-x showBannerButton ui-button ui-button-label-x ui-widget ui-state-default ui-corner-all" input type="submit" style ="display: none;" OnClick="javascript:showBanner();">Show Intro +</button>
 		</center>
-		{% comment %}<input type="button" value="close" class="closeBannerButton" OnClick="javascript:hideBanner();">{% endcomment %}		
-		{% comment %} rotating banner finish {% endcomment %}
+		
+
 		
 		
 		
@@ -160,7 +163,7 @@
 						src="{{currPage}}"
 						scrolling="NO"
 						frameborder="0"
-						height="500">
+						height="1">
 					An iframe capable browser is required to view this web site.
 				</iframe>
 				
