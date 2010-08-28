@@ -107,7 +107,7 @@
 			
 			<div id="menu">
 				<ul>
-				<li><a href="/ShowHot" target="frame" id="myRecommendations">Recommendations({{ num_suggestions }})</a></li>
+				<li><a href="/ShowHot" target="frame" id="mySugestions">Suggestions({{ num_suggestions }})</a></li>
 				{% if users.get_current_user %} 
 					<li><a href="/MyFollows" target="frame" id="myFollows">My Follows({{ num_follows }})</a></li>
 					<li><a href="/ShowPendings" class="first" target="frame" id="myPendings"> Label Invitations({{ num_pendings }})</a></li>
@@ -160,7 +160,7 @@
 						src="{{currPage}}"
 						scrolling="NO"
 						frameborder="0"
-						height="1">
+						height="500">
 					An iframe capable browser is required to view this web site.
 				</iframe>
 				
