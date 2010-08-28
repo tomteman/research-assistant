@@ -25,7 +25,8 @@ class RemoveSuggested(webapp.RequestHandler):
         user= users.get_current_user()
         Id = self.request.get('Id')
         res = remove_suggestion(user, Id)
-        self.response.out.write(res) 
+        
+        self.response.out.write(res)
         
         
         
