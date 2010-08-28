@@ -267,7 +267,7 @@ def remove_suggestion(user_name, article_key):
         suggestion.is_removed = True
         suggestion.put()
     except Exception: 
-        msg = ""
+        msg = "error. lea."
         msg = str(sys.exc_info()[0]) + str(sys.exc_info()[1]) + str(sys.exc_info()[2])
         return msg # str(type(temp))
     return True
