@@ -252,7 +252,12 @@ def get_list_of_suggested_article_ordered_by_date(user_name):
 
 def get_num_of_suggestions_for_user(user_name):
     query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1", user_name)
-    return query.count()
+    count = 0
+    for sugg in query:
+        if sugg.is_removed == False:
+            count += 1
+    return count
+
 
 # this function turns the is_removed to True but leaves the suggestion
 # in the DB so that the user wont get the same suggestion again
