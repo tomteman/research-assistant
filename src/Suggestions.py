@@ -258,8 +258,8 @@ def get_num_of_suggestions_for_user(user_name):
 # in the DB so that the user wont get the same suggestion again
 def remove_suggestion(user_name, article_key):
     try:
-        query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1" + 
-                            "AND suggested_article_key = :2", user_name, article_key)
+        query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1 " + 
+                            "AND suggested_article_key = :2 ", user_name, article_key)
         if (query.count(1) == 0):
             return -4
         

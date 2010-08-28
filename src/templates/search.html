@@ -21,7 +21,6 @@
 	         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
 			 $(this).button();
 		     $(this).click(function(){
-			     alert(labelArticleKey);
 				 suggestedToRemove = {
 					Id:labelArticleKey
 		             }
@@ -30,18 +29,39 @@
 		             url: "/removeSuggestedFromDB",
 		             data: suggestedToRemove,
 		             success: function(data, textStatus){
-		               if (data != "true"){
-		                   alert("Error : " + data)
+		               if (data != "True"){
+		                   alert("Wer'e sorry, an error has occured : " + data)
 		               }
-		               else{
-							alert("hiding html")
-							$("#labelArticleKey").html().hide()
-		            	   
+		               else{			               
+							$("#labelArticleKey").html().hide();
+							parent.updateNumber(mySuggestions,0);		            	   
 		               }
 		           }
-		       });    
+		       	});
 			});
 		});
+		$(".addLabel").livequery(function(){
+	         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
+		     $(this).click(function(){
+				 suggestedToRemove = {
+					Id:labelArticleKey
+		             }
+		         $.ajax({
+		             type: 'POST',
+		             url: "/removeSuggestedFromDB",
+		             data: suggestedToRemove,
+		             success: function(data, textStatus){
+		               if (data != "True"){
+		                   alert("Wer'e sorry, an error has occured : " + data)
+		               }
+		               else{			               
+							$("#labelArticleKey").html().hide();
+							parent.updateNumber(mySuggestions,0);		            	   
+		               }
+		           }
+		       	});
+			});
+		});	
 	});
 	{% endif %}
 	
@@ -157,7 +177,7 @@
 				<input type="hidden" name="Title" value ="{{result.get_article_title}}"/>
 				<input type="hidden" name="AuthorYearPub" value ="{{result.get_HTML_author_year_pub}}"/>
 				<input class="addFollowButton ui-addfollow-button" type="submit" value="Add Follow" />
-				<input class="removeSuggested ui-addlabel-button" type="button" value="Remove" />
+				<input class="removeSuggested ui-addlabel-button" type="button" value="Not Interested" />
  
 			</form>
 			<input type="text" name="{{result.get_key}}" class="labelBox" id="query" />
