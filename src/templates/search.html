@@ -15,56 +15,34 @@
 
 	{% if suggestFlag %}
 
-$(function(){
-	 $(".removeSuggested").show();
-	 $(".removeSuggested").livequery(function(){
-         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
-	 $(this).button()
-     $(this).click(function(){
-		 suggestedToRemove = {
-			Id:labelArticleKey
-             }
-         $.ajax({
-             type: 'POST',
-             url: "/removeSuggestedFromDB",
-             data: suggestedToRemove,
-             success: function(data, textStatus){
-               if (data != "true"){
-                   alert("Error : " + data)
-               }
-               else{
-					alert("hiding html")
-					$("#labelArticleKey").html().hide()
-            	   
-               }
-           }
-       });    
+	$(function(){
+		 $(".removeSuggested").show();
+		 $(".removeSuggested").livequery(function(){
+	         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
+			 $(this).button();
+		     $(this).click(function(){
+			     alert(labelArticleKey);
+				 suggestedToRemove = {
+					Id:labelArticleKey
+		             }
+		         $.ajax({
+		             type: 'POST',
+		             url: "/removeSuggestedFromDB",
+		             data: suggestedToRemove,
+		             success: function(data, textStatus){
+		               if (data != "true"){
+		                   alert("Error : " + data)
+		               }
+		               else{
+							alert("hiding html")
+							$("#labelArticleKey").html().hide()
+		            	   
+		               }
+		           }
+		       });    
+			});
+		});
 	});
-	});
-	 $(".addLabel").livequery(function(){
-         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
-		
-		 suggestedToRemove = {
-			Id:labelArticleKey
-             }
-         $.ajax({
-             type: 'POST',
-             url: "/removeSuggestedFromDB",
-             data: suggestedToRemove,
-             success: function(data, textStatus){
-               if (data == -7){
-                   alert("Error occured while removing suggested article from DB")
-               }
-               else{
-					alert("hiding html")
-					$("#labelArticleKey").html().hide()
-            	   
-               }
-           }
-       });    
-         
-	});
-});
 	{% endif %}
 	
 </script>	       	 
