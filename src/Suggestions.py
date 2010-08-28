@@ -4,6 +4,7 @@ import RA_User
 from google.appengine.api import users 
 import pickle
 import HTMLparser
+import sys
 
 ###############
 # once a day a cron will run the function generate_users_sets_dict
@@ -256,13 +257,18 @@ def get_num_of_suggestions_for_user(user_name):
 # this function turns the is_removed to True but leaves the suggestion
 # in the DB so that the user wont get the same suggestion again
 def remove_suggestion(user_name, article_key):
-    query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1" + 
-                        "AND suggested_article_key = :2", user_name, article_key)
-    if (query.count(1) == 0):
-        return -4
-    
-    suggestion = query.fetch(2)[0]
-    suggestion.is_removed = True
-    suggestion.put()
+    try:
+        query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1" + 
+                            "AND suggested_article_key = :2", user_name, article_key)
+        if (query.count(1) == 0):
+            return -4
+        
+        suggestion = query.fetch(2)[0]
+        suggestion.is_removed = True
+        suggestion.put()
+    except Exception: 
+        msg = str(sys.exc_info()[0]) + str(sys.exc_info()[1]) + str(sys.exc_info()[2])
+        return msg # str(type(temp))
+    return True
     
     
