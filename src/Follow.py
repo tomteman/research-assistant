@@ -48,25 +48,24 @@ class Follow:
         self.total_num_of_articles = total_num_of_articles,
     
     def create_follow_name_from_search_params(self):
-        if self.search_params == None:
-            return False
-        self.follow_name = ""
-        # if it is citing an article:
-        if (self.search_params.citesArticleName != None and (len(self.search_params.citesArticleName) > 0)):
-            if (len(self.search_params.author) > 0):
-                self.follow_name += "author: " +  urllib.unquote_plus(self.search_params.author) + " + "
-            if (len(self.search_params.keywords) > 0):
-                self.follow_name += "keyword: " +  urllib.unquote_plus(self.search_params.keywords) + " + "
-            self.follow_name += "Documents citing: " 
-            self.follow_name += urllib.unquote_plus(self.search_params.citesArticleName)
-        else:
-            if (len(self.search_params.keywords) != 0):
-                self.follow_name += "keywords: " + urllib.unquote_plus(self.search_params.keywords)
-            if (len(self.search_params.author) != 0):
-                self.follow_name += " author: " + urllib.unquote_plus(self.search_params.author)
-            if (len(self.search_params.journal)!= 0):
-                self.follow_name += " journal : " + urllib.unquote_plus(self.search_params.journal)
-#            if (len(self.search_params.year_start) != 0):
+#        if self.search_params == None:
+#            return False
+#        self.follow_name = ""
+#        # if it is citing an article:
+#        if (self.search_params.citesArticleName != None and (len(self.search_params.citesArticleName) > 0)):
+#            if (len(self.search_params.author) > 0):
+#                self.follow_name += "author: " +  urllib.unquote_plus(self.search_params.author) + "; +"
+#            if (len(self.search_params.keywords) > 0):
+#                self.follow_name += "keyword: " +  urllib.unquote_plus(self.search_params.keywords) + "; +"
+#            self.follow_name += "Documents citing: " 
+#            self.follow_name += urllib.unquote_plus(self.search_params.citesArticleName)
+#        else:
+##            if len(self.search_params.keywords) != 0 and len(self.search_params.author) != 0 and len(self.search_params.journal):
+#                self.follow_name += "keywords: " + urllib.unquote_plus(self.search_params.keywords) + "; +" +  
+#                self.follow_name += " author: " + urllib.unquote_plus(self.search_params.author) + "; " + 
+#                self.follow_name += " journal : " + urllib.unquote_plus(self.search_params.journal) + "; "
+#            else: 
+##            if (len(self.search_params.year_start) != 0):
 #                self.follow_name += " From Year : " + urllib.unquote_plus(self.search_params.year_start)
         
         return True
@@ -119,8 +118,8 @@ class Follow:
     # (up to 1000 as usual, since this is Google Scholar limitation)
     def send_first_status_email_by_request(self):
         
-        plain_msg = "Your new Follow named " + self.follow_name + " has been created.\n"
-        plain_msg = plain_msg +  "Current articles matching you search terms are listed bellow: <br>"
+        plain_msg = "Your new Follow \"" + self.follow_name + "\" has been created.\n"
+        plain_msg = plain_msg +  "Current articles matching your search terms are listed bellow: <br>"
 
         html_msg = "<html><body>"
         html_msg = html_msg + "<b>Your new Follow named " + self.follow_name + " has been created. </b><br>"
