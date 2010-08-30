@@ -90,12 +90,13 @@ class Suggestion_mechanism:
                 relevant_users_list.append(user)
         return relevant_users_list
             
-        
+    
         
     def create_and_upload_all_relevant_suggestions_to_DB(self):
        
         self.ra_user_obj = RA_User.get_RA_User_obj(self.main_user)
         current_list_of_suggested_article_keys = self.ra_user_obj.list_of_suggested_article_keys
+        self.mark_labeled_articles_in_sugg_as_removed_sugg()
         
         main_user_set = self.all_users_sets_dict[self.main_user]
         self.relevant_users_list = self.create_relevant_users_list(self.main_user)
@@ -145,7 +146,23 @@ class Suggestion_mechanism:
         return True
         
     
- 
+    def mark_labeled_articles_in_sugg_as_removed_sugg(self):
+        try:
+            query = db.GqlQuery("SELECT * FROM Suggestion WHERE user = :1 ", self.main_user)
+            labels_list = list(self.all_users_sets_dict[self.main_user])
+            for sugg in query:
+                if sugg.suggested_article_key in labels_list:
+                    sugg.is_removed = True
+                    sugg.put()
+        except Exception:
+            return -7 
+        return True
+                
+                 
+            
+        
+        
+        
     def update_suggestion(self):
         pass
     
