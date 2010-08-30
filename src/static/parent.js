@@ -504,8 +504,8 @@ function getShareTarget(label_name){
 								url: "/ShareLabel",
 								data: sharedLabel,
 								success: function(data, textStatus){
-									if (data != "True"){
-										handleErrorCode(data)
+									if (data != 1){
+										handleErrorCode(str(data))
 									}
 									else{
 										generatePopUp("An email was sent to <b>" + user_name+"</b>")
