@@ -541,13 +541,10 @@ function sendMail(label_name){
 								url: "/SendLabel",
 								data: sharedLabel,
 								success: function(data, textStatus){
-									if (data !="True"){
-										alert("in if")
-										alert(data)
+									if (data !="true"){
 										handleErrorCode(data)
 									}
 									else{
-										alert("in else")
 										generatePopUp("An email was sent to <b>" + user_name+"</b>.")
 									}
 								}
