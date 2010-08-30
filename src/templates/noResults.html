@@ -1,6 +1,9 @@
 
 
 <html>
+<head>
+<link type="text/css" rel="stylesheet" href="static/frameStyle.css">
+</head>
 <body>
 {% if refined_search_no_results %}
 <p>{{text}}</p>
@@ -11,7 +14,10 @@
 {% else %}
 {% if noSuggestions %}
 
-<p>No Suggestions</p>
+<center><h2><b>New suggestions:</b></h2></center></br>
+<center><h3>There are no new suggestions at the moment.</center></br>
+<span>Once you have more articles in common with other users you will see here a list of articles relevant to your research.</span>
+</p></h3>
 
 {% else %}
 
