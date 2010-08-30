@@ -504,11 +504,11 @@ function getShareTarget(label_name){
 								url: "/ShareLabel",
 								data: sharedLabel,
 								success: function(data, textStatus){
-									if (data <= 0){
+									if (data != "True"){
 										handleErrorCode(data)
 									}
 									else{
-										generatePopUp("An email was sent to <b>" + user_name+"</b>, and the label will be shared pending his/her approval.")
+										generatePopUp("An email was sent to <b>" + user_name+"</b>")
 									}
 								}
 							});
@@ -603,7 +603,6 @@ function printLabels(){
 }
 
                        
-
 function inc(labelName){
 	var label = getLabel(labelName);
 	var button = label.find(".labelButton");
