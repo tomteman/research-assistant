@@ -582,3 +582,68 @@ def search_in_labels_return_HTMLparser_JSON(user, label_name, search_term):
     as_json = my_htmlparser_encoder.encode(html_parser)
     
     return as_json
+
+
+def get_label_by_email(sending_user, target_user_email, label_name):
+    ## GET ALL ARTICLED
+    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                    "AND label_name = :2 ", 
+                    sending_user, label_name)
+    article_objects_list = []
+    for label_object in query:
+        article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
+    
+    
+    ## PREFIX
+    plain_msg = ""
+    html_msg = "<html><body>"
+    html_msg = html_msg + "<b>Hello Dear " + str(target_user_email) + ",</b><br><br>"
+    html_msg = html_msg + "Following are all articles labeled by " + sending_user.nickname() + " as "
+    html_msg = html_msg + "<font color=\"red\" ><b>" + str(label_name) +  "</b></font></br><br>"
+    
+    ## JUST FOR NEW USERS
+    new_user = users.User(target_user_email)
+    is_new_user = is_new_user_to_RA(new_user)
+    if (is_new_user):
+        html_msg += get_html_message_for_new_user()
+    
+    ## BUILD CONTENT
+    for article_obj in article_objects_list:
+        if (len(article_obj.get_article_url()) > 0):
+            html_msg = html_msg + "<a href =\"" + article_obj.get_article_url() +""""<font color="6633cc">""" + unicode(article_obj.get_article_title(), errors='ignore') + "</font></a><br>"
+        else: 
+            html_msg = html_msg + """<b><font color="#6633cc">""" + unicode(article_obj.get_article_title(), errors='ignore') + "</b></font><br>"
+        html_msg = html_msg + """<font color="#00cc66">""" + unicode(article_obj.get_HTML_author_year_pub(), errors='ignore') + "</font>"
+        html_msg = html_msg + unicode(article_obj.get_HTML_abstract(), errors='ignore') + "<br>"
+        html_msg = html_msg + """<hr size="3" width="100%" align="left" color="009999"></hr><br>"""
+
+
+    html_msg = html_msg + """<br><hr size="3" width="100%" align="left" color="009999"></hr><br>"""
+    html_msg = html_msg + "<br>&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
+    html_msg = html_msg + "</body></html>"
+    
+    ## SEND MESSAGE
+    try: 
+        mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
+                      to=target_user_email,
+                      subject= "Articles labeled by " + str(sending_user.email()) + " as " + str(label_name), 
+                      body=plain_msg, 
+                      html=html_msg)
+    except Exception:
+        return -8
+    return True
+
+
+def get_html_message_for_new_user():
+    html_msg = ""
+    html_msg = html_msg + """<br><hr size="3" width="100%" align="left" color="009999"></hr><br>"""
+    html_msg = html_msg + "Research Assistant is a new online tool which enables you to keep track on all articles! <br>"
+    html_msg = html_msg + "You are welcome to: <br>"
+    html_msg = html_msg + "<ul><li> Label articles and write comments on them<br>"
+    html_msg = html_msg + "<li>Get email updates on new articles of interest<br>"
+    html_msg = html_msg + "<li>Collaborate! - Share Labels with you colleagues<br>"
+    html_msg = html_msg + "<li>Search within articles citing a specific article</ul>"
+    html_msg = html_msg + "....And much more!<br><br>"
+    html_msg = html_msg + "We invite you to visit our site and view a short video "
+    html_msg = html_msg + "<a href =\"research-assistant.appspot.com/\" <font color=\"6633cc\"> here" + "</font></a><br><br>"
+    return html_msg
