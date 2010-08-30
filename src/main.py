@@ -396,7 +396,19 @@ class AdvancedSearch(webapp.RequestHandler):
         self.response.out.write(t.render(c))        
         
 
+        
+class Scenarios(webapp.RequestHandler):
+#Create the about us page    
+    def get(self):
+        t = get_template('scenarios.html')
+        c = Context()
+        if (users.get_current_user()):
+            c['logout'] = users.create_logout_url(self.request.uri)
+        else:
+            c['login'] = users.create_login_url(self.request.uri)
+        c['users'] = users
 
+        self.response.out.write(t.render(c))    
 
 #----------------------------    Classes end Here   ------------------------
 
@@ -427,6 +439,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/ShowHot',ShowHot)
                                       ,('/removeSuggestedFromDB',removeSuggestedFromDB)
                                       ,('/SendLabel',LabelHandlers.SendLabel)
+                                      ,('/Scenarios',Scenarios)
                                       ],
                                       debug=True)
 
