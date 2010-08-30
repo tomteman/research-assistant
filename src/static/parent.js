@@ -163,6 +163,7 @@ function addLabel(labelName, number){
     newLabel.find("#Delete").click( function() { change_menu_status( menuItem.parent()); deleteTag(newLabel.attr("value"), true); });
 	newLabel.find("#Rename").click( function() { change_menu_status(menuItem.parent()); renameTag(newLabel.attr("value"));  });
 	newLabel.find("#Share").click( function() { change_menu_status(menuItem.parent()); shareTag(newLabel.attr("value")); });
+	newLabel.find("#SendMail").click( function() { change_menu_status(menuItem.parent()); sendMail(newLabel.attr("value")); });
 	$("#labelList").append(newLabel);	
 }
 
@@ -518,6 +519,46 @@ function getShareTarget(label_name){
 					}
     });	
 }
+
+function sendMail(label_name){
+	$('#shareText').html("Email the contents of the label \'"+ label_name +"\' to <i>(e-mail address)</i>: ");
+    $("#popup_share").dialog({
+    		open: function() {
+  				$('#userName').focus(); 
+			},
+			width: 500,
+			modal: true,
+			buttons: {
+				'Send': function() { 
+    						var user_name= $('#userName').val();
+    						sharedLabel = {
+    								   label_name:label_name,
+    								   user_name:user_name
+    									}
+
+							$.ajax({
+								type: 'POST',
+								url: "/SendLabel",
+								data: sharedLabel,
+								success: function(data, textStatus){
+									if (data !="True"){
+										alert("in if")
+										handleErrorCode(data)
+									}
+									else{
+										alert("in else")
+										generatePopUp("An email was sent to <b>" + user_name+"</b>.")
+									}
+								}
+							});
+						$(this).dialog("close");},
+				"Cancel": function() { $(this).dialog("close"); }
+				},
+			close: function() {
+					}
+    });	
+}
+
 
 
 function replacePrivateLabelUIWithShared(label_name){

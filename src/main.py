@@ -426,6 +426,7 @@ application = webapp.WSGIApplication([('/', MainPage)
                                       ,('/RemoveFromSharedLabelDB',RemoveFromSharedLabelDB)
                                       ,('/ShowHot',ShowHot)
                                       ,('/removeSuggestedFromDB',removeSuggestedFromDB)
+                                      ,('/SendLabel',LabelHandlers.SendLabel)
                                       ],
                                       debug=True)
 

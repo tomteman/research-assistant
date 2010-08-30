@@ -166,8 +166,15 @@ class SearchInLabel(webapp.RequestHandler):
         c['showlabel'] = True
         c['showlabelsearch'] = False
         self.response.out.write(t.render(c))
-                 
-        
+                
+class SendLabel(webapp.RequestHandler):
+    def post(self):
+        inviting_user = users.get_current_user()
+        label_name = self.request.get('label_name')
+        new_user_email = self.request.get('user_name')
+        res = Label.get_label_by_email(inviting_user , new_user_email, label_name)
+        self.response.out.write(res)
+        self.response.out.write(res)
         
         
         
