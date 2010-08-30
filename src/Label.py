@@ -459,16 +459,7 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
  
     
     if (is_new_user):
-        html_msg = html_msg + """<br><hr size="3" width="100%" align="left" color="009999"></hr><br>"""
-        html_msg = html_msg + "Research Assistant is a new online tool which enables you to keep track on all articles! <br>"
-        html_msg = html_msg + "You are welcome to: <br>"
-        html_msg = html_msg + "<ul><li> Label articles and write comments on them<br>"
-        html_msg = html_msg + "<li>Get email updates on new articles of interest<br>"
-        html_msg = html_msg + "<li>Collaborate! - Share Labels with you colleagues<br>"
-        html_msg = html_msg + "<li>Search within articles citing a specific article</ul>"
-        html_msg = html_msg + "....And much more!<br><br>"
-        html_msg = html_msg + "We invite you to visit our site and view a short video "
-        html_msg = html_msg + "<a href =\"research-assistant.appspot.com/\" <font color=\"6633cc\"> here" + "</font></a><br><br>"
+        html_msg = html_msg + get_html_message_for_new_user()
     
     html_msg = html_msg + """<br><hr size="3" width="100%" align="left" color="009999"></hr><br>"""
     html_msg = html_msg + "<br>&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
@@ -586,12 +577,15 @@ def search_in_labels_return_HTMLparser_JSON(user, label_name, search_term):
 
 def get_label_by_email(sending_user, target_user_email, label_name):
     ## GET ALL ARTICLED
-    query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
-                    "AND label_name = :2 ", 
-                    sending_user, label_name)
-    article_objects_list = []
-    for label_object in query:
-        article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
+    try:
+        query = db.GqlQuery("SELECT * FROM Label WHERE users_list = :1 "+
+                        "AND label_name = :2 ", 
+                        sending_user, label_name)
+        article_objects_list = []
+        for label_object in query:
+            article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
+    except Exception:
+            return -7
     
     
     ## PREFIX
