@@ -201,6 +201,7 @@ function addLabelShared(labelName, number){
 	newLabel.find("#UserList").click( function() { change_menu_status(menuItem.parent()); getLabelUserList(newLabel.attr("value"));  });
 	newLabel.find("#RemoveMe").click( function() { change_menu_status(menuItem.parent()); removeMeFromLabel(newLabel.attr("value")); });
 	newLabel.find("#Duplicate").click( function() { change_menu_status(menuItem.parent()); duplicateLabel(newLabel.attr("value")); });
+	newLabel.find("#SendMail").click( function() { change_menu_status(menuItem.parent()); sendMail(newLabel.attr("value")); });
 	$("#labelList_shared").append(newLabel);	
 }
 
@@ -505,7 +506,7 @@ function getShareTarget(label_name){
 								data: sharedLabel,
 								success: function(data, textStatus){
 									if (data != 1){
-										handleErrorCode(str(data))
+										generatePopUp("We're sorry, an error has occured. Please try again later.")
 									}
 									else{
 										generatePopUp("An email was sent to <b>" + user_name+"</b>")
@@ -542,7 +543,7 @@ function sendMail(label_name){
 								data: sharedLabel,
 								success: function(data, textStatus){
 									if (data !="true"){
-										handleErrorCode(data)
+										generatePopUp("We're sorry, an error has occured. Please try again later.")
 									}
 									else{
 										generatePopUp("An email was sent to <b>" + user_name+"</b>.")
