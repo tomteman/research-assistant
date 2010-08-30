@@ -227,7 +227,7 @@ function generatePopUp(text){
         open: function() {
         $(this).parents('.ui-dialog-buttonpane button:eq(0)').focus();
       	},
-		width: 400 , buttons: { "OK": function() { $(this).dialog("close"); } }});
+		width: 500 , buttons: { "OK": function() { $(this).dialog("close"); } }});
 }
 
 
