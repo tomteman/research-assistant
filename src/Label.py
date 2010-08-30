@@ -444,7 +444,7 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
     
     is_new_user = is_new_user_to_RA(new_user)
     html_msg = html_msg + "To see the label details and accept/reject press: "
-    html_msg = html_msg + """<a href =\"http://research-assistant.appspot.com/?page=MyPendingLabels\" <font color=\"6633cc\">this link</font></a><br>"""
+    html_msg = html_msg + """<a href =\"http://research-assistant.appspot.com/?page=ShowPendings\" <font color=\"6633cc\">this link</font></a><br>"""
     if (is_new_user):
         html_msg = html_msg + "<i>(If you do not have a Google account, you will be prompted to create one)</i><br>"
  
