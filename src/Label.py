@@ -581,14 +581,10 @@ def get_label_by_email(sending_user, target_user_email, label_name):
         # PREFIX
         html_msg = "<html><body>"
         html_msg = html_msg + "<b>Hello Dear " + str(target_user_email) + ",</b><br>"
-        html_msg = html_msg + "Following are all articles labeled by " + sending_user.nickname() + " as "
-        html_msg = html_msg + "<font color=\"red\" ><b>" + str(label_name) +  "</b></font></br><br><br><br>"
+        html_msg = html_msg + "Following are all articles labeled by " + sending_user.nickname() + " as \""
+        html_msg = html_msg + "<font color=\"red\" ><b>" + str(label_name) +  "</b></font>\"</br><br><br><br>"
         
-        # JUST FOR NEW USERS
-        is_new_user = is_new_user_to_RA(new_user)
-        if (is_new_user):
-            html_msg += get_html_message_for_new_user()
-        
+    
         # BUILD CONTENT
         for article_obj in article_objects_list:
             if (len(article_obj.get_article_url()) > 0):
@@ -599,13 +595,19 @@ def get_label_by_email(sending_user, target_user_email, label_name):
             html_msg = html_msg + article_obj.get_HTML_abstract() + "<br>"
             html_msg = html_msg + """<hr size="3" width="100%" align="left" color="009999"></hr><br>"""
     
+    
+        # JUST FOR NEW USERS
+        is_new_user = is_new_user_to_RA(new_user)
+        if (is_new_user):
+            html_msg += get_html_message_for_new_user()
+        
         html_msg = html_msg + "<br>&copy; brought to you by <a href=http://research-assistant.appspot.com/> Research Assistant</a><br>"
         html_msg = html_msg + "</body></html>"
         
         # SEND MESSAGE
         mail.send_mail(sender="Research Assistant Team <tau.research.assistant@gmail.com>",
                   to=new_user.email(),
-                  subject="Articles labeled by " + sending_user.nickname() + " as " + label_name,
+                  subject="Articles labeled by " + sending_user.nickname() + " as \"" + label_name + "\"", 
                   body=plain_msg, 
                   html=html_msg)
     except Exception: 
