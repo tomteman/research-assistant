@@ -14,7 +14,7 @@ $(document).ready(function() {
 	 
     $('.accept').click(function() {
     	var pending_id = $(this).parent().attr("value");
-    	new_label = $(this).parent().parent().find("#label_name").attr("value");
+    	new_label = $(this).parent().parent().parent().find("#label_name").attr("value");
     	cur_row = $(this).parents("tr");
     	$("#action_type").val("accept");
     	$("#pending_id").val(pending_id);
@@ -33,17 +33,6 @@ $(document).ready(function() {
         return false; 
     });
     
-    $('.preview').click(function() {
-    	var pending_id = $(this).parent().attr("value");
-    	$("#action_type").val("ShowPending");
-    	$("#pending_id").val(pending_id);
-        $("#pendingActions").ajaxSubmit({success:       previewResponse,      // post-submit callback 
-	 									 url:      '/ShowArticlesByLabel',              // override for form's 'action' attribute 
-	 									 type:      "GET",
-	 									 dataType:  'html'  
-        								}); 
-        return false; 
-    });
     
  });
 

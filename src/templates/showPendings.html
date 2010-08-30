@@ -53,9 +53,14 @@
 			<td> 
 				<div id="label_name" value="{{pending.label_name}}"></div>
 				<div id = "actions" value="{{pending.Id}}" >
-					<input type="button"  class="preview" value="Preview"/>
+					<form method="get" target="frame" id="pendingActions" action="/ShowArticlesByLabel" >
+						<input type="hidden"  id="action_type" name="action_type" value ="ShowPending"/>
+						<input type="hidden"  id="pending_id" name="pending_id" value ="{{pending.Id}}"/>
+						<input type="submit"  class="preview" value="Preview"/>
+					
 					<input type="button"  class="accept" value="Accept"/>						
 					<input type="button"  class="reject" value="Reject"/>
+					</form>
 				</div>	
 			</td>
 		</tr>	
@@ -73,10 +78,6 @@
 	<CENTER><h3> Please log in to see your pending invitations.</h3></CENTER>
 	
 {% endif %}
-
-<form id="pendingActions">
-	<input type="hidden"  id="action_type" name="action_type" value =""/>
-	<input type="hidden"  id="pending_id" name="pending_id" value =""/>
-</form>		
+	
 
 {% endblock %}

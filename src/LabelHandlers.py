@@ -95,12 +95,13 @@ class ShowArticlesByLabel(webapp.RequestHandler):
         elif self.request.get('action_type') == "ShowPending":
             label_name = self.request.get('pending_id')
             htmlParser = PendingSharedLabel.pending_share_preview_as_HTMLparser(user, label_name)
-            if (htmlParser == -7):
-                self.response.out.write(htmlParser)
+            if (isinstance( htmlParser, int)):
+                self.response.out.write("an error occurred")
                 return     
+        
         results = htmlParser.results    
         my_html_parser_encoder = JSONConvertors.HTMLparserEncoder()
-        resultsJSON = my_html_parser_encoder.encode(htmlParser)
+        resultsJSON = my_html_parser_encoder.encode(htmlParser)      
         c['users'] = users
         c['hidden_label_name'] = label_name
         c['results'] = results
