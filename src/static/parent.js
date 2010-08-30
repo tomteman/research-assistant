@@ -543,6 +543,7 @@ function sendMail(label_name){
 								success: function(data, textStatus){
 									if (data !="True"){
 										alert("in if")
+										alert(data)
 										handleErrorCode(data)
 									}
 									else{

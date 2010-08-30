@@ -15,7 +15,7 @@
 	{% if suggestFlag %}
 
 	$(function(){
-		 $(".addFollowButton").parent().append("<input class=removeSuggested ui-nothanks-button type=button value=No Thanks />"
+		 $(".addFollowButton").parent().append("<input class=\"removeSuggested ui-nothanks-button\" type=\"button\" value=\"No Thanks\" />")
 		 $(".removeSuggested").livequery(function(){
 	         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
 			 $(this).button();
