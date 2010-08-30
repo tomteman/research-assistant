@@ -16,7 +16,7 @@
 	{% if suggestFlag %}
 
 	$(function(){
-		 $(".removeSuggested").show();
+		 $(".removeSuggested").css("visibility", "inline");
 		 $(".removeSuggested").livequery(function(){
 	         var labelArticleKey = ($(this).parent().parent().closest("div").attr("id"));
 			 $(this).button();
@@ -177,7 +177,7 @@
 				<input type="hidden" name="Title" value ="{{result.get_article_title}}"/>
 				<input type="hidden" name="AuthorYearPub" value ="{{result.get_HTML_author_year_pub}}"/>
 				<input class="addFollowButton ui-addfollow-button" type="submit" value="Add Follow" />
-				<input class="removeSuggested ui-nothanks-button" type="button" value="No Thanks" />
+				<input class="removeSuggested ui-nothanks-button" type="button" value="No Thanks2" style="visibility:hidden;"/>
  
 			</form>
 			<input type="text" name="{{result.get_key}}" class="labelBox" id="query" />
