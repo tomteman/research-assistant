@@ -173,7 +173,6 @@ class SendLabel(webapp.RequestHandler):
         label_name = self.request.get('label_name')
         new_user_email = self.request.get('user_name')
         res = Label.get_label_by_email(inviting_user , new_user_email, label_name)
-        res = "True"
         self.response.out.write(res)
         
         
