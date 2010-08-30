@@ -585,7 +585,9 @@ def get_label_by_email(sending_user, target_user_email, label_name):
         for label_object in query:
             article_objects_list.append(pickle.loads(str(label_object.serialized_article)))
     except Exception:
-            return -7
+        msg = "bla"
+        msg = str(sys.exc_info()[0]) + str(sys.exc_info()[1]) + str(sys.exc_info()[2])
+        return msg
     
     
     ## PREFIX
@@ -624,7 +626,9 @@ def get_label_by_email(sending_user, target_user_email, label_name):
                       body=plain_msg, 
                       html=html_msg)
     except Exception:
-        return -8
+        msg = "bla"
+        msg = str(sys.exc_info()[0]) + str(sys.exc_info()[1]) + str(sys.exc_info()[2])
+        return msg
     return True
 
 
