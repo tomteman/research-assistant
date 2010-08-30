@@ -46,7 +46,7 @@ def update_comment(user, label_name, article_key, comment_content):
         # results = q.fetch(10)
         # this is supposed to be only one result but who knows...
         for label in query:
-            label.comment = str(comment_content)
+            label.comment = comment_content
             label.put()
     except Exception:
         return -7
