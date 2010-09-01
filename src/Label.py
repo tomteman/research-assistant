@@ -26,6 +26,7 @@ def force_unicode(string):
     if type(string) == unicode:
         return string
     return string.decode('utf-8')
+
 class Label(db.Model):
     users_list = db.ListProperty(users.User) 
     label_name = db.StringProperty()
@@ -440,7 +441,7 @@ def notify_user_on_shared_label(old_user, new_user, label_name, key):
     html_msg = "<html><body>"
     html_msg = html_msg + "<b>Hello Dear " + new_user.nickname() + ",</b><br><br>"
     html_msg = html_msg + "<b>" + old_user.nickname() + "</b> has shared a Research Assistant Label with you! <br>"
-    html_msg = html_msg + "Label is named: <font color=\"red\" ><b>" + str(label_name) +  "</b></font></br><br>"
+    html_msg = html_msg + "Label is named: <font color=\"red\" ><b>" + label_name +  "</b></font></br><br>"
     
     is_new_user = is_new_user_to_RA(new_user)
     html_msg = html_msg + "To see the label details and accept/reject press: "
@@ -580,9 +581,9 @@ def get_label_by_email(sending_user, target_user_email, label_name):
     
         # PREFIX
         html_msg = "<html><body>"
-        html_msg = html_msg + "<b>Hello Dear " + str(target_user_email) + ",</b><br>"
+        html_msg = html_msg + "<b>Hello Dear " + target_user_email + ",</b><br>"
         html_msg = html_msg + "Following are all articles labeled by " + sending_user.nickname() + " as \""
-        html_msg = html_msg + "<font color=\"red\" ><b>" + str(label_name) +  "</b></font>\"</br><br><br><br>"
+        html_msg = html_msg + "<font color=\"red\" ><b>" + label_name +  "</b></font>\"</br><br><br><br>"
         
     
         # BUILD CONTENT
@@ -590,8 +591,8 @@ def get_label_by_email(sending_user, target_user_email, label_name):
             if (len(article_obj.get_article_url()) > 0):
                 html_msg = html_msg + "<a href =\"" + article_obj.get_article_url() +""""<font color="6633cc">""" + article_obj.get_article_title() + "</font></a><br>"
             else: 
-                html_msg = html_msg + """<b><font color="#6633cc">""" + article_obj.get_article_title() + "</b></font><br>"
-            html_msg = html_msg + """<font color="#00cc66">""" + article_obj.get_HTML_author_year_pub() + "</font>"
+                html_msg = html_msg + """<b><font color="#6633cc">""" + unicode(article_obj.get_article_title(), errors='ignore') + "</b></font><br>"
+            html_msg = html_msg + """<font color="#00cc66">""" + unicode(article_obj.get_HTML_author_year_pub(), errors='ignore') + "</font>"
             html_msg = html_msg + article_obj.get_HTML_abstract() + "<br>"
             html_msg = html_msg + """<hr size="3" width="100%" align="left" color="009999"></hr><br>"""
     
