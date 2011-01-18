@@ -472,7 +472,7 @@ def getResultsFromURL(url):
 def getResultsFromURLwithProxy(url):
     # first we fetch the HTML from Google Scholar
     newHTML = getHTML(url)
-    newHTML.getHTMLfromURLwithProxy("202.44.12.72", 3128)
+    newHTML.getHTMLfromURLwithProxy("220.138.110.99", 9415)
     #newHTML.getHTMLfromURLwithProxy("206.224.254.10", 80)
     
     # parse the results
